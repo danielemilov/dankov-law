@@ -360,6 +360,14 @@ router.post('/contact', validateBody(contactCaptureInput), asyncHandler(async (r
     if (leadNotification.email.status === 'fulfilled') {
       session.leadNotifiedAt = new Date();
       await session.save();
+    } else {
+      return res.status(502).json({
+        success: false,
+        message:
+          'Контактът е записан, но известието към кантората не беше изпратено. Моля, опитайте отново след малко.',
+        consentSaved: true,
+        leadNotified: false,
+      });
     }
   }
 

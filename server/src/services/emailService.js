@@ -12,10 +12,18 @@ const BRAND = {
 };
 
 function createTransporter() {
+  if (!process.env.EMAIL_HOST || !process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    throw new Error('Email SMTP is not configured. Set EMAIL_HOST, EMAIL_USER and EMAIL_PASS.');
+  }
+
   return nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: Number(process.env.EMAIL_PORT || 587),
     secure: String(process.env.EMAIL_SECURE).toLowerCase() === 'true',
+    family: 4,
+    connectionTimeout: Number(process.env.EMAIL_CONNECTION_TIMEOUT_MS || 12000),
+    greetingTimeout: Number(process.env.EMAIL_GREETING_TIMEOUT_MS || 12000),
+    socketTimeout: Number(process.env.EMAIL_SOCKET_TIMEOUT_MS || 20000),
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
