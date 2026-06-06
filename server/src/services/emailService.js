@@ -47,6 +47,67 @@ function normalizeRecipients(to) {
   return Array.isArray(to) ? to.filter(Boolean) : [to].filter(Boolean);
 }
 
+function htmlToPlainText(html = '') {
+  return String(html)
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/(p|div|h1|h2|h3|tr|table)>/gi, '\n')
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\n\s+/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+function usesWeb3FormsProvider() {
+  return Boolean(process.env.WEB3FORMS_ACCESS_KEY);
+}
+
+async function sendWithWeb3Forms({ fromName, to, replyTo, subject, html }) {
+  const accessKey = process.env.WEB3FORMS_ACCESS_KEY;
+
+  if (!accessKey) {
+    throw new Error('WEB3FORMS_ACCESS_KEY is not configured.');
+  }
+
+  const response = await fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      access_key: accessKey,
+      subject,
+      from_name: fromName || BRAND.name,
+      name: fromName || BRAND.name,
+      email: replyTo || process.env.LAWYER_EMAIL || process.env.EMAIL_USER || '',
+      replyto: replyTo || process.env.LAWYER_EMAIL || process.env.EMAIL_USER || '',
+      message: htmlToPlainText(html),
+      recipient_hint: normalizeRecipients(to).join(', '),
+      source: 'dankov-law-backend',
+      botcheck: false,
+    }),
+  });
+
+  const body = await response.json().catch(() => null);
+
+  if (!response.ok || body?.success === false) {
+    throw new Error(
+      `Web3Forms API error ${response.status}: ${body?.message || JSON.stringify(body) || 'Unknown error'}`
+    );
+  }
+
+  return { provider: 'web3forms', ...body };
+}
+
 async function sendWithResend({ fromName, to, replyTo, subject, html }) {
   const apiKey = process.env.RESEND_API_KEY;
 
@@ -78,6 +139,10 @@ async function sendWithResend({ fromName, to, replyTo, subject, html }) {
 }
 
 async function sendEmail({ fromName, to, replyTo, subject, html }) {
+  if (process.env.WEB3FORMS_ACCESS_KEY) {
+    return sendWithWeb3Forms({ fromName, to, replyTo, subject, html });
+  }
+
   if (process.env.RESEND_API_KEY) {
     return sendWithResend({ fromName, to, replyTo, subject, html });
   }
@@ -382,6 +447,18 @@ export async function sendBookingNotification(booking) {
     `,
   });
 
+  const clientConfirmation = !client.email
+    ? Promise.resolve({ skipped: true, reason: 'No client email' })
+    : usesWeb3FormsProvider()
+      ? Promise.resolve({ skipped: true, reason: 'Web3Forms sends to the access key inbox only' })
+      : sendEmail({
+          fromName: BRAND.name,
+          to: client.email,
+          replyTo: process.env.LAWYER_EMAIL || process.env.EMAIL_USER,
+          subject: `Получихме заявката ви — ${BRAND.name}`,
+          html: clientHtml,
+        });
+
   const results = await Promise.allSettled([
     sendEmail({
       fromName: 'Сайт Данков',
@@ -390,16 +467,7 @@ export async function sendBookingNotification(booking) {
       subject: `Нова заявка — ${client.name || 'клиент'}`,
       html: lawyerHtml,
     }),
-
-    client.email
-      ? sendEmail({
-          fromName: BRAND.name,
-          to: client.email,
-          replyTo: process.env.LAWYER_EMAIL || process.env.EMAIL_USER,
-          subject: `Получихме заявката ви — ${BRAND.name}`,
-          html: clientHtml,
-        })
-      : Promise.resolve({ skipped: true }),
+    clientConfirmation,
   ]);
 
   return results;
@@ -460,6 +528,10 @@ export async function sendChatContactConfirmation({ session }) {
 
   if (!visitor.email) {
     return { skipped: true, reason: 'No visitor email' };
+  }
+
+  if (usesWeb3FormsProvider()) {
+    return { skipped: true, reason: 'Web3Forms sends to the access key inbox only' };
   }
 
   const html = emailShell({
