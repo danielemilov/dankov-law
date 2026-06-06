@@ -1,0 +1,596 @@
+.hlHero {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(460px, 1.08fr);
+  align-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(255, 255, 255, 0.96), transparent 30%),
+    radial-gradient(circle at 78% 18%, rgba(201, 221, 114, 0.16), transparent 34%),
+    linear-gradient(112deg, #f7faef 0%, #fbfcf5 42%, #dfe7d1 100%);
+}
+
+.hlHero3D {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.hlHero__grain,
+.hlHero__veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hlHero__grain {
+  z-index: 2;
+  opacity: 0.08;
+  background-image:
+    linear-gradient(rgba(13, 20, 15, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(13, 20, 15, 0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(to bottom, transparent, black 16%, black 82%, transparent);
+}
+
+.hlHero__veil {
+  z-index: 3;
+  background:
+    linear-gradient(90deg, rgba(247, 250, 239, 0.96) 0%, rgba(247, 250, 239, 0.82) 32%, rgba(247, 250, 239, 0.2) 64%, rgba(7, 16, 8, 0.18) 100%),
+    radial-gradient(circle at 70% 50%, rgba(7, 16, 8, 0.56), transparent 34%);
+}
+
+.hlHero::after {
+  content: '';
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  left: 44%;
+  z-index: 4;
+  width: 22%;
+  pointer-events: none;
+  transform: skewX(-10deg);
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.24), transparent);
+  filter: blur(2px);
+}
+
+.hlHero__content {
+  position: relative;
+  z-index: 8;
+  display: grid;
+  align-items: center;
+  min-height: 100svh;
+  padding: 144px max(24px, 7vw) 84px;
+}
+
+.hlHero__contentInner {
+  width: min(100%, 720px);
+}
+
+.hlHero__kicker {
+  margin-bottom: 24px;
+  color: rgba(13, 20, 15, 0.58);
+}
+
+.hlHero__title {
+  margin: 0;
+  color: #071008;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 92px;
+  font-weight: 950;
+  line-height: 0.94;
+  letter-spacing: 0;
+}
+
+.hlHero__title span {
+  display: block;
+  color: rgba(13, 20, 15, 0.48);
+}
+
+.hlHero__lead {
+  max-width: 610px;
+  margin: 32px 0 0;
+  color: rgba(13, 20, 15, 0.67);
+  font-size: 19px;
+  line-height: 1.68;
+  letter-spacing: 0;
+}
+
+.hlHero__actions {
+  margin-top: 36px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.hlHero__primary,
+.hlHero__link {
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hlHero__primary {
+  padding: 0 24px;
+  color: #fffdf4;
+  background:
+    linear-gradient(180deg, #0b120d, #172014);
+  box-shadow:
+    0 18px 48px rgba(11, 18, 13, 0.24),
+    0 0 34px rgba(201, 221, 114, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.hlHero__link {
+  padding: 0 6px;
+  color: #071008;
+}
+
+.hlHero__link::after {
+  content: '';
+  width: 52px;
+  height: 2px;
+  margin-left: 12px;
+  background: currentColor;
+}
+
+.hlHero__trust {
+  width: min(100%, 610px);
+  margin-top: 46px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid rgba(13, 20, 15, 0.08);
+  border-radius: 24px;
+  overflow: hidden;
+  background: rgba(255, 255, 252, 0.42);
+  backdrop-filter: blur(18px) saturate(1.08);
+  -webkit-backdrop-filter: blur(18px) saturate(1.08);
+  box-shadow:
+    0 18px 60px rgba(13, 20, 15, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.hlHero__trust article {
+  min-height: 94px;
+  display: grid;
+  align-content: center;
+  gap: 8px;
+  padding: 18px;
+  border-left: 1px solid rgba(13, 20, 15, 0.08);
+}
+
+.hlHero__trust article:first-child {
+  border-left: 0;
+}
+
+.hlHero__trust small {
+  color: rgba(109, 137, 34, 0.78);
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+}
+
+.hlHero__trust strong {
+  color: #071008;
+  font-size: 15px;
+  font-weight: 950;
+  line-height: 1.12;
+}
+
+.hlHero__portraitStage {
+  position: relative;
+  z-index: 7;
+  min-height: 760px;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 142px max(24px, 6vw) 0 0;
+}
+
+.hlHero__portraitGlass {
+  position: absolute;
+  right: max(28px, 7vw);
+  bottom: 7%;
+  width: min(78%, 520px);
+  height: 72%;
+  overflow: hidden;
+  border-radius: 44px;
+  border: 1px solid rgba(255, 253, 244, 0.18);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.06)),
+    radial-gradient(circle at 50% 0%, rgba(201, 221, 114, 0.16), transparent 58%),
+    radial-gradient(circle at 50% 100%, rgba(255, 255, 255, 0.08), transparent 62%);
+  backdrop-filter: blur(22px) saturate(1.14);
+  -webkit-backdrop-filter: blur(22px) saturate(1.14);
+  box-shadow:
+    0 44px 120px rgba(0, 0, 0, 0.32),
+    0 0 64px rgba(201, 221, 114, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.28);
+}
+
+.hlHero__portraitGlass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-radial-gradient(circle at 50% 56%, rgba(255, 253, 244, 0.12) 0 1px, transparent 1px 54px);
+  mask-image: radial-gradient(circle at 50% 56%, black 0 58%, transparent 72%);
+  opacity: 0.74;
+}
+
+.hlHero__portraitGlass::after {
+  content: '';
+  position: absolute;
+  top: -55%;
+  bottom: -55%;
+  left: -32%;
+  width: 24%;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.26), rgba(201, 221, 114, 0.1), transparent);
+  filter: blur(10px);
+  transform: skewX(-16deg);
+  animation: hlHeroGlassSweep 6.8s ease-in-out infinite;
+}
+
+.hlHero__portraitGlass span {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hlHero__portraitGlass span:first-child {
+  width: 260px;
+  height: 260px;
+  top: -96px;
+  right: -84px;
+  background: rgba(201, 221, 114, 0.18);
+  filter: blur(36px);
+}
+
+.hlHero__portraitGlass span:last-child {
+  left: 40px;
+  right: 40px;
+  bottom: 34px;
+  height: 1px;
+  border-radius: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.34), transparent);
+}
+
+.hlHero__portraitStage img {
+  position: relative;
+  z-index: 4;
+  width: min(64%, 430px);
+  max-height: 720px;
+  object-fit: contain;
+  object-position: center bottom;
+  filter:
+    drop-shadow(0 44px 52px rgba(0, 0, 0, 0.4))
+    drop-shadow(0 0 24px rgba(255, 255, 255, 0.15));
+}
+
+.hlHero__identityCard,
+.hlHero__signal {
+  position: absolute;
+  z-index: 6;
+  border: 1px solid rgba(255, 253, 244, 0.18);
+  background:
+    radial-gradient(circle at 10% 0%, rgba(255, 255, 255, 0.16), transparent 38%),
+    radial-gradient(circle at 100% 100%, rgba(201, 221, 114, 0.14), transparent 44%),
+    linear-gradient(135deg, rgba(7, 16, 8, 0.9), rgba(22, 31, 19, 0.76));
+  backdrop-filter: blur(20px) saturate(1.16);
+  -webkit-backdrop-filter: blur(20px) saturate(1.16);
+  box-shadow:
+    0 24px 74px rgba(0, 0, 0, 0.24),
+    0 0 36px rgba(201, 221, 114, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.22);
+}
+
+.hlHero__identityCard {
+  top: 25%;
+  left: 4%;
+  width: 250px;
+  display: grid;
+  gap: 6px;
+  padding: 18px 20px;
+  border-radius: 24px;
+  animation: hlHeroCardFloat 7s ease-in-out infinite;
+}
+
+.hlHero__identityCard small,
+.hlHero__signal small {
+  color: rgba(201, 221, 114, 0.82);
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.hlHero__identityCard strong {
+  color: #fffdf4;
+  font-size: 25px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.hlHero__identityCard span {
+  color: rgba(255, 253, 244, 0.72);
+  font-size: 13px;
+  line-height: 1.42;
+}
+
+.hlHero__signal {
+  min-width: 186px;
+  display: grid;
+  gap: 5px;
+  padding: 13px 15px;
+  border-radius: 18px;
+  animation: hlHeroCardFloat 7.4s ease-in-out infinite;
+}
+
+.hlHero__signal::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 72px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(201, 221, 114, 0.78), rgba(255, 255, 255, 0.22), transparent);
+}
+
+.hlHero__signal::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(201, 221, 114, 0.98);
+  box-shadow:
+    0 0 0 6px rgba(201, 221, 114, 0.12),
+    0 0 24px rgba(201, 221, 114, 0.42);
+}
+
+.hlHero__signal strong {
+  color: rgba(255, 253, 244, 0.94);
+  font-size: 15px;
+  font-weight: 950;
+}
+
+.hlHero__signal--one {
+  top: 44%;
+  right: 2%;
+}
+
+.hlHero__signal--one::before {
+  right: 100%;
+  transform: translateY(-50%);
+}
+
+.hlHero__signal--one::after {
+  left: -86px;
+  transform: translateY(-50%);
+}
+
+.hlHero__signal--two {
+  bottom: 20%;
+  left: 5%;
+  animation-delay: -2.2s;
+}
+
+.hlHero__signal--two::before {
+  left: 100%;
+  transform: translateY(-50%) scaleX(-1);
+}
+
+.hlHero__signal--two::after {
+  right: -86px;
+  transform: translateY(-50%);
+}
+
+@keyframes hlHeroGlassSweep {
+  0%,
+  48% {
+    opacity: 0;
+    transform: translateX(-120%) skewX(-16deg);
+  }
+
+  60% {
+    opacity: 0.82;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(560%) skewX(-16deg);
+  }
+}
+
+@keyframes hlHeroCardFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@media (max-width: 1180px) {
+  .hlHero {
+    grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+  }
+
+  .hlHero__title {
+    font-size: 78px;
+  }
+
+  .hlHero__portraitStage img {
+    width: min(68%, 390px);
+  }
+}
+
+@media (max-width: 980px) {
+  .hlHero {
+    min-height: auto;
+    grid-template-columns: 1fr;
+  }
+
+  .hlHero__veil {
+    background:
+      linear-gradient(180deg, rgba(247, 250, 239, 0.96) 0%, rgba(247, 250, 239, 0.9) 42%, rgba(7, 16, 8, 0.2) 100%);
+  }
+
+  .hlHero::after {
+    display: none;
+  }
+
+  .hlHero__content {
+    min-height: auto;
+    padding: 118px max(22px, 7vw) 28px;
+  }
+
+  .hlHero__contentInner {
+    width: min(100%, 760px);
+  }
+
+  .hlHero__title {
+    font-size: 70px;
+  }
+
+  .hlHero__portraitStage {
+    min-height: 640px;
+    padding: 18px 20px 0;
+  }
+
+  .hlHero__portraitGlass {
+    right: 50%;
+    bottom: 6%;
+    width: min(92%, 500px);
+    height: 78%;
+    transform: translateX(50%);
+  }
+
+  .hlHero__portraitStage img {
+    width: min(72%, 360px);
+    max-height: 600px;
+  }
+
+  .hlHero__identityCard {
+    left: max(18px, 9vw);
+  }
+}
+
+@media (max-width: 720px) {
+  .hlHero {
+    min-height: 100svh;
+  }
+
+  .hlHero__content {
+    padding: 102px 20px 8px;
+  }
+
+  .hlHero__title {
+    font-size: 43px;
+    line-height: 1;
+  }
+
+  .hlHero__lead {
+    margin-top: 16px;
+    font-size: 15px;
+    line-height: 1.52;
+  }
+
+  .hlHero__actions {
+    margin-top: 20px;
+    gap: 12px;
+  }
+
+  .hlHero__primary,
+  .hlHero__link {
+    min-height: 46px;
+    font-size: 11px;
+  }
+
+  .hlHero__trust {
+    width: 100%;
+    margin-top: 18px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-radius: 18px;
+  }
+
+  .hlHero__trust article {
+    min-height: 54px;
+    gap: 4px;
+    padding: 10px 9px;
+    border-top: 0;
+    border-left: 1px solid rgba(13, 20, 15, 0.08);
+  }
+
+  .hlHero__trust article:first-child {
+    border-left: 0;
+  }
+
+  .hlHero__trust small {
+    font-size: 8px;
+  }
+
+  .hlHero__trust strong {
+    font-size: 11px;
+  }
+
+  .hlHero__portraitStage {
+    min-height: 430px;
+    margin-top: -16px;
+    padding: 0 20px;
+  }
+
+  .hlHero__portraitGlass {
+    bottom: 2%;
+    height: 86%;
+    border-radius: 34px;
+  }
+
+  .hlHero__portraitStage img {
+    width: min(76%, 292px);
+    max-height: 424px;
+  }
+
+  .hlHero__identityCard {
+    top: 3%;
+    left: 50%;
+    width: min(78%, 270px);
+    transform: translateX(-50%);
+    padding: 13px 16px;
+    border-radius: 20px;
+    animation: none;
+  }
+
+  .hlHero__identityCard strong {
+    font-size: 22px;
+  }
+
+  .hlHero__identityCard span {
+    font-size: 12px;
+  }
+
+  .hlHero__signal {
+    display: none;
+  }
+}

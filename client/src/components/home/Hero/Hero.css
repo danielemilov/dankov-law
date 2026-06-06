@@ -1,0 +1,1530 @@
+.hlHero,
+.hlHero * {
+  box-sizing: border-box;
+}
+
+.hlHero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: #f7faef;
+}
+
+.hlHero__desktopScene {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(460px, 1.08fr);
+  align-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 14% 10%, rgba(255, 255, 255, 0.98), transparent 30%),
+    radial-gradient(circle at 76% 14%, rgba(216, 238, 132, 0.2), transparent 34%),
+    radial-gradient(circle at 90% 78%, rgba(7, 16, 8, 0.2), transparent 38%),
+    linear-gradient(112deg, #f7faef 0%, #fbfcf5 42%, #dce6ce 100%);
+}
+
+.hlHero__desktopScene .hlHero3D {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  opacity: 0.96;
+  pointer-events: none;
+}
+
+.hlHero__grain,
+.hlHero__veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hlHero__grain {
+  z-index: 2;
+  opacity: 0.08;
+  background-image:
+    linear-gradient(rgba(13, 20, 15, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(13, 20, 15, 0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(to bottom, transparent, black 16%, black 82%, transparent);
+}
+
+.hlHero__veil {
+  z-index: 3;
+  background:
+    linear-gradient(90deg, rgba(230, 230, 230, 0.97) 0%, rgba(247, 250, 239, 0.84) 34%, rgba(247, 250, 239, 0.2) 64%, rgba(7, 16, 8, 0.22) 100%),
+    radial-gradient(circle at 72% 52%, rgba(7, 16, 8, 0.46), transparent 35%);
+}
+
+.hlHero__desktopScene::after {
+  content: '';
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  left: 44%;
+  z-index: 4;
+  width: 22%;
+  pointer-events: none;
+  transform: skewX(-10deg);
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.24), transparent);
+  filter: blur(2px);
+}
+
+.hlHero__content {
+  position: relative;
+  z-index: 8;
+  display: grid;
+  align-items: center;
+  min-height: 100svh;
+  padding: 144px max(24px, 7vw) 84px;
+}
+
+.hlHero__contentInner {
+  width: min(100%, 720px);
+}
+
+.hlHero__kicker {
+  margin-bottom: 24px;
+  color: rgba(13, 20, 15, 0.58);
+}
+
+.hlHero__title {
+  margin: 0;
+  color: #071008;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 92px;
+  font-weight: 950;
+  line-height: 0.94;
+  letter-spacing: 0;
+}
+
+.hlHero__title span {
+  display: block;
+  color: rgb(49, 30, 152);
+}
+
+.hlHero__lead {
+  max-width: 610px;
+  margin: 32px 0 0;
+  color: rgba(13, 20, 15, 0.67);
+  font-size: 19px;
+  line-height: 1.68;
+  letter-spacing: 0;
+}
+
+.hlHero__actions {
+  margin-top: 36px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.hlHero__primary,
+.hlHero__link {
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hlHero__primary {
+  padding: 0 24px;
+  color: #fcfbff;
+  background:
+    linear-gradient(180deg, #0b120d, #172014);
+  box-shadow:
+    0 18px 48px rgba(11, 18, 13, 0.24),
+    0 0 34px rgba(201, 221, 114, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.hlHero__link {
+  padding: 0 6px;
+  color: #071008;
+}
+
+
+
+.hlHero__trust {
+  width: min(100%, 610px);
+  margin-top: 46px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid rgba(13, 20, 15, 0.08);
+  border-radius: 24px;
+  overflow: hidden;
+  background: rgba(255, 255, 252, 0.42);
+  backdrop-filter: blur(18px) saturate(1.08);
+  -webkit-backdrop-filter: blur(18px) saturate(1.08);
+  box-shadow:
+    0 18px 60px rgba(13, 20, 15, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.hlHero__trust article {
+  min-height: 94px;
+  display: grid;
+  align-content: center;
+  gap: 8px;
+  padding: 18px;
+  border-left: 1px solid rgba(13, 20, 15, 0.08);
+}
+
+.hlHero__trust article:first-child {
+  border-left: 0;
+}
+
+.hlHero__trust small {
+  color: rgba(109, 137, 34, 0.78);
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+}
+
+.hlHero__trust strong {
+  color: #071008;
+  font-size: 15px;
+  font-weight: 950;
+  line-height: 1.12;
+}
+
+
+
+@media (min-width: 981px) {
+  .hlHero__desktopScene {
+    /*
+      Това е главната ос.
+      Ако стълбът на везната е малко по-вляво/вдясно,
+      местиш само това число: 70% / 72% / 74%.
+    */
+    --justice-axis: 72%;
+    --portrait-ground: 2.8%;
+  }
+
+  .hlHero__desktopScene .hlHero3D {
+    z-index: 1;
+    opacity: 0.92;
+  }
+
+  .hlHero__grain {
+    z-index: 2;
+  }
+
+  .hlHero__veil {
+    z-index: 3;
+  }
+
+  .hlHero__desktopScene::after {
+    z-index: 4;
+    opacity: 0.55;
+  }
+
+  .hlHero__content {
+    z-index: 9;
+  }
+
+  .hlHero__portraitStage {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    min-height: 0;
+    height: auto;
+    display: block;
+    padding: 0;
+    pointer-events: none;
+    perspective: 1100px;
+  }
+
+  .hlHero__portraitStage::after {
+    content: '';
+    position: absolute;
+    left: var(--justice-axis);
+    bottom: var(--portrait-ground);
+    z-index: 1;
+    width: min(31vw, 470px);
+    height: 74px;
+    border-radius: 50%;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        ellipse at center,
+        rgba(7, 16, 8, 0.28),
+        rgba(7, 16, 8, 0.1) 48%,
+        transparent 74%
+      );
+    filter: blur(15px);
+    transform: translateX(-50%);
+  }
+@media (min-width: 981px) {
+  .hlHero__desktopScene {
+    --hero-split-axis: 50%;
+  }
+
+  .hlHero__glassPlane {
+    position: absolute;
+    top: -10%;
+    bottom: -10%;
+    left: var(--hero-split-axis);
+    z-index: 0;
+
+    width: min(18vw, 260px);
+    height: 120%;
+
+    transform: translateX(-50%) skewX(-8deg);
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: 999px;
+
+    border: 0;
+
+    background:
+      linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.22) 22%,
+        rgba(247, 250, 239, 0.34) 42%,
+        rgba(201, 221, 114, 0.12) 58%,
+        rgba(7, 16, 8, 0.06) 78%,
+        transparent 100%
+      );
+
+    filter: blur(18px);
+    opacity: 0.86;
+
+    box-shadow:
+      0 0 90px rgba(255, 255, 255, 0.18),
+      0 0 120px rgba(201, 221, 114, 0.12);
+  }
+
+  .hlHero__glassPlane::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+
+    background:
+      radial-gradient(
+        ellipse at 50% 28%,
+        rgba(255, 255, 255, 0.36),
+        transparent 44%
+      ),
+      radial-gradient(
+        ellipse at 50% 72%,
+        rgba(201, 221, 114, 0.14),
+        transparent 56%
+      );
+
+    opacity: 0.72;
+    animation: hlSplitGlassBreath 7s ease-in-out infinite;
+  }
+
+  .hlHero__glassPlane span {
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .hlHero__glassPlane span:first-child {
+    top: 8%;
+    bottom: 8%;
+    left: -80%;
+    width: 42%;
+
+    background:
+      linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.34),
+        rgba(255, 253, 244, 0.2),
+        transparent
+      );
+
+    filter: blur(14px);
+    opacity: 0;
+
+    animation: hlSplitGlassSweep 8.5s ease-in-out infinite;
+  }
+
+  .hlHero__glassPlane span:last-child {
+    display: none;
+  }
+}
+
+@keyframes hlSplitGlassBreath {
+  0%,
+  100% {
+    opacity: 0.46;
+    transform: scaleX(0.86);
+  }
+
+  50% {
+    opacity: 0.82;
+    transform: scaleX(1.08);
+  }
+}
+
+@keyframes hlSplitGlassSweep {
+  0%,
+  38% {
+    left: -90%;
+    opacity: 0;
+  }
+
+  52% {
+    opacity: 0.68;
+  }
+
+  76% {
+    opacity: 0.12;
+  }
+
+  100% {
+    left: 135%;
+    opacity: 0;
+  }
+}
+
+  .hlHero__glassPlane span {
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .hlHero__glassPlane span:first-child {
+    top: -18%;
+    left: -46%;
+    width: 42%;
+    height: 136%;
+    z-index: 2;
+
+    transform: skewX(-16deg);
+
+    background:
+      linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.04) 18%,
+        rgba(255, 255, 255, 0.22) 46%,
+        rgba(216, 238, 132, 0.09) 58%,
+        transparent 100%
+      );
+
+    filter: blur(18px);
+    opacity: 0;
+
+    animation: hlGlassPlaneSweep 8.2s ease-in-out infinite;
+  }
+
+  .hlHero__glassPlane span:last-child {
+    left: 9%;
+    right: 9%;
+    bottom: -38px;
+    height: 104px;
+    z-index: 1;
+
+    border-radius: 999px;
+
+    background:
+      radial-gradient(
+        ellipse at center,
+        rgba(255, 253, 244, 0.2) 0%,
+        rgba(201, 221, 114, 0.08) 32%,
+        rgba(7, 16, 8, 0.15) 64%,
+        transparent 82%
+      );
+
+    filter: blur(26px);
+    opacity: 0.54;
+
+    animation: hlGlassPlaneBreath 6.8s ease-in-out infinite;
+  }
+
+  .hlHero__glassPlane::before {
+    content: '';
+    position: absolute;
+    inset: 14px;
+    border-radius: 34px;
+    pointer-events: none;
+
+    border: 1px solid rgba(255, 255, 255, 0.16);
+
+    background:
+      linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.12),
+        transparent 36%,
+        rgba(7, 16, 8, 0.055) 100%
+      );
+
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      inset 0 -1px 0 rgba(7, 16, 8, 0.1);
+  }
+
+  .hlHero__glassPlane::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+
+    background:
+      linear-gradient(
+        120deg,
+        rgba(255, 255, 255, 0.2) 0%,
+        transparent 20%,
+        transparent 72%,
+        rgba(7, 16, 8, 0.14) 100%
+      );
+
+    opacity: 0.66;
+  }
+}
+
+@keyframes hlGlassPlaneSweep {
+  0%,
+  42% {
+    opacity: 0;
+    transform: translateX(0) skewX(-16deg);
+  }
+
+  56% {
+    opacity: 0.62;
+  }
+
+  82% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(470%) skewX(-16deg);
+  }
+}
+
+@keyframes hlGlassPlaneBreath {
+  0%,
+  100% {
+    opacity: 0.36;
+    transform: scaleX(0.9);
+  }
+
+  50% {
+    opacity: 0.62;
+    transform: scaleX(1.08);
+  }
+}
+
+ .hlHero__portraitStage img {
+  position: absolute;
+  left: var(--justice-axis);
+  bottom: var(--portrait-ground);
+  z-index: 4;
+  width: min(36vw, 520px);
+  max-height: min(88svh, 820px);
+  object-fit: contain;
+  object-position: center bottom;
+
+  transform: translateX(-20%) translateY(100%) scale(2.04)!important;
+  transform-origin: center bottom;
+
+  /* Crop/remove bottom half */
+  clip-path: inset(0 0 20% 0);
+
+  filter:
+    drop-shadow(0 46px 54px rgba(0, 0, 0, 0.38))
+    drop-shadow(0 0 24px rgba(255, 255, 255, 0.14));
+}
+
+@media (min-width: 981px) and (max-height: 820px) {
+  .hlHero__desktopScene {
+    --portrait-ground: 1.4%;
+  }
+
+ 
+
+  .hlHero__portraitStage img {
+    width: min(32vw, 460px);
+    max-height: min(84svh, 720px);
+    transform: translateX(-50%) translateY(0) scale(1.02);
+  }
+
+  .hlHero__portraitStage::after {
+    bottom: var(--portrait-ground);
+    width: min(29vw, 430px);
+  }
+}
+
+@media (max-width: 1180px) and (min-width: 981px) {
+  .hlHero__desktopScene {
+    grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+    --justice-axis: 74%;
+  }
+
+  .hlHero__title {
+    font-size: 78px;
+  }
+
+  .hlHero__portraitStage img {
+    width: min(35vw, 470px);
+  }
+}
+
+
+
+
+.hlHeroMobile {
+  display: none;
+}
+
+@media (max-width: 1180px) {
+  .hlHero__desktopScene {
+    grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+  }
+
+  .hlHero__title {
+    font-size: 78px;
+  }
+
+
+}
+
+@media (max-width: 980px) {
+  .hlHero__desktopScene {
+    display: none;
+  }
+
+  .hlHeroMobile {
+    --hero-mobile-ink: #07140d;
+    --hero-mobile-muted: rgba(13, 20, 15, 0.66);
+    --hero-mobile-line: rgba(13, 20, 15, 0.12);
+    --hero-mobile-panel: rgba(255, 255, 252, 0.6);
+
+    position: relative;
+    min-height: 100svh;
+    display: block;
+    overflow: hidden;
+    isolation: isolate;
+    padding: clamp(124px, 16svh, 164px) clamp(26px, 5.6vw, 48px) 30px;
+    background:
+      radial-gradient(circle at 78% 9%, rgba(216, 238, 132, 0.12), transparent 34%),
+      radial-gradient(circle at 8% 20%, rgba(255, 255, 255, 0.94), transparent 42%),
+      linear-gradient(180deg, #fbfcf5 0%, #f8faef 56%, #eef2e5 100%);
+  }
+
+  .hlHeroMobile__grain {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image:
+      linear-gradient(rgba(7, 20, 13, 0.16) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(7, 20, 13, 0.1) 1px, transparent 1px);
+    background-size: 42px 42px;
+  }
+
+  .hlHeroMobile__copy,
+  .hlHeroMobile__card {
+    position: relative;
+    z-index: 2;
+  }
+
+  .hlHeroMobile__copy {
+    max-width: 44rem;
+  }
+
+  .hlHeroMobile__title {
+    margin: 0;
+    color: var(--hero-mobile-ink);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: clamp(34px, 7.8vw, 72px);
+    font-weight: 950;
+    line-height: 1.1;
+    letter-spacing: 0;
+  }
+
+  .hlHeroMobile__titleMain,
+  .hlHeroMobile__titleMuted {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .hlHeroMobile__titleMain {
+    color: var(--hero-mobile-ink);
+  }
+
+  .hlHeroMobile__titleMuted {
+    color: rgba(13, 20, 15, 0.48);
+  }
+
+  .hlHeroMobile__lead {
+    max-width: 37rem;
+    margin: 22px 0 0;
+    color: var(--hero-mobile-muted);
+    font-size: clamp(18px, 4.2vw, 22px);
+    line-height: 1.58;
+    letter-spacing: 0;
+  }
+
+  .hlHeroMobile__card {
+    height: clamp(500px, 65svh, 650px);
+    min-height: 500px;
+    margin-top: 34px;
+    overflow: hidden;
+    isolation: isolate;
+    border-radius: 34px;
+    border: 1px solid var(--hero-mobile-line);
+    background:
+      radial-gradient(circle at 76% 15%, rgba(216, 238, 132, 0.15), transparent 34%),
+      radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.84), transparent 42%),
+      linear-gradient(145deg, rgba(255, 255, 252, 0.78), rgba(245, 248, 236, 0.68));
+    -webkit-backdrop-filter: blur(20px) saturate(1.08);
+    backdrop-filter: blur(20px) saturate(1.08);
+    box-shadow:
+      0 24px 70px rgba(13, 20, 15, 0.1),
+      0 0 0 1px rgba(255, 255, 255, 0.68),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9),
+      inset 0 -1px 0 rgba(13, 20, 15, 0.08);
+  }
+
+  .hlHeroMobile__card .hlHero3D {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    opacity: 0.46;
+    pointer-events: none;
+  }
+
+  .hlHeroMobile__cardLight,
+  .hlHeroMobile__floor,
+  .hlHeroMobile__grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .hlHeroMobile__cardLight {
+    z-index: 2;
+    background:
+      linear-gradient(112deg, rgba(255, 255, 255, 0.54) 0%, transparent 28%, transparent 72%, rgba(216, 238, 132, 0.08) 100%),
+      radial-gradient(ellipse at 36% 12%, rgba(255, 255, 255, 0.44), transparent 42%);
+  }
+
+  .hlHeroMobile__floor {
+    top: auto;
+    z-index: 2;
+    height: 28%;
+    background:
+      linear-gradient(180deg, transparent, rgba(13, 20, 15, 0.08)),
+      radial-gradient(ellipse at 42% 88%, rgba(13, 20, 15, 0.12), transparent 54%);
+  }
+
+  .hlHeroMobile__grid {
+    z-index: 2;
+    opacity: 0.08;
+    background-image:
+      linear-gradient(rgba(13, 20, 15, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(13, 20, 15, 0.055) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: linear-gradient(to bottom, transparent, black 18%, black 74%, transparent);
+  }
+
+  .hlHeroMobile__portraitShadow {
+    position: absolute;
+    left: 18%;
+    bottom: 84px;
+    z-index: 3;
+    width: 42%;
+    height: 40px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, rgba(13, 20, 15, 0.26), rgba(13, 20, 15, 0.08) 48%, transparent 74%);
+    filter: blur(12px);
+  }
+
+  .hlHeroMobile__portrait {
+    position: absolute;
+    left: 17%;
+    bottom: 6px;
+    z-index: 4;
+    width: auto;
+    height: min(70%, 830px);
+    max-width: 43%;
+    object-fit: contain;
+    object-position: center bottom;
+    transform: translateY(-1.5%) scale(1.02);
+    transform-origin: center bottom;
+    filter:
+      drop-shadow(0 26px 32px rgba(13, 20, 15, 0.22))
+      drop-shadow(0 0 18px rgba(255, 255, 255, 0.35));
+  }
+
+  .hlHeroMobile__signalStack {
+    position: absolute;
+    top: 58%;
+    right: clamp(16px, 4.8vw, 34px);
+    z-index: 5;
+    width: min(52%, 238px);
+    display: grid;
+    gap: 12px;
+  }
+
+  .hlHeroMobile__signalCard {
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    
+    gap: 13px;
+    padding: 11px 16px;
+    color: var(--hero-mobile-ink);
+    background-color: rgb(1, 188, 19)!important;
+    text-decoration: none;
+    border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.74);
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.64), rgba(255, 255, 255, 0.3)),
+      rgba(247, 250, 239, 0.34);
+    -webkit-backdrop-filter: blur(18px) saturate(1.08);
+    backdrop-filter: blur(18px) saturate(1.08);
+    box-shadow:
+      0 16px 42px rgba(13, 20, 15, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.82),
+      inset 0 -1px 0 rgba(13, 20, 15, 0.05);
+  }
+
+  .hlHeroMobile__signalCard svg {
+    flex: 0 0 auto;
+    color: rgba(54, 68, 42, 0.92);
+  }
+
+  .hlHeroMobile__signalCard span {
+    display: block;
+    min-width: 0;
+    color: rgba(13, 20, 15, 0.84);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: clamp(15px, 3.6vw, 18px);
+    font-weight: 500;
+    line-height: 1.18;
+    letter-spacing: 0;
+  }
+
+  .hlHeroMobile__signalCard--action {
+    width: 84%;
+    justify-self: end;
+    justify-content: center;
+    padding-right: 20px;
+  }
+
+  .hlHeroMobile__signalCard--action span {
+    flex: 0 1 auto;
+  }
+
+  .hlHeroMobile__signalCard--action svg {
+    order: 2;
+    margin-left: 8px;
+  }
+
+  .hlHeroMobile__actions {
+    position: absolute;
+    left: clamp(22px, 5.8vw, 52px);
+    right: clamp(22px, 5.8vw, 52px);
+    bottom: clamp(22px, 5.8vw, 38px);
+    z-index: 6;
+    display: grid;
+  }
+
+  .hlHeroMobile__cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 68px;
+    padding: 0 22px;
+    border-radius: 999px;
+    color: #fffdf4;
+    text-decoration: none;
+    border: 0;
+    background:
+      linear-gradient(180deg, #0b120d, #172014);
+    box-shadow:
+      0 18px 48px rgba(11, 18, 13, 0.22),
+      0 0 34px rgba(201, 221, 114, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  }
+
+  .hlHeroMobile__cta span {
+    text-align: center;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: clamp(13px, 3.4vw, 16px);
+    font-weight: 950;
+    line-height: 1.1;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+
+  .hlHeroMobile__cta svg {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .hlHeroMobile {
+    padding-top: 118px;
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+  .hlHeroMobile__title {
+    font-size: clamp(33px, 8.65vw, 34px);
+    line-height: 1.12;
+  }
+
+  .hlHeroMobile__lead {
+    margin-top: 18px;
+    font-size: 18px;
+    line-height: 1.55;
+  }
+
+  .hlHeroMobile__card {
+    height: 500px;
+    min-height: 500px;
+    margin-top: 30px;
+    border-radius: 30px;
+  }
+
+  .hlHeroMobile__portrait {
+    left: 10%;
+    bottom: 82px;
+    height: 72%;
+    max-width: 48%;
+  }
+
+  .hlHeroMobile__portraitShadow {
+    left: 10%;
+    bottom: 80px;
+    width: 48%;
+  }
+
+  .hlHeroMobile__signalStack {
+    top: 39%;
+    right: 10px;
+    width: 54%;
+    gap: 10px;
+  }
+
+  .hlHeroMobile__signalCard {
+    min-height: 58px;
+    gap: 9px;
+    padding: 10px 12px;
+    border-radius: 20px;
+  }
+
+  .hlHeroMobile__signalCard svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .hlHeroMobile__signalCard span {
+    font-size: 14px;
+  }
+
+  .hlHeroMobile__signalCard--action {
+    width: 84%;
+  }
+
+  .hlHeroMobile__actions {
+    left: 22px;
+    right: 22px;
+    bottom: 22px;
+  }
+
+  .hlHeroMobile__cta {
+    min-height: 64px;
+  }
+}
+
+/* =========================================================
+   SOFT PREMIUM HERO BRIDGE
+   No hard line — only blended cinematic transition
+========================================================= */
+
+.hlHeroBridge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  z-index: 60;
+  height: clamp(120px, 12vw, 190px);
+  pointer-events: none;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Main soft fade into next section */
+.hlHeroBridge__depth {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 100%,
+      rgba(255, 253, 244, 0.16) 0%,
+      rgba(201, 221, 114, 0.08) 22%,
+      rgba(47, 63, 32, 0.08) 42%,
+      transparent 68%
+    ),
+    radial-gradient(
+      ellipse at 16% 100%,
+      rgba(93, 63, 36, 0.2) 0%,
+      transparent 56%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(247, 250, 239, 0) 0%,
+      rgba(247, 250, 239, 0.02) 20%,
+      rgba(47, 63, 32, 0.12) 48%,
+      rgba(18, 28, 15, 0.34) 76%,
+      rgba(7, 16, 8, 0.66) 100%
+    );
+
+  opacity: 0.95;
+}
+
+/* Soft breathing glow, not a visible stripe */
+.hlHeroBridge__aura {
+  position: absolute;
+  left: 50%;
+  bottom: -24px;
+  z-index: 2;
+  width: min(74vw, 980px);
+  height: 130px;
+  border-radius: 999px;
+  transform: translateX(-50%);
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(255, 255, 255, 0.24) 0%,
+      rgba(255, 253, 244, 0.18) 16%,
+      rgba(201, 221, 114, 0.12) 34%,
+      rgba(94, 68, 39, 0.1) 52%,
+      rgba(7, 16, 8, 0.12) 68%,
+      transparent 82%
+    );
+
+  filter: blur(34px);
+  opacity: 0.52;
+
+  animation: hlHeroBridgeSoftAura 7s ease-in-out infinite;
+}
+
+/* This replaces the ugly line with a blurred horizon glow */
+.hlHeroBridge__line {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  z-index: 3;
+  width: min(72vw, 980px);
+  height: 46px;
+  border-radius: 999px;
+  transform: translateX(-50%);
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(84, 59, 34, 0.08) 14%,
+      rgba(201, 221, 114, 0.14) 28%,
+      rgba(255, 253, 244, 0.24) 44%,
+      rgba(255, 255, 255, 0.3) 50%,
+      rgba(255, 253, 244, 0.22) 56%,
+      rgba(201, 221, 114, 0.12) 72%,
+      rgba(47, 63, 32, 0.1) 86%,
+      transparent 100%
+    );
+
+  background-size: 260% 100%;
+  filter: blur(18px);
+  opacity: 0.72;
+
+  animation: hlHeroBridgeSoftHorizon 6.2s ease-in-out infinite;
+}
+
+/* Remove pearl dot completely */
+.hlHeroBridge__line::after {
+  display: none;
+}
+
+/* Moving glossy mist — not a sharp beam */
+.hlHeroBridge__scan {
+  position: absolute;
+  top: 18%;
+  bottom: -10%;
+  left: -32%;
+  z-index: 4;
+  width: 26%;
+  transform: skewX(-18deg);
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.02) 16%,
+      rgba(255, 253, 244, 0.18) 42%,
+      rgba(201, 221, 114, 0.08) 56%,
+      rgba(255, 255, 255, 0.04) 70%,
+      transparent 100%
+    );
+
+  filter: blur(18px);
+  opacity: 0;
+
+  animation: hlHeroBridgeSoftScan 8s ease-in-out infinite;
+}
+
+/* Let the next section receive the darkness softly */
+.hlHero + * {
+  position: relative;
+  z-index: 1;
+  margin-top: -1px;
+
+  box-shadow:
+    inset 0 48px 92px rgba(7, 16, 8, 0.2),
+    inset 0 1px 0 rgba(255, 253, 244, 0.06);
+}
+
+@keyframes hlHeroBridgeSoftAura {
+  0%,
+  100% {
+    opacity: 0.36;
+    transform: translateX(-50%) scaleX(0.92) scaleY(0.82);
+  }
+
+  50% {
+    opacity: 0.64;
+    transform: translateX(-50%) scaleX(1.08) scaleY(1);
+  }
+}
+
+@keyframes hlHeroBridgeSoftHorizon {
+  0% {
+    opacity: 0.46;
+    background-position: 0% 50%;
+    transform: translateX(-50%) scaleX(0.9);
+  }
+
+  46% {
+    opacity: 0.82;
+    background-position: 100% 50%;
+    transform: translateX(-50%) scaleX(1.04);
+  }
+
+  100% {
+    opacity: 0.48;
+    background-position: 0% 50%;
+    transform: translateX(-50%) scaleX(0.92);
+  }
+}
+
+@keyframes hlHeroBridgeSoftScan {
+  0%,
+  32% {
+    left: -34%;
+    opacity: 0;
+  }
+
+  48% {
+    opacity: 0.54;
+  }
+
+  68% {
+    opacity: 0.16;
+  }
+
+  100% {
+    left: 112%;
+    opacity: 0;
+  }
+}
+
+@media (max-width: 980px) {
+  .hlHeroBridge {
+    height: 135px;
+  }
+
+  .hlHeroBridge__aura {
+    width: 92vw;
+    height: 112px;
+    bottom: -20px;
+  }
+
+  .hlHeroBridge__line {
+    width: calc(100% - 34px);
+    height: 42px;
+    bottom: 14px;
+  }
+
+  .hlHeroBridge__scan {
+    width: 34%;
+  }
+
+  .hlHero + * {
+    box-shadow:
+      inset 0 38px 76px rgba(7, 16, 8, 0.18),
+      inset 0 1px 0 rgba(255, 253, 244, 0.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hlHeroBridge__aura,
+  .hlHeroBridge__line,
+  .hlHeroBridge__scan {
+    animation: none;
+  }
+}
+@media (max-width: 980px) {
+  .hlHeroMobile__card {
+    height: clamp(520px, 68svh, 680px);
+    min-height: 520px;
+    margin-top: 34px;
+    border-radius: 34px;
+  }
+
+  .hlHeroMobile__card .hlHero3D {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    opacity: 0.42;
+    pointer-events: none;
+    transform: translateY(-4%) scale(1.08);
+    transform-origin: center center;
+  }
+
+  .hlHeroMobile__portrait {
+    position: absolute;
+    left: 50%;
+    bottom: 74px;
+    z-index: 4;
+
+    width: auto;
+    height: clamp(370px, 62svh, 520px);
+    max-width: none;
+
+    object-fit: contain;
+    object-position: center bottom;
+
+    transform: translateX(-50%) scale(1.12);
+    transform-origin: center bottom;
+
+    filter:
+      drop-shadow(0 28px 38px rgba(13, 20, 15, 0.25))
+      drop-shadow(0 0 18px rgba(255, 255, 255, 0.38));
+  }
+
+  .hlHeroMobile__portraitShadow {
+    position: absolute;
+    left: 50%;
+    bottom: 78px;
+    z-index: 3;
+    width: 52%;
+    height: 42px;
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translateX(-50%);
+    background:
+      radial-gradient(
+        ellipse at center,
+        rgba(13, 20, 15, 0.26),
+        rgba(13, 20, 15, 0.08) 48%,
+        transparent 74%
+      );
+    filter: blur(13px);
+  }
+
+  .hlHeroMobile__signalStack {
+    display: none;
+  }
+
+  .hlHeroMobile__actions {
+    position: absolute;
+    left: clamp(22px, 5.8vw, 52px);
+    right: clamp(22px, 5.8vw, 52px);
+    bottom: clamp(22px, 5.8vw, 38px);
+    z-index: 6;
+
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hlHeroMobile__cta {
+    min-height: 64px;
+    padding: 0 22px;
+    border-radius: 999px;
+    color: #fffdf4;
+    text-decoration: none;
+    background:
+      linear-gradient(180deg, #0b120d, #172014);
+    box-shadow:
+      0 18px 48px rgba(11, 18, 13, 0.22),
+      0 0 34px rgba(201, 221, 114, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  }
+
+  .hlHeroMobile__caseLink {
+    min-height: 54px;
+    padding: 0 18px;
+    border-radius: 999px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    color: #071008;
+    text-decoration: none;
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 0.72),
+        rgba(247, 250, 239, 0.42)
+      );
+
+    border: 1px solid rgba(13, 20, 15, 0.1);
+
+    -webkit-backdrop-filter: blur(18px) saturate(1.12);
+    backdrop-filter: blur(18px) saturate(1.12);
+
+    box-shadow:
+      0 14px 34px rgba(13, 20, 15, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.86);
+  }
+
+  .hlHeroMobile__caseLink span {
+    font-size: 14px;
+    font-weight: 850;
+    white-space: nowrap;
+  }
+
+  .hlHeroMobile__caseLink svg {
+    flex: 0 0 auto;
+  }
+}
+@media (max-width: 420px) {
+  .hlHeroMobile {
+    padding-top: 118px;
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+  .hlHeroMobile__card {
+    height: 520px;
+    min-height: 520px;
+    margin-top: 30px;
+    border-radius: 30px;
+  }
+
+  .hlHeroMobile__portrait {
+    left: 50%;
+    bottom: 88px;
+    height: 390px;
+    max-width: none;
+    transform: translateX(-50%) scale(1.16);
+  }
+
+  .hlHeroMobile__portraitShadow {
+    left: 50%;
+    bottom: 88px;
+    width: 62%;
+  }
+
+  .hlHeroMobile__actions {
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .hlHeroMobile__cta {
+    min-height: 62px;
+  }
+
+  .hlHeroMobile__caseLink {
+    min-height: 48px;
+    width: fit-content;
+    justify-self: center;
+    padding: 0 18px;
+  }
+}
+/* =========================================================
+   MOBILE HERO FINAL POLISH
+   More air between lawyer and CTA
+========================================================= */
+/* =========================================================
+   MOBILE HERO FIXED FINAL
+   Real phone layout - stable composition
+========================================================= */
+
+@media (max-width: 980px) {
+  .hlHeroMobile__card {
+    height: clamp(500px, 64svh, 640px);
+    min-height: 500px;
+    margin-top: 32px;
+  }
+
+  .hlHeroMobile__card .hlHero3D {
+    opacity: 0.44;
+    transform: translateY(-4%) scale(1.08);
+    transform-origin: center center;
+  }
+
+  .hlHeroMobile__portrait {
+    left: 50%;
+    bottom: 84px;
+    height: clamp(240px, 54svh, 470px);
+    max-width: none;
+    object-fit: contain;
+    object-position: center bottom;
+    transform: translateX(-50%) scale(1.05);
+    transform-origin: center bottom;
+  }
+
+  .hlHeroMobile__portraitShadow {
+    left: 50%;
+    bottom: 101px;
+    width: min(58%, 280px);
+    height: 38px;
+    transform: translateX(-50%);
+    opacity: 0.78;
+  }
+
+  .hlHeroMobile__actions {
+    left: clamp(22px, 5.8vw, 52px);
+    right: clamp(22px, 5.8vw, 52px);
+    bottom: clamp(20px, 4.8vw, 34px);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .hlHeroMobile__cta {
+    width: 100%;
+    min-height: 60px;
+    padding: 0 20px;
+  }
+
+  .hlHeroMobile__caseLink {
+    min-height: 48px;
+    width: fit-content;
+    justify-self: center;
+    padding: 0 18px;
+  }
+}
+
+/* Real iPhone / normal phone width */
+@media (max-width: 430px) {
+  .hlHeroMobile {
+    padding-top: 116px;
+    padding-right: 18px;
+    padding-left: 18px;
+    padding-bottom: 34px;
+  }
+
+  .hlHeroMobile__card {
+    height: 505px;
+    min-height: 505px;
+    margin-top: 28px;
+    border-radius: 30px;
+  }
+
+  .hlHeroMobile__portrait {
+    left: 50%;
+    bottom: 80px;
+    height: 348px;
+    max-width: none;
+    transform: translateX(-50%) scale(1.099);
+  }
+
+  .hlHeroMobile__portraitShadow {
+    left: 50%;
+    bottom: 105px;
+    width: 56%;
+    height: 36px;
+    transform: translateX(-50%);
+    opacity: 0.76;
+  }
+
+  .hlHeroMobile__actions {
+    left: 20px;
+    right: 20px;
+    bottom: 18px;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .hlHeroMobile__cta {
+    width: 100%;
+    min-height: 58px;
+    padding: 0 18px;
+  }
+
+  .hlHeroMobile__cta span {
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .hlHeroMobile__caseLink {
+    min-height: 46px;
+    width: fit-content;
+    justify-self: center;
+    padding: 0 18px;
+  }
+
+  .hlHeroMobile__caseLink span {
+    font-size: 13px;
+    white-space: nowrap;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 360px) {
+  .hlHeroMobile__card {
+    height: 492px;
+    min-height: 492px;
+  }
+
+  .hlHeroMobile__portrait {
+    bottom: 122px;
+    height: 334px;
+    transform: translateX(-50%) scale(1.05);
+  }
+
+  .hlHeroMobile__portraitShadow {
+    bottom: 119px;
+  }
+
+  .hlHeroMobile__cta span {
+    font-size: 12px;
+  }
+
+  .hlHeroMobile__caseLink span {
+    font-size: 12px;
+  }
+}

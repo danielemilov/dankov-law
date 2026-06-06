@@ -1,0 +1,68 @@
+:root {
+  --hl-ink: #111611;
+  --hl-ink-soft: #192117;
+  --hl-accent: #7b8752;
+  --hl-accent-soft: #d8ee84;
+  --hl-sage: #eef2e4;
+  --hl-warm: #f1e8d3;
+  --hl-cream: #f7faef;
+  --hl-white: #ffffff;
+  --hl-muted: rgba(17, 22, 17, 0.68);
+  --hl-line: rgba(17, 22, 17, 0.14);
+}
+
+.hlHome {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.95), transparent 32%),
+    radial-gradient(circle at 82% 12%, rgba(216, 238, 132, 0.14), transparent 34%),
+    linear-gradient(180deg, #f7faef 0%, #eef4e2 46%, #f8faf1 100%);
+  color: var(--hl-ink);
+  overflow: hidden;
+}
+
+.hlAnchor {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.hlKicker {
+  margin: 0;
+  color: rgba(17, 22, 17, 0.62);
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.hlSection {
+  position: relative;
+  padding: clamp(88px, 10vw, 138px) max(24px, 7vw);
+}
+
+.hlSectionTitle {
+  margin: 16px 0 52px;
+  max-width: 980px;
+  color: var(--hl-ink);
+  font-size: clamp(46px, 5.3vw, 82px);
+  font-weight: 950;
+  line-height: 1.04;
+  letter-spacing: 0;
+}
+
+.hlSectionTitle em {
+  color: #6f7c42;
+  font-style: normal;
+}
+
+@media (max-width: 720px) {
+  .hlSection {
+    padding: 78px 20px;
+  }
+
+  .hlSectionTitle {
+    font-size: clamp(38px, 10.2vw, 54px);
+    line-height: 1.08;
+    letter-spacing: 0;
+  }
+}

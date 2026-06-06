@@ -1,0 +1,76 @@
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; padding: 0; }
+:root {
+  --ink: #11100e;
+  --ink-2: #1c1915;
+  --ink-soft: rgba(17,16,14,.72);
+  --muted: rgba(17,16,14,.56);
+  --line: rgba(17,16,14,.12);
+  --cream: #f7f1e8;
+  --cream-2: #fffaf2;
+  --warm: #e9ddcc;
+  --gold: #b9862e;
+  --gold-2: #d5a856;
+  --gold-soft: rgba(185,134,46,.12);
+  --green: #2f6e4d;
+  --danger: #b6534a;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'DM Sans', system-ui, -apple-system, Segoe UI, sans-serif;
+  --shadow: 0 28px 90px rgba(17,16,14,.16);
+  --radius: 28px;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background:
+    radial-gradient(circle at 15% 10%, rgba(213,168,86,.18), transparent 28rem),
+    radial-gradient(circle at 90% 15%, rgba(17,16,14,.08), transparent 30rem),
+    var(--cream);
+  color: var(--ink);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+img, svg { max-width: 100%; display: block; }
+::selection { background: var(--gold); color: var(--ink); }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+.site-section { padding: 118px max(24px, 6vw); }
+.kicker {
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+.display {
+  font-family: var(--serif);
+  font-weight: 300;
+  letter-spacing: -.04em;
+  line-height: .96;
+}
+.text-muted { color: var(--muted); }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  transition: transform .2s ease, background .2s ease, border-color .2s ease, color .2s ease;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-dark { background: var(--ink); color: var(--cream); }
+.btn-dark:hover { background: var(--gold); color: var(--ink); }
+.btn-light { border-color: var(--line); color: var(--ink); background: rgba(255,255,255,.35); }
+.btn-light:hover { border-color: rgba(17,16,14,.3); background: rgba(255,255,255,.65); }
+@media (max-width: 760px) {
+  .site-section { padding: 82px 20px; }
+  .btn { width: 100%; }
+}

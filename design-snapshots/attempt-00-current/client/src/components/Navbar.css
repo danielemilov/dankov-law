@@ -1,0 +1,1399 @@
+.navPrime,
+.navPrime * {
+  box-sizing: border-box;
+}
+
+.navPrime {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 95;
+  padding: 22px max(18px, 4.8vw) 0;
+  pointer-events: none;
+
+  --ink: #0d140f;
+  --cream: #fffdf4;
+  --glass: rgba(255, 253, 244, 0.9);
+  --line: rgba(13, 20, 15, 0.13);
+  --accent: #c9dd72;
+  --gold: #d9b56c;
+}
+
+.navPrime__stage {
+  position: relative;
+  width: min(100%, 1760px);
+  margin: 0 auto;
+  pointer-events: none;
+}
+
+.navPrime__bar {
+  position: relative;
+  min-height: 78px;
+  display: grid;
+  grid-template-columns: minmax(250px, 0.8fr) auto minmax(180px, 0.8fr);
+  align-items: center;
+  gap: clamp(22px, 4vw, 68px);
+  padding: 20px 44px;
+  border-radius: 999px;
+  overflow: hidden;
+  isolation: isolate;
+  pointer-events: auto;
+
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 252, 0.97), rgba(247, 247, 238, 0.92)),
+    radial-gradient(circle at 9% 0%, rgba(255, 255, 255, 1), transparent 38%),
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.28), transparent 42%),
+    radial-gradient(circle at 84% 44%, rgba(201, 221, 114, 0.08), transparent 36%);
+
+  -webkit-backdrop-filter: blur(40px) saturate(1.2);
+  backdrop-filter: blur(40px) saturate(1.2);
+
+  box-shadow:
+    0 30px 96px rgba(13, 20, 15, 0.18),
+    0 0 0 1px rgba(255, 255, 255, 0.52),
+    inset 0 1px 0 rgba(255, 255, 255, 0.98),
+    inset 0 -1px 0 rgba(13, 20, 15, 0.055),
+    inset 0 0 42px rgba(255, 255, 255, 0.12);
+}
+
+.navPrime__bar::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  z-index: -2;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(112deg, transparent 0%, rgba(255, 255, 255, 0.54) 18%, transparent 42%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.2), transparent 28%, transparent 74%, rgba(255, 255, 255, 0.18));
+}
+
+.navPrime__bar::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.44),
+    inset 0 0 72px rgba(255, 255, 255, 0.13);
+}
+
+.navPrime__edge {
+  position: absolute;
+  left: 34px;
+  right: 34px;
+  height: 1px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.navPrime__edge--top {
+  top: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.98), transparent);
+}
+
+.navPrime__edge--bottom {
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(13, 20, 15, 0.12), transparent);
+}
+
+.navPrime__halo {
+  position: absolute;
+  z-index: -3;
+  pointer-events: none;
+  filter: blur(38px);
+  border-radius: 999px;
+}
+
+.navPrime__halo--left {
+  width: 330px;
+  height: 150px;
+  left: -90px;
+  top: -44px;
+  background:
+    radial-gradient(circle at 40% 50%, rgba(255, 255, 255, 0.78), transparent 66%),
+    radial-gradient(circle at 70% 40%, rgba(201, 221, 114, 0.14), transparent 70%);
+}
+
+.navPrime__halo--center {
+  width: 440px;
+  height: 160px;
+  left: 48%;
+  top: -52px;
+  transform: translateX(-50%);
+  background:
+    radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.22), transparent 60%),
+    radial-gradient(circle at 60% 54%, rgba(201, 221, 114, 0.12), transparent 70%);
+}
+
+.navPrime__halo--right {
+  width: 420px;
+  height: 170px;
+  right: -120px;
+  top: -56px;
+  background:
+    radial-gradient(circle at 46% 52%, rgba(201, 221, 114, 0.18), transparent 68%),
+    radial-gradient(circle at 72% 48%, rgba(217, 181, 108, 0.12), transparent 72%);
+}
+
+.navPrime__cursorGlow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  width: 290px;
+  height: 290px;
+  border-radius: 50%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.58), rgba(201, 221, 114, 0.18) 36%, transparent 72%);
+  mix-blend-mode: screen;
+  filter: blur(16px);
+}
+
+.navPrime__shine {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  transform: skewX(-18deg);
+}
+
+.navPrime__shine--main {
+  top: -78%;
+  bottom: -78%;
+  left: -30%;
+  width: 30%;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.58), rgba(201, 221, 114, 0.1), transparent);
+  filter: blur(13px);
+  animation: navPrimeSheenMain 7.2s ease-in-out infinite;
+}
+
+.navPrime__shine--soft {
+  top: -50%;
+  bottom: -50%;
+  left: -18%;
+  width: 18%;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  filter: blur(8px);
+  opacity: 0.45;
+  animation: navPrimeSheenSoft 9.4s ease-in-out infinite;
+}
+
+.navPrime__brand,
+.navPrime__dock,
+.navPrime__actions {
+  position: relative;
+  z-index: 3;
+}
+
+/* BRAND — CLEAN, NO HUGE BADGE */
+
+.navPrime__brand {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 250px;
+  height: 54px;
+  padding: 6px 14px 6px 7px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: var(--ink);
+  overflow: hidden;
+
+  border: 1px solid rgba(13, 20, 15, 0.08);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 252, 0.66), rgba(255, 253, 244, 0.34)),
+    radial-gradient(circle at 16% 0%, rgba(255, 255, 255, 0.7), transparent 44%);
+
+  -webkit-backdrop-filter: blur(22px) saturate(1.12);
+  backdrop-filter: blur(22px) saturate(1.12);
+
+  box-shadow:
+    0 14px 34px rgba(13, 20, 15, 0.075),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75),
+    inset 0 -1px 0 rgba(13, 20, 15, 0.035);
+}
+
+.navPrime__brand::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(112deg, transparent 6%, rgba(255, 255, 255, 0.4) 34%, transparent 62%);
+  opacity: 0.8;
+}
+
+.navPrime__brand::after {
+  content: '';
+  position: absolute;
+  top: -70%;
+  bottom: -70%;
+  left: -42%;
+  width: 34%;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.58), rgba(201, 221, 114, 0.08), transparent);
+  transform: skewX(-18deg);
+  filter: blur(8px);
+  animation: navPrimeBrandSweep 6.8s ease-in-out infinite;
+}
+
+.navPrime__photo {
+  position: relative;
+  z-index: 1;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  overflow: hidden;
+
+  border: 2px solid rgba(255, 255, 252, 0.88);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(233, 237, 214, 0.52));
+
+  box-shadow:
+    0 12px 26px rgba(13, 20, 15, 0.14),
+    0 0 0 1px rgba(13, 20, 15, 0.045),
+    0 0 20px rgba(201, 221, 114, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+}
+
+.navPrime__photo::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  z-index: 2;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.72),
+    inset 0 9px 12px rgba(255, 255, 255, 0.12);
+}
+
+.navPrime__photo img {
+  width: calc(100% - 5px);
+  height: calc(100% - 5px);
+  display: block;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 18%;
+}
+
+.navPrime__photoGlow {
+  position: absolute;
+  inset: -35%;
+  border-radius: inherit;
+  background:
+    conic-gradient(from 160deg, transparent, rgba(201, 221, 114, 0.22), transparent, rgba(217, 181, 108, 0.14), transparent);
+  opacity: 0.35;
+  filter: blur(8px);
+}
+
+.navPrime__brandText {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.navPrime__name {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  line-height: 1;
+}
+
+.navPrime__name strong {
+  color: var(--ink);
+  font-size: 22px;
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: -0.066em;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.55),
+    0 9px 22px rgba(13, 20, 15, 0.075);
+}
+
+.navPrime__role {
+  color: rgba(13, 20, 15, 0.5);
+  font-size: 9px;
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+/* CENTER DOCK */
+
+.navPrime__dock {
+  justify-self: center;
+  min-width: 470px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 7px;
+  border-radius: 999px;
+  overflow: hidden;
+
+  border: 1px solid rgba(255, 253, 244, 0.24);
+  background:
+    linear-gradient(180deg, rgba(12, 18, 13, 0.99), rgba(22, 29, 21, 0.98)),
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.18), transparent 44%),
+    radial-gradient(circle at 50% 100%, rgba(201, 221, 114, 0.12), transparent 52%);
+
+  -webkit-backdrop-filter: blur(24px) saturate(1.08);
+  backdrop-filter: blur(24px) saturate(1.08);
+
+  box-shadow:
+    0 22px 60px rgba(13, 20, 15, 0.34),
+    0 0 42px rgba(201, 221, 114, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.36);
+}
+
+.navPrime__dock::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(112deg, transparent 10%, rgba(255, 255, 255, 0.16) 46%, transparent 76%);
+}
+
+.navPrime__dock::after {
+  content: '';
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 4px;
+  height: 1px;
+  border-radius: 999px;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgba(201, 221, 114, 0.72), transparent);
+}
+
+.navPrime__dockSweep {
+  position: absolute;
+  top: -70%;
+  bottom: -70%;
+  left: -42%;
+  width: 28%;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.46), rgba(201, 221, 114, 0.16), transparent);
+  transform: skewX(-18deg);
+  filter: blur(8px);
+  animation: navPrimeDockSweep 5.8s ease-in-out infinite;
+}
+
+.navPrime__dockGlow {
+  position: absolute;
+  inset: -40%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.12), transparent 42%),
+    radial-gradient(circle at 50% 100%, rgba(201, 221, 114, 0.12), transparent 48%);
+  filter: blur(10px);
+}
+
+.navPrime__link {
+  position: relative;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  border-radius: 999px;
+  overflow: hidden;
+
+  color: rgba(255, 253, 244, 0.94);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 850;
+  letter-spacing: -0.018em;
+  white-space: nowrap;
+}
+
+.navPrime__linkFill {
+  position: absolute;
+  inset: 4px;
+  border-radius: inherit;
+  opacity: 0;
+  transform: scaleX(0.18);
+  transform-origin: center;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.19), rgba(255, 255, 255, 0.07)),
+    radial-gradient(circle at 50% 0%, rgba(201, 221, 114, 0.32), transparent 62%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 8px 26px rgba(0, 0, 0, 0.14);
+}
+
+.navPrime__linkText {
+  position: relative;
+  z-index: 1;
+  color: rgba(255, 253, 244, 0.94);
+  text-shadow:
+    0 1px 13px rgba(0, 0, 0, 0.42),
+    0 0 18px rgba(255, 255, 255, 0.04);
+}
+
+/* CTA */
+
+.navPrime__actions {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 180px;
+}
+
+.navPrime__cta {
+  position: relative;
+  min-width: 178px;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 28px;
+  border-radius: 999px;
+  overflow: hidden;
+
+  color: var(--cream);
+  text-decoration: none;
+  border: 1px solid rgba(13, 20, 15, 0.26);
+  background:
+    linear-gradient(180deg, rgba(13, 20, 15, 1), rgba(24, 32, 22, 0.99)),
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.18), transparent 42%),
+    radial-gradient(circle at 50% 100%, rgba(201, 221, 114, 0.18), transparent 64%);
+
+  box-shadow:
+    0 22px 58px rgba(13, 20, 15, 0.31),
+    0 0 36px rgba(201, 221, 114, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.32);
+}
+
+.navPrime__ctaShine {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(112deg, transparent 10%, rgba(255, 255, 255, 0.28) 48%, transparent 84%);
+  transform: translateX(-130%);
+  animation: navPrimeCtaShine 4.4s ease-in-out infinite;
+}
+
+.navPrime__ctaText {
+  position: relative;
+  z-index: 1;
+  color: var(--cream);
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 16px rgba(0, 0, 0, 0.32);
+}
+
+.navPrime__burger {
+  width: 46px;
+  height: 46px;
+  display: none;
+  place-items: center;
+  border: 1px solid rgba(13, 20, 15, 0.12);
+  border-radius: 50%;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(242, 242, 236, 0.74));
+  box-shadow:
+    0 10px 24px rgba(13, 20, 15, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82);
+  cursor: pointer;
+}
+
+.navPrime__burger span {
+  grid-area: 1 / 1;
+  width: 18px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--ink);
+  transition:
+    transform 0.24s ease,
+    opacity 0.24s ease;
+}
+
+.navPrime__burger span:nth-child(1) {
+  transform: translateY(-6px);
+}
+
+.navPrime__burger span:nth-child(2) {
+  transform: translateY(0);
+}
+
+.navPrime__burger span:nth-child(3) {
+  transform: translateY(6px);
+}
+
+.navPrime__burger.is-open span:nth-child(1) {
+  transform: rotate(45deg);
+}
+
+.navPrime__burger.is-open span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.navPrime__burger.is-open span:nth-child(3) {
+  transform: rotate(-45deg);
+}
+
+/* MOBILE */
+
+.navPrimeMobile {
+  position: fixed;
+  inset: 0;
+  z-index: 94;
+  display: grid;
+  padding: 90px 16px 16px;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(201, 221, 114, 0.2), transparent 28%),
+    radial-gradient(circle at 88% 8%, rgba(217, 181, 108, 0.1), transparent 30%),
+    rgba(13, 20, 15, 0.62);
+  -webkit-backdrop-filter: blur(22px) saturate(1.12);
+  backdrop-filter: blur(22px) saturate(1.12);
+}
+
+.navPrimeMobile__panel {
+  position: relative;
+  align-self: start;
+  overflow: hidden;
+  border-radius: 34px;
+  border: 1px solid rgba(255, 253, 244, 0.18);
+  background:
+    linear-gradient(145deg, rgba(13, 20, 15, 0.98), rgba(24, 32, 22, 0.94)),
+    radial-gradient(circle at 0% 0%, rgba(201, 221, 114, 0.16), transparent 36%),
+    radial-gradient(circle at 100% 0%, rgba(217, 181, 108, 0.1), transparent 34%);
+  box-shadow:
+    0 42px 130px rgba(0, 0, 0, 0.42),
+    0 0 70px rgba(201, 221, 114, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.13),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.34);
+}
+
+.navPrimeMobile__shine {
+  position: absolute;
+  top: -40%;
+  bottom: -40%;
+  left: -35%;
+  width: 42%;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transform: skewX(-18deg);
+  animation: navPrimeMobileShine 5.2s ease-in-out infinite;
+}
+
+.navPrimeMobile__orb {
+  position: absolute;
+  pointer-events: none;
+  filter: blur(20px);
+  border-radius: 999px;
+}
+
+.navPrimeMobile__orb--one {
+  width: 280px;
+  height: 160px;
+  top: -70px;
+  left: -80px;
+  background: rgba(201, 221, 114, 0.18);
+}
+
+.navPrimeMobile__orb--two {
+  width: 260px;
+  height: 140px;
+  right: -80px;
+  bottom: 40px;
+  background: rgba(217, 181, 108, 0.11);
+}
+
+.navPrimeMobile__top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px;
+  border-bottom: 1px solid rgba(255, 253, 244, 0.11);
+}
+
+.navPrimeMobile__identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.navPrimeMobile__photo {
+  width: 50px;
+  height: 50px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  overflow: hidden;
+  flex: 0 0 auto;
+  border: 1px solid rgba(255, 253, 244, 0.34);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.18), rgba(201, 221, 114, 0.1));
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.26),
+    0 0 28px rgba(201, 221, 114, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+.navPrimeMobile__photo img {
+  width: calc(100% - 5px);
+  height: calc(100% - 5px);
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 18%;
+}
+
+.navPrimeMobile__top strong {
+  display: block;
+  color: var(--cream);
+  font-size: 30px;
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: -0.065em;
+}
+
+.navPrimeMobile__top small {
+  display: block;
+  margin-top: 6px;
+  color: rgba(255, 253, 244, 0.58);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.navPrimeMobile__top button {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 253, 244, 0.14);
+  border-radius: 50%;
+  background:
+    linear-gradient(145deg, rgba(255, 253, 244, 0.11), rgba(255, 253, 244, 0.045));
+  color: var(--cream);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.navPrimeMobile__links {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  padding: 12px;
+  gap: 10px;
+}
+
+.navPrimeMobile__links a {
+  position: relative;
+  min-height: 72px;
+  display: grid;
+  grid-template-columns: 42px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 0 18px;
+  border-radius: 24px;
+  overflow: hidden;
+  color: var(--cream);
+  text-decoration: none;
+  border: 1px solid rgba(255, 253, 244, 0.1);
+  background:
+    linear-gradient(135deg, rgba(255, 253, 244, 0.08), rgba(255, 253, 244, 0.035)),
+    radial-gradient(circle at 0% 50%, rgba(201, 221, 114, 0.08), transparent 48%);
+  box-shadow:
+    0 16px 42px rgba(0, 0, 0, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.navPrimeMobile__number {
+  color: rgba(201, 221, 114, 0.78);
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+}
+
+.navPrimeMobile__links a strong {
+  color: var(--cream);
+  font-size: 27px;
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: -0.055em;
+}
+
+.navPrimeMobile__arrow {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, #fffdf4, #dfe9bd);
+  font-size: 15px;
+  font-weight: 950;
+}
+
+.navPrimeMobile__cta {
+  position: relative;
+  z-index: 1;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 4px 12px 16px;
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, #fffdf4, #dfe9bd);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.24),
+    0 0 36px rgba(201, 221, 114, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78);
+}
+
+/* ANIMATIONS */
+
+@keyframes navPrimeSheenMain {
+  0%,
+  56% {
+    transform: skewX(-18deg) translateX(-130%);
+    opacity: 0;
+  }
+
+  66% {
+    opacity: 0.82;
+  }
+
+  100% {
+    transform: skewX(-18deg) translateX(620%);
+    opacity: 0;
+  }
+}
+
+@keyframes navPrimeSheenSoft {
+  0%,
+  62% {
+    transform: skewX(-18deg) translateX(-160%);
+    opacity: 0;
+  }
+
+  72% {
+    opacity: 0.42;
+  }
+
+  100% {
+    transform: skewX(-18deg) translateX(760%);
+    opacity: 0;
+  }
+}
+
+@keyframes navPrimeBrandSweep {
+  0%,
+  54% {
+    transform: skewX(-18deg) translateX(-140%);
+    opacity: 0;
+  }
+
+  64% {
+    opacity: 0.62;
+  }
+
+  100% {
+    transform: skewX(-18deg) translateX(520%);
+    opacity: 0;
+  }
+}
+
+@keyframes navPrimeDockSweep {
+  0%,
+  44% {
+    transform: skewX(-18deg) translateX(-140%);
+    opacity: 0;
+  }
+
+  56% {
+    opacity: 0.66;
+  }
+
+  100% {
+    transform: skewX(-18deg) translateX(620%);
+    opacity: 0;
+  }
+}
+
+@keyframes navPrimeCtaShine {
+  0%,
+  52% {
+    transform: translateX(-130%);
+    opacity: 0;
+  }
+
+  63% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(130%);
+    opacity: 0;
+  }
+}
+
+@keyframes navPrimeMobileShine {
+  0%,
+  48% {
+    transform: skewX(-18deg) translateX(-130%);
+    opacity: 0;
+  }
+
+  62% {
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: skewX(-18deg) translateX(500%);
+    opacity: 0;
+  }
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1280px) {
+  .navPrime__bar {
+    grid-template-columns: minmax(230px, 0.82fr) auto minmax(170px, 0.82fr);
+    gap: 22px;
+  }
+
+  .navPrime__brand {
+    min-width: 230px;
+  }
+
+  .navPrime__dock {
+    min-width: 430px;
+  }
+
+  .navPrime__link {
+    padding: 0 15px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .navPrime__bar {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .navPrime__dock {
+    min-width: 0;
+  }
+
+  .navPrime__link {
+    padding: 0 12px;
+    font-size: 13px;
+  }
+
+  .navPrime__cta {
+    min-width: 154px;
+    padding: 0 20px;
+  }
+}
+
+@media (max-width: 980px) {
+  .navPrime {
+    padding: 14px 14px 0;
+  }
+
+  .navPrime__bar {
+    min-height: 66px;
+    grid-template-columns: 1fr auto;
+    gap: 14px;
+    padding: 9px 10px 9px 12px;
+    border-radius: 24px;
+  }
+
+  .navPrime__brand {
+    min-width: 0;
+    height: 48px;
+    padding: 5px 12px 5px 6px;
+    gap: 9px;
+  }
+
+  .navPrime__photo {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
+
+  .navPrime__name strong {
+    font-size: 18px;
+  }
+
+  .navPrime__role {
+    font-size: 8px;
+    letter-spacing: 0.18em;
+  }
+
+  .navPrime__dock,
+  .navPrime__cta {
+    display: none;
+  }
+
+  .navPrime__burger {
+    display: grid;
+  }
+}
+
+@media (max-width: 460px) {
+  .navPrime__photo {
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
+  }
+
+  .navPrime__role {
+    display: none;
+  }
+
+  .navPrime__name strong {
+    font-size: 17px;
+  }
+
+  .navPrimeMobile__top strong {
+    font-size: 26px;
+  }
+
+  .navPrimeMobile__links a strong {
+    font-size: 25px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navPrime__shine,
+  .navPrime__ctaShine,
+  .navPrime__brand::after,
+  .navPrime__dockSweep,
+  .navPrimeMobile__shine {
+    animation: none;
+  }
+}
+/* FIX PHOTO FRAME — strict clean circular crop */
+
+.navPrime__photo {
+  position: relative !important;
+  z-index: 1 !important;
+  width: 42px !important;
+  height: 42px !important;
+  flex: 0 0 42px !important;
+  aspect-ratio: 1 / 1 !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  isolation: isolate !important;
+  clip-path: circle(50% at 50% 50%) !important;
+
+  border: 2px solid rgba(255, 255, 252, 0.92) !important;
+
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(229, 235, 207, 0.62)) !important;
+
+  box-shadow:
+    0 12px 25px rgba(13, 20, 15, 0.16),
+    0 0 0 1px rgba(13, 20, 15, 0.055),
+    0 0 22px rgba(201, 221, 114, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.96) !important;
+}
+
+.navPrime__photoGlow {
+  position: absolute !important;
+  inset: -28% !important;
+  z-index: 0 !important;
+  border-radius: 50% !important;
+  pointer-events: none !important;
+
+  background:
+    conic-gradient(
+      from 160deg,
+      transparent,
+      rgba(201, 221, 114, 0.2),
+      transparent,
+      rgba(217, 181, 108, 0.12),
+      transparent
+    ) !important;
+
+  opacity: 0.32 !important;
+  filter: blur(7px) !important;
+}
+
+.navPrime__photo img {
+  position: relative !important;
+  z-index: 1 !important;
+
+  width: 34px !important;
+  height: 34px !important;
+  max-width: 34px !important;
+  max-height: 34px !important;
+
+  display: block !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  object-position: center 18% !important;
+
+  overflow: hidden !important;
+  clip-path: circle(50% at 50% 50%) !important;
+
+  transform: none !important;
+}
+
+.navPrime__photo::before {
+  content: '';
+  position: absolute !important;
+  inset: 3px !important;
+  z-index: 2 !important;
+  border-radius: 50% !important;
+  pointer-events: none !important;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.74),
+    inset 0 8px 11px rgba(255, 255, 255, 0.14) !important;
+}
+
+/* MOBILE PHOTO FIX */
+
+.navPrimeMobile__photo {
+  position: relative !important;
+  width: 50px !important;
+  height: 50px !important;
+  flex: 0 0 50px !important;
+  aspect-ratio: 1 / 1 !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  isolation: isolate !important;
+  clip-path: circle(50% at 50% 50%) !important;
+
+  border: 1px solid rgba(255, 253, 244, 0.38) !important;
+}
+
+.navPrimeMobile__photo img {
+  width: 43px !important;
+  height: 43px !important;
+  max-width: 43px !important;
+  max-height: 43px !important;
+
+  display: block !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  object-position: center 18% !important;
+
+  overflow: hidden !important;
+  clip-path: circle(50% at 50% 50%) !important;
+
+  transform: none !important;
+}
+
+@media (max-width: 980px) {
+  .navPrime__photo {
+    width: 36px !important;
+    height: 36px !important;
+    flex-basis: 36px !important;
+  }
+
+  .navPrime__photo img {
+    width: 29px !important;
+    height: 29px !important;
+    max-width: 29px !important;
+    max-height: 29px !important;
+  }
+}
+
+@media (max-width: 460px) {
+  .navPrime__photo {
+    width: 34px !important;
+    height: 34px !important;
+    flex-basis: 34px !important;
+  }
+
+  .navPrime__photo img {
+    width: 27px !important;
+    height: 27px !important;
+    max-width: 27px !important;
+    max-height: 27px !important;
+  }
+}
+/* WIDER PREMIUM NAV FINAL OVERRIDE */
+
+.navPrime {
+  padding: 22px max(22px, 3.6vw) 0 !important;
+}
+
+.navPrime__stage {
+  width: min(100%, 1880px) !important;
+}
+
+.navPrime__bar {
+  min-height: 86px !important;
+  grid-template-columns: minmax(340px, 0.9fr) auto minmax(260px, 0.9fr) !important;
+  gap: clamp(34px, 5vw, 92px) !important;
+  padding: 12px 18px !important;
+
+  background:
+    linear-gradient(135deg, rgba(255, 255, 252, 0.965), rgba(247, 247, 238, 0.9)),
+    radial-gradient(circle at 8% 0%, rgba(255, 255, 255, 1), transparent 40%),
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.34), transparent 44%),
+    radial-gradient(circle at 84% 44%, rgba(201, 221, 114, 0.09), transparent 38%) !important;
+
+  box-shadow:
+    0 34px 110px rgba(13, 20, 15, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.54),
+    0 0 54px rgba(201, 221, 114, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.98),
+    inset 0 -1px 0 rgba(13, 20, 15, 0.06),
+    inset 0 0 54px rgba(255, 255, 255, 0.15) !important;
+}
+
+.navPrime__brand {
+  min-width: 320px !important;
+  height: 62px !important;
+  gap: 14px !important;
+  padding: 7px 18px 7px 8px !important;
+
+  background:
+    linear-gradient(135deg, rgba(255, 255, 252, 0.76), rgba(255, 253, 244, 0.42)),
+    radial-gradient(circle at 16% 0%, rgba(255, 255, 255, 0.86), transparent 46%) !important;
+
+  border: 1px solid rgba(13, 20, 15, 0.09) !important;
+
+  box-shadow:
+    0 17px 42px rgba(13, 20, 15, 0.085),
+    0 0 28px rgba(255, 255, 255, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    inset 0 -1px 0 rgba(13, 20, 15, 0.04) !important;
+}
+
+.navPrime__photo {
+  width: 48px !important;
+  height: 48px !important;
+  flex-basis: 48px !important;
+}
+
+.navPrime__photo img {
+  width: 40px !important;
+  height: 40px !important;
+  max-width: 40px !important;
+  max-height: 40px !important;
+}
+
+.navPrime__name strong {
+  font-size: 24px !important;
+  letter-spacing: -0.067em !important;
+}
+
+.navPrime__role {
+  font-size: 10px !important;
+  letter-spacing: 0.24em !important;
+  margin-top: 1px !important;
+}
+
+.navPrime__dock {
+  min-width: 560px !important;
+  padding: 8px !important;
+  gap: 6px !important;
+
+  background:
+    linear-gradient(180deg, rgba(12, 18, 13, 0.995), rgba(22, 29, 21, 0.985)),
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.2), transparent 44%),
+    radial-gradient(circle at 50% 100%, rgba(201, 221, 114, 0.14), transparent 52%) !important;
+
+  box-shadow:
+    0 24px 68px rgba(13, 20, 15, 0.36),
+    0 0 48px rgba(201, 221, 114, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.17),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.38) !important;
+}
+
+.navPrime__link {
+  min-height: 42px !important;
+  padding: 0 24px !important;
+  font-size: 13.5px !important;
+}
+
+.navPrime__actions {
+  min-width: 250px !important;
+}
+
+.navPrime__cta {
+  min-width: 196px !important;
+  min-height: 50px !important;
+  padding: 0 30px !important;
+}
+
+.navPrime__ctaText {
+  font-size: 12px !important;
+  letter-spacing: 0.17em !important;
+}
+
+/* Make the glass feel fuller without creating ugly bottom shelf */
+
+.navPrime__bar::before {
+  background:
+    linear-gradient(112deg, transparent 0%, rgba(255, 255, 255, 0.56) 18%, transparent 42%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.24), transparent 28%, transparent 74%, rgba(255, 255, 255, 0.2)) !important;
+}
+
+.navPrime__halo--left {
+  width: 420px !important;
+  height: 180px !important;
+  left: -120px !important;
+  top: -54px !important;
+}
+
+.navPrime__halo--center {
+  width: 560px !important;
+  height: 190px !important;
+  top: -62px !important;
+}
+
+.navPrime__halo--right {
+  width: 500px !important;
+  height: 190px !important;
+  right: -140px !important;
+  top: -62px !important;
+}
+
+/* Responsive balance */
+
+@media (max-width: 1280px) {
+  .navPrime__bar {
+    grid-template-columns: minmax(285px, 0.9fr) auto minmax(210px, 0.9fr) !important;
+    gap: 26px !important;
+  }
+
+  .navPrime__brand {
+    min-width: 285px !important;
+  }
+
+  .navPrime__dock {
+    min-width: 470px !important;
+  }
+
+  .navPrime__link {
+    padding: 0 16px !important;
+  }
+
+  .navPrime__actions {
+    min-width: 205px !important;
+  }
+
+  .navPrime__cta {
+    min-width: 165px !important;
+  }
+}
+
+@media (max-width: 1100px) {
+  .navPrime__bar {
+    grid-template-columns: auto 1fr auto !important;
+    min-height: 78px !important;
+  }
+
+  .navPrime__brand {
+    min-width: 250px !important;
+    height: 54px !important;
+  }
+
+  .navPrime__photo {
+    width: 42px !important;
+    height: 42px !important;
+    flex-basis: 42px !important;
+  }
+
+  .navPrime__photo img {
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  .navPrime__name strong {
+    font-size: 22px !important;
+  }
+
+  .navPrime__dock {
+    min-width: 0 !important;
+  }
+
+  .navPrime__link {
+    padding: 0 12px !important;
+  }
+}
+
+@media (max-width: 980px) {
+  .navPrime {
+    padding: 14px 14px 0 !important;
+  }
+
+  .navPrime__bar {
+    min-height: 68px !important;
+    grid-template-columns: 1fr auto !important;
+    padding: 9px 10px 9px 12px !important;
+    border-radius: 24px !important;
+  }
+
+  .navPrime__brand {
+    min-width: 0 !important;
+    height: 50px !important;
+    padding: 5px 12px 5px 6px !important;
+  }
+
+  .navPrime__photo {
+    width: 37px !important;
+    height: 37px !important;
+    flex-basis: 37px !important;
+  }
+
+  .navPrime__photo img {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  .navPrime__name strong {
+    font-size: 18px !important;
+  }
+
+  .navPrime__role {
+    font-size: 8px !important;
+  }
+}

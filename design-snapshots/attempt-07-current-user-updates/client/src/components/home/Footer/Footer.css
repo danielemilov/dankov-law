@@ -1,0 +1,89 @@
+.hlFooter {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr auto;
+  gap: 34px;
+  align-items: end;
+  padding: 58px max(24px, 6vw);
+  color: rgba(247, 250, 240, 0.62);
+  background: var(--hl-ink);
+}
+
+.hlFooter strong {
+  display: block;
+  margin-bottom: 10px;
+  color: white;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.hlFooter strong em {
+  color: var(--hl-accent-soft);
+  font-style: normal;
+}
+
+.hlFooter p {
+  max-width: 380px;
+  margin: 0;
+  line-height: 1.65;
+}
+
+.hlFooter nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.hlFooter a {
+  color: rgba(247, 250, 240, 0.66);
+  text-decoration: none;
+}
+
+.hlFooter a:hover {
+  color: var(--hl-accent-soft);
+}
+
+.hlFooter small {
+  color: rgba(247, 250, 240, 0.36);
+}
+
+@media (max-width: 980px) {
+  .hlFooter {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .hlFooter {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    align-items: start;
+    padding: 34px 20px 28px;
+  }
+
+  .hlFooter strong {
+    margin-bottom: 8px;
+    font-size: 12px;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .hlFooter p {
+    max-width: 320px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: rgba(247, 250, 240, 0.52);
+  }
+
+  .hlFooter nav {
+    display: none;
+  }
+
+  .hlFooter small {
+    margin-top: 4px;
+    max-width: 280px;
+    font-size: 10.5px;
+    line-height: 1.5;
+    color: rgba(247, 250, 240, 0.3);
+  }
+}
