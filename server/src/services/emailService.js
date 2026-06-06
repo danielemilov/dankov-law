@@ -21,13 +21,75 @@ function createTransporter() {
     port: Number(process.env.EMAIL_PORT || 587),
     secure: String(process.env.EMAIL_SECURE).toLowerCase() === 'true',
     family: 4,
-    connectionTimeout: Number(process.env.EMAIL_CONNECTION_TIMEOUT_MS || 12000),
-    greetingTimeout: Number(process.env.EMAIL_GREETING_TIMEOUT_MS || 12000),
-    socketTimeout: Number(process.env.EMAIL_SOCKET_TIMEOUT_MS || 20000),
+    connectionTimeout: Number(process.env.EMAIL_CONNECTION_TIMEOUT_MS || 6000),
+    greetingTimeout: Number(process.env.EMAIL_GREETING_TIMEOUT_MS || 6000),
+    socketTimeout: Number(process.env.EMAIL_SOCKET_TIMEOUT_MS || 8000),
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
+  });
+}
+
+function formatFrom(name) {
+  const from = process.env.EMAIL_FROM || process.env.EMAIL_USER;
+
+  if (!from) {
+    throw new Error('Email sender is not configured. Set EMAIL_FROM or EMAIL_USER.');
+  }
+
+  if (from.includes('<')) return from;
+
+  return `"${name || BRAND.name}" <${from}>`;
+}
+
+function normalizeRecipients(to) {
+  return Array.isArray(to) ? to.filter(Boolean) : [to].filter(Boolean);
+}
+
+async function sendWithResend({ fromName, to, replyTo, subject, html }) {
+  const apiKey = process.env.RESEND_API_KEY;
+
+  if (!apiKey) {
+    throw new Error('RESEND_API_KEY is not configured.');
+  }
+
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: formatFrom(fromName),
+      to: normalizeRecipients(to),
+      reply_to: replyTo || process.env.LAWYER_EMAIL || process.env.EMAIL_USER,
+      subject,
+      html,
+    }),
+  });
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Resend API error ${response.status}: ${body}`);
+  }
+
+  return response.json();
+}
+
+async function sendEmail({ fromName, to, replyTo, subject, html }) {
+  if (process.env.RESEND_API_KEY) {
+    return sendWithResend({ fromName, to, replyTo, subject, html });
+  }
+
+  const transporter = createTransporter();
+
+  return transporter.sendMail({
+    from: formatFrom(fromName),
+    to,
+    replyTo,
+    subject,
+    html,
   });
 }
 
@@ -268,8 +330,6 @@ function noticeBox(content, tone = 'gold') {
 }
 
 export async function sendBookingNotification(booking) {
-  const transporter = createTransporter();
-
   const client = getBookingClient(booking);
   const caseData = getBookingCase(booking);
   const preferred = getBookingPreferred(booking);
@@ -323,8 +383,8 @@ export async function sendBookingNotification(booking) {
   });
 
   const results = await Promise.allSettled([
-    transporter.sendMail({
-      from: `"Сайт Данков" <${process.env.EMAIL_USER}>`,
+    sendEmail({
+      fromName: 'Сайт Данков',
       to: process.env.LAWYER_EMAIL,
       replyTo: client.email || process.env.EMAIL_USER,
       subject: `Нова заявка — ${client.name || 'клиент'}`,
@@ -332,8 +392,8 @@ export async function sendBookingNotification(booking) {
     }),
 
     client.email
-      ? transporter.sendMail({
-          from: `"${BRAND.name}" <${process.env.EMAIL_USER}>`,
+      ? sendEmail({
+          fromName: BRAND.name,
           to: client.email,
           replyTo: process.env.LAWYER_EMAIL || process.env.EMAIL_USER,
           subject: `Получихме заявката ви — ${BRAND.name}`,
@@ -346,8 +406,6 @@ export async function sendBookingNotification(booking) {
 }
 
 export async function sendChatLeadNotification({ session, messages }) {
-  const transporter = createTransporter();
-
   const visitor = session.visitor || {};
   const lastUser = getLastUserMessage(messages);
   const intent = session.detectedIntent || 'unknown';
@@ -388,8 +446,8 @@ export async function sendChatLeadNotification({ session, messages }) {
     `,
   });
 
-  await transporter.sendMail({
-    from: `"Чат Асистент" <${process.env.EMAIL_USER}>`,
+  await sendEmail({
+    fromName: 'Чат Асистент',
     to: process.env.LAWYER_EMAIL,
     replyTo: visitor.email || process.env.EMAIL_USER,
     subject: `Нов чат лийд — ${subjectName}`,
@@ -398,7 +456,6 @@ export async function sendChatLeadNotification({ session, messages }) {
 }
 
 export async function sendChatContactConfirmation({ session }) {
-  const transporter = createTransporter();
   const visitor = session.visitor || {};
 
   if (!visitor.email) {
@@ -427,8 +484,8 @@ export async function sendChatContactConfirmation({ session }) {
     `,
   });
 
-  await transporter.sendMail({
-    from: `"${BRAND.name}" <${process.env.EMAIL_USER}>`,
+  await sendEmail({
+    fromName: BRAND.name,
     to: visitor.email,
     replyTo: process.env.LAWYER_EMAIL || process.env.EMAIL_USER,
     subject: `Получихме съобщението ви — ${BRAND.name}`,
