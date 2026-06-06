@@ -45,6 +45,14 @@ const chatLimiter = rateLimit({
   message: { success: false, message: 'Твърде много съобщения. Опитайте след малко.' },
 });
 
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Dankov Law API is running',
+  });
+});
+
+
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
