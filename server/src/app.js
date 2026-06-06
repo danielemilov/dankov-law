@@ -13,6 +13,31 @@ const app = express();
 
 app.set('trust proxy', 1);
 
+const configuredOrigins = [
+  process.env.CLIENT_URL,
+  ...(process.env.CLIENT_URLS || '').split(','),
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+]
+  .map((origin) => origin?.trim().replace(/\/+$/, ''))
+  .filter(Boolean);
+
+const allowedOrigins = new Set(configuredOrigins);
+
+function isAllowedOrigin(origin) {
+  if (!origin) return true;
+
+  const normalizedOrigin = origin.replace(/\/+$/, '');
+  if (allowedOrigins.has(normalizedOrigin)) return true;
+
+  try {
+    const { hostname, protocol } = new URL(normalizedOrigin);
+    return protocol === 'https:' && hostname.endsWith('.vercel.app');
+  } catch {
+    return false;
+  }
+}
+
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -22,10 +47,19 @@ app.use(
     },
   })
 );
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (isAllowedOrigin(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
+    credentials: true,
+  })
+);
 app.use(express.json({ limit: '32kb' }));
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
@@ -54,6 +88,14 @@ app.get('/', (req, res) => {
 
 
 app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    service: 'Dankov Law API',
+    time: new Date().toISOString(),
+  });
+});
+
+app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
     service: 'Dankov Law API',

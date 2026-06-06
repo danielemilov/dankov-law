@@ -1,7 +1,7 @@
-import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { MessageCircle, SendHorizontal, X } from 'lucide-react';
+import api from '../lib/api.js';
 import './ChatWidget.css';
 
 const LAWYER_PHOTO = '/diyan-dankovv.jpg';
@@ -379,7 +379,7 @@ export default function ChatWidget() {
 
     try {
       const [response] = await Promise.all([
-        axios.post('/api/chat/message', {
+        api.post('/api/chat/message', {
           message: content,
           sessionId,
           visitorInfo,
@@ -453,7 +453,7 @@ export default function ChatWidget() {
 
     try {
       await Promise.all([
-        axios.post('/api/chat/contact', {
+        api.post('/api/chat/contact', {
           sessionId,
           visitorInfo: clean,
           consent: true,

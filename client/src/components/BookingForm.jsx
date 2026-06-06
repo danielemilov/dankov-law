@@ -1,9 +1,9 @@
-import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Check, SendHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import api from '../lib/api.js';
 import './BookingForm.css';
 
 const AREAS = [
@@ -41,7 +41,7 @@ export default function BookingForm() {
 
   const onSubmit = async (payload) => {
     try {
-      await axios.post('/api/bookings', payload);
+      await api.post('/api/bookings', payload);
       setSent(true);
       reset();
       toast.success('Заявката е изпратена успешно.');
