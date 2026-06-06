@@ -39,6 +39,13 @@ function getLastUserMessage(messages = []) {
   return [...messages].reverse().find((message) => message.role === 'user');
 }
 
+function logNotificationResult(label, result) {
+  if (result.status !== 'rejected') return;
+
+  const message = result.reason?.message || result.reason || 'Unknown notification error';
+  console.error(`${label} notification failed:`, message);
+}
+
 export async function notifyNewBooking(booking) {
   const text = `Нова заявка за консултация
 
@@ -48,10 +55,15 @@ export async function notifyNewBooking(booking) {
 Област: ${booking.case?.area || booking.area || '—'}
 Описание: ${booking.case?.summary || booking.message || '—'}`;
 
-  await Promise.allSettled([
+  const [email, whatsapp] = await Promise.allSettled([
     sendBookingNotification(booking),
     notifyLawyerOnWhatsApp(text),
   ]);
+
+  logNotificationResult('Booking email', email);
+  logNotificationResult('Booking WhatsApp', whatsapp);
+
+  return { email, whatsapp };
 }
 
 export async function notifyChatLead({ session, messages }) {
@@ -69,10 +81,15 @@ export async function notifyChatLead({ session, messages }) {
 Последно съобщение:
 ${lastUser?.content || '—'}`;
 
-  await Promise.allSettled([
+  const [email, whatsapp] = await Promise.allSettled([
     sendChatLeadNotification({ session, messages }),
     notifyLawyerOnWhatsApp(text),
   ]);
+
+  logNotificationResult('Chat lead email', email);
+  logNotificationResult('Chat lead WhatsApp', whatsapp);
+
+  return { email, whatsapp };
 }
 
 export async function notifyChatContactConfirmation({ session }) {

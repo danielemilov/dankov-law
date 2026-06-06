@@ -337,7 +337,6 @@ router.post('/contact', validateBody(contactCaptureInput), asyncHandler(async (r
         visitor: cleanVisitor,
         consent: consentRecord,
         status: 'lead',
-        leadNotifiedAt: existingSession?.leadNotifiedAt || new Date(),
         lastMessageAt: new Date(),
       },
     },
@@ -352,22 +351,25 @@ router.post('/contact', validateBody(contactCaptureInput), asyncHandler(async (r
     .lean();
 
   const shouldSendLeadToLawyer = !alreadyNotified || !hadContactBefore;
+  let leadNotification = null;
+  let clientConfirmationSent = false;
 
   if (shouldSendLeadToLawyer) {
-    notifyChatLead({
-      session,
-      messages,
-    }).catch((err) => {
-      console.error('Chat contact notification failed:', err.message);
-    });
+    leadNotification = await notifyChatLead({ session, messages });
+
+    if (leadNotification.email.status === 'fulfilled') {
+      session.leadNotifiedAt = new Date();
+      await session.save();
+    }
   }
 
   if (cleanVisitor.email) {
-    notifyChatContactConfirmation({
-      session,
-    }).catch((err) => {
+    try {
+      await notifyChatContactConfirmation({ session });
+      clientConfirmationSent = true;
+    } catch (err) {
       console.error('Chat client confirmation failed:', err.message);
-    });
+    }
   }
 
   res.json({
@@ -379,8 +381,8 @@ router.post('/contact', validateBody(contactCaptureInput), asyncHandler(async (r
       source: 'chat_contact',
       textVersion: CONSENT_TEXT_VERSION,
     },
-    leadNotified: shouldSendLeadToLawyer,
-    clientConfirmationSent: Boolean(cleanVisitor.email),
+    leadNotified: leadNotification?.email?.status === 'fulfilled' || alreadyNotified,
+    clientConfirmationSent,
   });
 }));
 
