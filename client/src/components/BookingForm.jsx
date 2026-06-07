@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import api from '../lib/api.js';
+import { submitBookingLead } from '../lib/web3forms.js';
 import './BookingForm.css';
 
 const AREAS = [
@@ -41,12 +42,16 @@ export default function BookingForm() {
 
   const onSubmit = async (payload) => {
     try {
-      await api.post('/api/bookings', payload);
+      await submitBookingLead(payload);
+      await api.post('/api/bookings', {
+        ...payload,
+        emailDelivery: 'client_web3forms',
+      });
       setSent(true);
       reset();
       toast.success('Заявката е изпратена успешно.');
     } catch (err) {
-      const msg = err.response?.data?.message || 'Грешка при изпращане.';
+      const msg = err.response?.data?.message || err.message || 'Грешка при изпращане.';
       toast.error(msg);
     }
   };
@@ -175,8 +180,8 @@ export default function BookingForm() {
             <h3>Данните са изпратени</h3>
 
             <p>
-              Ще получите обратна връзка за потвърждение. При спешен срок подгответе
-              всички документи по случая.
+              Заявката е изпратена към кантората. При спешен срок подгответе всички
+              документи по случая.
             </p>
 
             <button type="button" onClick={() => setSent(false)}>

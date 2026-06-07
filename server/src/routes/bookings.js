@@ -27,6 +27,7 @@ const bookingInput = z.object({
   contactMethod: z.enum(['phone', 'email', 'whatsapp']).default('phone'),
   message: z.string().trim().max(1600).optional().or(z.literal('')),
   consent: z.literal(true, { errorMap: () => ({ message: 'Необходимо е съгласие за обработка на данните.' }) }),
+  emailDelivery: z.enum(['server', 'client_web3forms']).optional().default('server'),
 });
 
 router.post('/', validateBody(bookingInput), asyncHandler(async (req, res) => {
@@ -56,7 +57,9 @@ router.post('/', validateBody(bookingInput), asyncHandler(async (req, res) => {
     },
   });
 
-  notifyNewBooking(booking).catch((err) => console.error('Booking notification failed:', err.message));
+  if (data.emailDelivery !== 'client_web3forms') {
+    notifyNewBooking(booking).catch((err) => console.error('Booking notification failed:', err.message));
+  }
 
   res.status(201).json({
     success: true,
