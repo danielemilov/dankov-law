@@ -1,3 +1,5 @@
+import { analyzeLegalMessage, getDiagnostics } from './legal-chat/index.js';
+
 const CONTACT_RE =
   /(\+?\d[\d\s().-]{6,}\d)|([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i;
 
@@ -1207,9 +1209,14 @@ function isVeryShortOrLowQuality(message = '') {
 }
 
 export function getLexiconDiagnostics() {
-  return {
+  const legacy = {
     categories: LEXICON_DIAGNOSTICS,
     totalSignals: Object.values(LEXICON_DIAGNOSTICS).reduce((sum, value) => sum + value, 0),
+  };
+
+  return {
+    ...legacy,
+    ...getDiagnostics(),
   };
 }
 
@@ -1224,6 +1231,21 @@ export function detectUrgency(message = '') {
 }
 
 export function detectLegalIntent(message = '') {
+  const result = analyzeLegalMessage({ message });
+
+  return {
+    intent: result.detectedIntent,
+    subtype: result.subtype,
+    confidence: result.confidence,
+    label: result.label,
+    scores: result.scores,
+    hits: result.hits,
+    entities: result.entities,
+    urgency: result.urgency,
+  };
+}
+
+function detectLegacyLegalIntent(message = '') {
   const text = normalize(message);
   const latin = latinize(text);
   const searchable = unique([text, latin, ...shliokavicaVariants(latin)]).join(' | ');
@@ -1451,90 +1473,6 @@ function replyForGeneral() {
   };
 }
 
-export function buildLegalFallbackReply({ message }) {
-  const text = normalize(message);
-  const urgent = detectUrgency(message);
-  const { intent, confidence, label, scores, hits } = detectLegalIntent(message);
-
-  if (containsContact(message)) {
-    return {
-      ...buildContactReply(intent, confidence),
-      label,
-      scores,
-      hits,
-    };
-  }
-
-  if (isVeryShortOrLowQuality(text)) {
-    const result = replyForUnknown();
-
-    return {
-      reply: result.reply,
-      detectedIntent: 'unknown',
-      confidence: 0,
-      shouldShowContactForm: false,
-      priority: result.priority,
-      label: 'Неуточнен казус',
-      scores,
-      hits,
-    };
-  }
-
-  let result;
-
-  switch (intent) {
-    case 'employment':
-      result = replyForEmployment(text, urgent);
-      break;
-    case 'discrimination':
-      result = replyForDiscrimination(urgent);
-      break;
-    case 'hateSpeech':
-      result = replyForHateSpeech();
-      break;
-    case 'administrative':
-      result = replyForAdministrative();
-      break;
-    case 'criminal':
-      result = replyForCriminal();
-      break;
-    case 'pricing':
-      result = replyForPricing();
-      break;
-    case 'booking':
-      result = replyForBooking();
-      break;
-    case 'documents':
-      result = replyForDocuments();
-      break;
-    case 'civil':
-      result = replyForCivil();
-      break;
-    case 'family':
-      result = replyForFamily();
-      break;
-    case 'property':
-      result = replyForProperty();
-      break;
-    case 'consumer':
-      result = replyForConsumer();
-      break;
-    default:
-      result = replyForGeneral();
-      break;
-  }
-
-  return {
-    reply: result.reply,
-    detectedIntent: intent,
-    confidence,
-    shouldShowContactForm:
-      result.shouldShowContactForm ||
-      urgent ||
-      ['employment', 'discrimination', 'hateSpeech', 'administrative', 'criminal'].includes(intent),
-    priority: result.priority || CATEGORY_PACKS[intent]?.priority || (urgent ? 'high' : 'normal'),
-    label,
-    scores,
-    hits,
-  };
+export function buildLegalFallbackReply({ message, previousState = {} }) {
+  return analyzeLegalMessage({ message, previousState });
 }

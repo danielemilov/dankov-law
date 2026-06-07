@@ -10,8 +10,8 @@ const chatMessageSchema = new mongoose.Schema({
     phone: String,
   },
   meta: {
-    model: String,
-    fallback: Boolean,
+    type: mongoose.Schema.Types.Mixed,
+    default: () => ({}),
   },
 }, { timestamps: true });
 

@@ -93,6 +93,11 @@ const chatSessionSchema = new mongoose.Schema(
       min: 0,
     },
 
+    legalState: {
+      type: mongoose.Schema.Types.Mixed,
+      default: () => ({}),
+    },
+
     leadNotifiedAt: {
       type: Date,
       default: null,

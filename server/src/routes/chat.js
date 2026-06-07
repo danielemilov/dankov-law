@@ -334,6 +334,7 @@ router.post('/message', validateBody(chatInput), asyncHandler(async (req, res) =
   const ai = await getAssistantReply({
     history,
     userText: message,
+    legalState: session.legalState || {},
   });
 
   const unclear = isUnclear(ai);
@@ -357,6 +358,12 @@ router.post('/message', validateBody(chatInput), asyncHandler(async (req, res) =
       detectedIntent: ai.detectedIntent,
       confidence: ai.confidence,
       priority: ai.priority,
+      subtype: ai.subtype,
+      legalState: ai.legalState,
+      entities: ai.entities,
+      urgency: ai.urgency,
+      scores: ai.scores,
+      hits: ai.hits,
       shouldShowContactForm: ai.shouldShowContactForm,
       unknownCount: session.unknownCount,
       forcedContactAfterUnclear,
@@ -366,6 +373,7 @@ router.post('/message', validateBody(chatInput), asyncHandler(async (req, res) =
 
   session.detectedIntent = ai.detectedIntent || preDetectedIntent;
   session.priority = ai.priority || session.priority || 'normal';
+  session.legalState = ai.legalState || session.legalState || {};
   session.lastMessageAt = new Date();
 
   const contactAvailable = hasReachableContact(session.visitor || {});
@@ -374,9 +382,10 @@ router.post('/message', validateBody(chatInput), asyncHandler(async (req, res) =
   const seriousCase =
     shouldEscalate(message) ||
     ai.priority === 'high' ||
-    ['employment', 'discrimination', 'hateSpeech', 'administrative', 'criminal'].includes(
+    ['employment', 'discrimination', 'hateSpeech', 'administrative', 'criminal', 'family'].includes(
       ai.detectedIntent || preDetectedIntent
-    );
+    ) ||
+    ai.urgency?.urgent;
 
   if (contactAvailable) {
     session.status = 'lead';
@@ -403,6 +412,9 @@ router.post('/message', validateBody(chatInput), asyncHandler(async (req, res) =
       leadCaptured: contactAvailable,
       seriousCase,
       priority: ai.priority,
+      subtype: ai.subtype,
+      entities: ai.entities,
+      urgency: ai.urgency,
       confidence: ai.confidence,
       unknownCount: session.unknownCount,
       forcedContactAfterUnclear,

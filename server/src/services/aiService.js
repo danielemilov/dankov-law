@@ -25,9 +25,10 @@ export function detectIntent(message = '') {
   return detectLegalIntent(message).intent;
 }
 
-function fallbackResult(userText) {
+function fallbackResult(userText, legalState = {}) {
   const result = buildLegalFallbackReply({
     message: userText,
+    previousState: legalState,
   });
 
   return {
@@ -39,17 +40,24 @@ function fallbackResult(userText) {
     priority: result.priority || 'normal',
     shouldShowContactForm: Boolean(result.shouldShowContactForm),
     label: result.label,
+    subtype: result.subtype,
+    legalState: result.legalState,
+    entities: result.entities,
+    urgency: result.urgency,
+    scores: result.scores,
+    hits: result.hits,
     diagnostics: getLexiconDiagnostics(),
   };
 }
 
-export async function getAssistantReply({ history = [], userText = '' }) {
+export async function getAssistantReply({ history = [], userText = '', legalState = {} }) {
   if (!process.env.OPENAI_API_KEY) {
-    return fallbackResult(userText);
+    return fallbackResult(userText, legalState);
   }
 
   const local = buildLegalFallbackReply({
     message: userText,
+    previousState: legalState,
   });
 
   try {
@@ -85,14 +93,14 @@ export async function getAssistantReply({ history = [], userText = '' }) {
     if (!response.ok) {
       const body = await response.text();
       console.error('OpenAI API error:', body);
-      return fallbackResult(userText);
+      return fallbackResult(userText, legalState);
     }
 
     const data = await response.json();
     const reply = data.choices?.[0]?.message?.content?.trim();
 
     if (!reply) {
-      return fallbackResult(userText);
+      return fallbackResult(userText, legalState);
     }
 
     return {
@@ -104,10 +112,16 @@ export async function getAssistantReply({ history = [], userText = '' }) {
       priority: local.priority || 'normal',
       shouldShowContactForm: Boolean(local.shouldShowContactForm),
       label: local.label,
+      subtype: local.subtype,
+      legalState: local.legalState,
+      entities: local.entities,
+      urgency: local.urgency,
+      scores: local.scores,
+      hits: local.hits,
       diagnostics: getLexiconDiagnostics(),
     };
   } catch (error) {
     console.error('AI service failed:', error.message);
-    return fallbackResult(userText);
+    return fallbackResult(userText, legalState);
   }
 }

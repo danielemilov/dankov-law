@@ -293,6 +293,8 @@ export default function ChatWidget() {
     setContactOpen(false);
     closeChat();
 
+    window.dispatchEvent(new CustomEvent('dankov:open-contact'));
+
     setTimeout(() => {
       const contactSection =
         document.querySelector('#contact') ||
