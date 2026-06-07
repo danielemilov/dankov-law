@@ -113,7 +113,7 @@ function ShareActions({ post, onCopy, copied }) {
 
   return (
     <div className="hlShareActions">
-      <button type="button" onClick={() => onCopy(url)}>
+      <button className={copied ? 'is-copied' : ''} type="button" onClick={() => onCopy(url)}>
         <Copy size={16} />
         {copied ? 'Копирано' : 'Копирай линк'}
       </button>
@@ -138,7 +138,7 @@ function ShareActions({ post, onCopy, copied }) {
 }
 
 function CaseDetail({ post, comments, loading, onClose, onSubmitComment }) {
-  const [displayName, setDisplayName] = useState(() => localStorage.getItem('dankov_case_name') || '');
+  const [displayName, setDisplayName] = useState('');
   const [body, setBody] = useState('');
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
@@ -159,7 +159,7 @@ function CaseDetail({ post, comments, loading, onClose, onSubmitComment }) {
     const cleanBody = body.trim();
 
     if (cleanName.length < 2) {
-      setError('Изберете име за коментара.');
+      setError('Изберете псевдоним за коментара.');
       return;
     }
 
@@ -168,7 +168,6 @@ function CaseDetail({ post, comments, loading, onClose, onSubmitComment }) {
       return;
     }
 
-    localStorage.setItem('dankov_case_name', cleanName);
     const ok = await onSubmitComment({ displayName: cleanName, body: cleanBody });
     if (ok) {
       setBody('');
@@ -228,14 +227,17 @@ function CaseDetail({ post, comments, loading, onClose, onSubmitComment }) {
           <section className="hlCaseComments">
             <div className="hlCaseComments__head">
               <strong>Коментари</strong>
-              <small>Без обиди, лични данни, линкове и спам. Коментари могат да бъдат премахвани.</small>
+              <small>
+                Пишете с псевдоним, не с лични данни. Без обиди, линкове и спам. Коментари могат
+                да бъдат премахвани.
+              </small>
             </div>
 
             <form className="hlCaseComments__form" onSubmit={submit}>
               <input
                 value={displayName}
                 onChange={(event) => setDisplayName(event.target.value)}
-                placeholder="Вашето име"
+                placeholder="Псевдоним"
                 maxLength={48}
               />
               <textarea
@@ -276,6 +278,7 @@ function CaseDetail({ post, comments, loading, onClose, onSubmitComment }) {
 export default function Cases() {
   const [posts, setPosts] = useState(() => fallbackPosts());
   const [selected, setSelected] = useState(null);
+  const [returnScrollY, setReturnScrollY] = useState(0);
   const [comments, setComments] = useState([]);
   const [commentsLoading, setCommentsLoading] = useState(false);
   const [copiedSlug, setCopiedSlug] = useState('');
@@ -283,6 +286,11 @@ export default function Cases() {
 
   const featured = posts[0];
   const rest = posts.slice(1);
+
+  function openPost(post) {
+    setReturnScrollY(window.scrollY);
+    setSelected(post);
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -316,6 +324,14 @@ export default function Cases() {
   }, [posts, selected]);
 
   useEffect(() => {
+    document.body.classList.toggle('case-reader-open', Boolean(selected));
+
+    return () => {
+      document.body.classList.remove('case-reader-open');
+    };
+  }, [selected]);
+
+  useEffect(() => {
     if (!selected) return undefined;
     let cancelled = false;
 
@@ -346,14 +362,57 @@ export default function Cases() {
     };
   }, [selected?.slug, sessionId]);
 
-  function closeReader() {
+  function closeReader({ target = 'return' } = {}) {
     setSelected(null);
     setComments([]);
-    window.history.replaceState(null, '', `${window.location.pathname}#cases`);
+
+    if (target === 'return') {
+      window.history.replaceState(null, '', `${window.location.pathname}#cases`);
+      window.requestAnimationFrame(() => {
+        window.scrollTo({ top: returnScrollY, behavior: 'smooth' });
+      });
+      return;
+    }
+
+    const nextHash = target.startsWith('#') ? target : '#home';
+    window.history.replaceState(null, '', `${window.location.pathname}${nextHash}`);
     window.requestAnimationFrame(() => {
-      document.querySelector('#cases')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (nextHash === '#contact') {
+        window.dispatchEvent(new CustomEvent('dankov:open-contact'));
+        return;
+      }
+      document.querySelector(nextHash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }
+
+  useEffect(() => {
+    if (!selected) return undefined;
+
+    function handlePageNavigation(event) {
+      const link = event.target.closest?.('a[href]');
+      if (!link) return;
+
+      const href = link.getAttribute('href');
+      const isHomeLink = href === '/' || href === './' || href === '#home';
+      const isSectionLink = href?.startsWith('#');
+      if (!isHomeLink && !isSectionLink) return;
+
+      event.preventDefault();
+      closeReader({ target: isHomeLink ? '#home' : href });
+    }
+
+    function handleResetHome() {
+      closeReader({ target: '#home' });
+    }
+
+    window.addEventListener('click', handlePageNavigation, true);
+    window.addEventListener('dankov:reset-home', handleResetHome);
+
+    return () => {
+      window.removeEventListener('click', handlePageNavigation, true);
+      window.removeEventListener('dankov:reset-home', handleResetHome);
+    };
+  }, [selected, returnScrollY]);
 
   async function copyPostLink(post) {
     try {
@@ -414,7 +473,7 @@ export default function Cases() {
 
         {featured && (
           <motion.article className="hlFeaturedStory" variants={fadeUp}>
-            <button type="button" onClick={() => setSelected(featured)}>
+            <button type="button" onClick={() => openPost(featured)}>
               <span className="hlFeaturedStory__visual">
                 <MediaVisual post={featured} />
                 <i>
@@ -444,7 +503,7 @@ export default function Cases() {
         <div className="hlStoryFeed">
           {rest.map((post, index) => (
             <motion.article className="hlStoryCard" key={post.slug} variants={fadeUp}>
-              <button type="button" onClick={() => setSelected(post)}>
+              <button type="button" onClick={() => openPost(post)}>
                 <span className="hlStoryCard__visual">
                   <MediaVisual post={post} compact />
                   {post.type === 'video' && (
@@ -471,7 +530,11 @@ export default function Cases() {
               </button>
 
               <div className="hlStoryCard__share">
-                <button type="button" onClick={() => copyPostLink(post)}>
+                <button
+                  className={copiedSlug === post.slug ? 'is-copied' : ''}
+                  type="button"
+                  onClick={() => copyPostLink(post)}
+                >
                   <Share2 size={15} />
                   {copiedSlug === post.slug ? 'Копирано' : 'Share'}
                 </button>

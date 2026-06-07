@@ -268,9 +268,14 @@ export default function Navbar() {
 
   const closeMenu = () => setMenuOpen(false);
   const toggleMenu = () => setMenuOpen((value) => !value);
-  const resetHome = () => {
+  const resetHome = (event) => {
+    event?.preventDefault();
     closeMenu();
     window.dispatchEvent(new CustomEvent('dankov:reset-home'));
+    window.history.pushState(null, '', '#home');
+    window.requestAnimationFrame(() => {
+      document.querySelector('#home')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   };
 
   return (
