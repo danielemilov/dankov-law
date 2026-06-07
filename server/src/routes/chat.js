@@ -35,6 +35,7 @@ const contactCaptureInput = z.object({
   consent: z.boolean().refine((value) => value === true, {
     message: 'Необходимо е съгласие за обработка на данните за обратна връзка.',
   }),
+  emailDelivery: z.enum(['server', 'client_web3forms']).optional().default('server'),
   website: z.string().max(200).optional().default(''),
 });
 
@@ -263,7 +264,7 @@ router.post('/message', validateBody(chatInput), asyncHandler(async (req, res) =
 }));
 
 router.post('/contact', validateBody(contactCaptureInput), asyncHandler(async (req, res) => {
-  const { sessionId, visitorInfo, website } = req.body;
+  const { sessionId, visitorInfo, emailDelivery, website } = req.body;
 
   if (website && website.trim()) {
     return res.status(400).json({
@@ -356,7 +357,8 @@ router.post('/contact', validateBody(contactCaptureInput), asyncHandler(async (r
     cleanVisitor.phone !== (previousVisitor.phone || '');
 
   const shouldSendLeadToLawyer =
-    Boolean(process.env.WEB3FORMS_ACCESS_KEY) || !alreadyNotified || !hadContactBefore || contactChanged;
+    emailDelivery !== 'client_web3forms' &&
+    (!alreadyNotified || !hadContactBefore || contactChanged);
   let leadNotification = null;
   let clientConfirmationSent = false;
 
@@ -377,6 +379,11 @@ router.post('/contact', validateBody(contactCaptureInput), asyncHandler(async (r
     }
   }
 
+  if (emailDelivery === 'client_web3forms') {
+    session.leadNotifiedAt = new Date();
+    await session.save();
+  }
+
   if (cleanVisitor.email) {
     try {
       await notifyChatContactConfirmation({ session });
@@ -395,7 +402,10 @@ router.post('/contact', validateBody(contactCaptureInput), asyncHandler(async (r
       source: 'chat_contact',
       textVersion: CONSENT_TEXT_VERSION,
     },
-    leadNotified: leadNotification?.email?.status === 'fulfilled' || alreadyNotified,
+    leadNotified:
+      emailDelivery === 'client_web3forms' ||
+      leadNotification?.email?.status === 'fulfilled' ||
+      alreadyNotified,
     clientConfirmationSent,
   });
 }));

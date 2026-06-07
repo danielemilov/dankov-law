@@ -73,6 +73,73 @@ function isMobileViewport() {
   return window.matchMedia('(max-width: 560px)').matches;
 }
 
+function formatTranscript(messages = []) {
+  return messages
+    .filter((message) => message.id !== 'welcome' && ['user', 'assistant'].includes(message.role))
+    .slice(-12)
+    .map((message) => {
+      const label = message.role === 'user' ? 'Клиент' : 'Чат асистент';
+      return `${label}: ${message.content}`;
+    })
+    .join('\n\n');
+}
+
+async function loadPublicConfig() {
+  const response = await api.get('/api/public-config');
+  return response.data || {};
+}
+
+async function submitWeb3FormsLead({ clean, messages, sessionId }) {
+  const config = await loadPublicConfig();
+  const accessKey = config.web3FormsAccessKey;
+
+  if (!accessKey) {
+    throw new Error('WEB3FORMS_ACCESS_KEY липсва в Render.');
+  }
+
+  const transcript = formatTranscript(messages);
+  const lawyerEmail = config.lawyerEmail || 'contact.dankov@gmail.com';
+  const contactEmail = clean.email || lawyerEmail;
+
+  const response = await fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      access_key: accessKey,
+      subject: `Нов чат лийд - ${clean.name || clean.phone || clean.email || 'клиент'}`,
+      from_name: clean.name || 'Клиент от чат',
+      name: clean.name || 'Клиент от чат',
+      email: contactEmail,
+      phone: clean.phone || '',
+      replyto: clean.email || lawyerEmail,
+      message: [
+        'Ново запитване от чат асистента.',
+        '',
+        `Име: ${clean.name || '-'}`,
+        `Имейл: ${clean.email || '-'}`,
+        `Телефон: ${clean.phone || '-'}`,
+        `Session ID: ${sessionId}`,
+        '',
+        'Разговор:',
+        transcript || '-',
+      ].join('\n'),
+      source: 'dankov-law-chat-widget',
+      botcheck: false,
+    }),
+  });
+
+  const data = await response.json().catch(() => null);
+
+  if (!response.ok || data?.success === false) {
+    throw new Error(data?.message || 'Web3Forms не прие заявката.');
+  }
+
+  return data;
+}
+
 function LawyerAvatar({ large = false }) {
   const [failed, setFailed] = useState(false);
 
@@ -452,11 +519,14 @@ export default function ChatWidget() {
     setContactError('');
 
     try {
+      await submitWeb3FormsLead({ clean, messages, sessionId });
+
       await Promise.all([
         api.post('/api/chat/contact', {
           sessionId,
           visitorInfo: clean,
           consent: true,
+          emailDelivery: 'client_web3forms',
           website: contactForm.website,
         }),
         wait(700),
@@ -476,6 +546,7 @@ export default function ChatWidget() {
     } catch (err) {
       const serverMessage =
         err.response?.data?.message ||
+        err.message ||
         'Контактът не беше изпратен. Проверете данните и опитайте отново.';
 
       triggerContactError(serverMessage);

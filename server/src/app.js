@@ -95,6 +95,14 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+app.get('/api/public-config', (req, res) => {
+  res.json({
+    success: true,
+    web3FormsAccessKey: process.env.WEB3FORMS_ACCESS_KEY || '',
+    lawyerEmail: process.env.LAWYER_EMAIL || '',
+  });
+});
+
 app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
