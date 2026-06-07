@@ -61,14 +61,17 @@ export default function BookingForm() {
       <AnimatePresence mode="wait">
         {!sent ? (
           <motion.div key="form" {...FORM_MOTION}>
-            <p className="booking-card__kicker">Сигурна заявка</p>
 
-            <h3>Свържете се за правна консултация</h3>
+            <h3>Опишете казуса си</h3>
 
             <p className="booking-card__lead">
               Опишете накратко казуса си. Ще получите обратна връзка за подходящ
               час, нужните документи и следващите стъпки.
             </p>
+
+           {/* TOWA E ONAQ ZELENATA TOCHKA ...ne mi trqq  */}
+            {/* <p className="booking-card__kicker"></p> */} 
+
 
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className="form-grid form-grid--2">
