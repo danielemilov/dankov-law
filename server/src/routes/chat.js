@@ -98,6 +98,96 @@ function isSpamLikeMessage(message = '') {
   return false;
 }
 
+function hasMeaningfulHint(text = '') {
+  const value = String(text).toLowerCase();
+  const hints = [
+    'адв',
+    'акт',
+    'глоб',
+    'дело',
+    'дискрим',
+    'договор',
+    'документ',
+    'заповед',
+    'закон',
+    'казус',
+    'консул',
+    'имот',
+    'наказ',
+    'наслед',
+    'омраз',
+    'поли',
+    'прав',
+    'работ',
+    'семе',
+    'съд',
+    'увол',
+    'admin',
+    'adv',
+    'akt',
+    'case',
+    'consult',
+    'contract',
+    'court',
+    'discipl',
+    'discrimin',
+    'document',
+    'dokument',
+    'delo',
+    'glob',
+    'grajd',
+    'grazhd',
+    'imot',
+    'kazus',
+    'konsul',
+    'law',
+    'legal',
+    'nakaz',
+    'nasled',
+    'omraz',
+    'polic',
+    'prava',
+    'rabot',
+    'seme',
+    'semeist',
+    'sud',
+    'uvol',
+    'zapoved',
+    'zakon',
+  ];
+
+  return hints.some((hint) => value.includes(hint));
+}
+
+function isNonsenseLikeMessage(message = '') {
+  const text = String(message).trim();
+  if (text.length < 8) return false;
+  if (hasMeaningfulHint(text)) return false;
+
+  const tokens = text.match(/[a-zа-я0-9]+/gi) || [];
+  if (!tokens.length) return true;
+
+  const compact = tokens.join('').toLowerCase();
+  const latinOnly = tokens.every((token) => /^[a-z0-9]+$/i.test(token));
+  const hasLetters = /[a-zа-я]/i.test(compact);
+  if (!hasLetters) return false;
+
+  const latinText = compact.replace(/[^a-z]/gi, '');
+  const vowels = (latinText.match(/[aeiouy]/gi) || []).length;
+  const vowelRatio = latinText ? vowels / latinText.length : 1;
+  const uniqueRatio = compact ? new Set(compact.split('')).size / compact.length : 1;
+  const hasLongConsonantRun = /[bcdfghjklmnpqrstvwxz]{6,}/i.test(latinText);
+
+  if (latinText.length >= 10 && vowelRatio < 0.18) return true;
+  if (latinText.length >= 12 && hasLongConsonantRun) return true;
+  if (compact.length >= 22 && uniqueRatio < 0.35) return true;
+
+  const averageTokenLength = compact.length / tokens.length;
+  if (latinOnly && tokens.length <= 2 && averageTokenLength >= 10) return true;
+
+  return false;
+}
+
 function looksLikeFakePhone(phone = '') {
   const digits = String(phone).replace(/\D/g, '');
 
@@ -142,6 +232,7 @@ router.post('/message', validateBody(chatInput), asyncHandler(async (req, res) =
 
   const sessionId = existingSessionId || randomUUID();
   const extracted = extractContact(message);
+  const nonsenseLike = isNonsenseLikeMessage(message);
 
   const cleanVisitorFromState = cleanVisitorInfo(visitorInfo);
   const preDetectedIntent = detectIntent(message);
@@ -181,8 +272,64 @@ router.post('/message', validateBody(chatInput), asyncHandler(async (req, res) =
       detectedIntent: preDetectedIntent,
       extractedContact: extracted,
       possibleContactInMessage: Boolean(extracted.email || extracted.phone),
+      nonsenseLike,
     },
   });
+
+  if (nonsenseLike) {
+    session.unknownCount = Number(session.unknownCount || 0) + 1;
+    session.detectedIntent = 'unknown';
+    session.priority = session.priority || 'normal';
+    session.lastMessageAt = new Date();
+
+    const forcedContactAfterUnclear = session.unknownCount >= 3;
+
+    const finalReply = forcedContactAfterUnclear
+      ? 'Не успях да разчета съобщенията като нормално описание на казус. За да не ви губя време с неточни общи отговори, най-добре оставете телефон или имейл и кантората ще върне контакт.'
+      : 'Не успях да разчета това като нормално описание на казус. Напишете с кратки думи какво се случи, кога стана и дали имате документ, акт, заповед или съобщения.';
+
+    if (forcedContactAfterUnclear) {
+      session.status = 'open';
+    }
+
+    await ChatMessage.create({
+      sessionId,
+      role: 'assistant',
+      content: finalReply,
+      visitorSnapshot: cleanVisitorFromState,
+      meta: {
+        model: 'guard',
+        fallback: 'nonsense_guard',
+        detectedIntent: 'unknown',
+        confidence: 0,
+        priority: 'normal',
+        shouldShowContactForm: forcedContactAfterUnclear,
+        unknownCount: session.unknownCount,
+        forcedContactAfterUnclear,
+      },
+    });
+
+    await session.save();
+
+    return res.json({
+      success: true,
+      sessionId,
+      reply: finalReply,
+      detectedIntent: 'unknown',
+      shouldShowContactForm: forcedContactAfterUnclear,
+      meta: {
+        model: 'guard',
+        fallback: 'nonsense_guard',
+        leadCaptured: hasReachableContact(session.visitor || {}),
+        seriousCase: false,
+        priority: 'normal',
+        confidence: 0,
+        unknownCount: session.unknownCount,
+        forcedContactAfterUnclear,
+        unclearInput: true,
+      },
+    });
+  }
 
   const ai = await getAssistantReply({
     history,

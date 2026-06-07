@@ -70,7 +70,7 @@ export async function notifyChatLead({ session, messages }) {
   const visitor = session.visitor || {};
   const lastUser = getLastUserMessage(messages);
 
-  const text = `Нов чат лийд
+  const text = `Ново запитване от чат асистента
 
 Име: ${visitor.name || '—'}
 Телефон: ${visitor.phone || '—'}
@@ -86,8 +86,8 @@ ${lastUser?.content || '—'}`;
     notifyLawyerOnWhatsApp(text),
   ]);
 
-  logNotificationResult('Chat lead email', email);
-  logNotificationResult('Chat lead WhatsApp', whatsapp);
+  logNotificationResult('Chat inquiry email', email);
+  logNotificationResult('Chat inquiry WhatsApp', whatsapp);
 
   return { email, whatsapp };
 }

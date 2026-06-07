@@ -342,9 +342,9 @@ export default function ChatWidget() {
     if (forced) {
       return {
         type: 'unclear',
-        title: 'По-добре е да уточним случая',
+        title: 'Нужна е обратна връзка',
         text:
-          'За да не получите неточен общ отговор, може да оставите контакт или да опишете случая в няколко конкретни точки.',
+          'След няколко неясни съобщения е по-добре кантората да получи контакт и да прецени случая с човек.',
       };
     }
 
@@ -678,9 +678,11 @@ export default function ChatWidget() {
                       <p>{actionCard.text}</p>
 
                       <div className="chat__action-buttons">
-                        <button type="button" onClick={askForMoreDetails}>
-                          Ще опиша още
-                        </button>
+                        {actionCard.type !== 'unclear' && (
+                          <button type="button" onClick={askForMoreDetails}>
+                            Ще опиша още
+                          </button>
+                        )}
 
                         <button type="button" onClick={openContactForm}>
                           Оставям контакт

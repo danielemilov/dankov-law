@@ -8,6 +8,9 @@ const BRAND = {
   cream: '#f5f2ec',
   warm: '#e8e2d6',
   gold: '#b5862a',
+  lime: '#b8ff43',
+  navy: '#171d3f',
+  forest: '#07150f',
   muted: '#6f6a60',
 };
 
@@ -330,25 +333,25 @@ function emailShell({ title, eyebrow = BRAND.label, children, footer = `${BRAND.
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
-      <body style="margin:0; padding:0; background:#f3efe7;">
-        <div style="width:100%; background:#f3efe7; padding:32px 0;">
-          <div style="max-width:720px; margin:0 auto; background:#f5f2ec; border:1px solid #ded6c8; box-shadow:0 20px 60px rgba(15,14,12,0.12);">
+      <body style="margin:0; padding:0; background:#edf3e8;">
+        <div style="width:100%; background:linear-gradient(135deg, #f8fbf3 0%, #edf3e8 48%, #dfe7d5 100%); padding:34px 0;">
+          <div style="max-width:720px; margin:0 auto; background:#f8fbf3; border:1px solid rgba(7,21,15,0.12); border-radius:28px; overflow:hidden; box-shadow:0 26px 80px rgba(7,21,15,0.18);">
             
-            <div style="background:#0f0e0c; padding:30px 34px;">
-              <div style="font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:#b5862a; font-family:Arial, sans-serif; margin-bottom:10px;">
+            <div style="background:linear-gradient(135deg, #171d3f 0%, #07150f 72%, #203819 100%); padding:34px 36px; border-bottom:1px solid rgba(184,255,67,0.32);">
+              <div style="font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:#b8ff43; font-family:Arial, sans-serif; margin-bottom:12px;">
                 ${escapeHtml(eyebrow)}
               </div>
-              <h1 style="font-family:Georgia, serif; font-size:27px; line-height:1.18; font-weight:400; color:#f5f2ec; margin:0;">
+              <h1 style="font-family:Georgia, serif; font-size:29px; line-height:1.16; font-weight:400; color:#f8fbf3; margin:0;">
                 ${escapeHtml(title)}
               </h1>
             </div>
 
-            <div style="padding:34px;">
+            <div style="padding:34px 36px;">
               ${children}
             </div>
 
-            <div style="background:#0f0e0c; padding:18px 34px;">
-              <p style="font-family:Arial, sans-serif; font-size:12px; color:rgba(245,242,236,0.55); margin:0;">
+            <div style="background:#07150f; padding:20px 36px;">
+              <p style="font-family:Arial, sans-serif; font-size:12px; color:rgba(248,251,243,0.62); margin:0;">
                 ${escapeHtml(footer)}
               </p>
             </div>
@@ -362,15 +365,15 @@ function emailShell({ title, eyebrow = BRAND.label, children, footer = `${BRAND.
 
 function infoGrid(items = []) {
   return `
-    <table style="width:100%; border-collapse:collapse; margin:0 0 24px;">
+    <table style="width:100%; border-collapse:separate; border-spacing:0; margin:0 0 24px; background:rgba(255,255,255,0.68); border:1px solid rgba(7,21,15,0.1); border-radius:20px; overflow:hidden;">
       ${items
         .map(
           (item) => `
           <tr>
-            <td style="width:160px; padding:12px 0; border-bottom:1px solid #ded6c8; font-family:Arial, sans-serif; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:#8a8174;">
+            <td style="width:160px; padding:14px 18px; border-bottom:1px solid rgba(7,21,15,0.08); font-family:Arial, sans-serif; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:#65705f;">
               ${escapeHtml(item.label)}
             </td>
-            <td style="padding:12px 0; border-bottom:1px solid #ded6c8; font-family:Georgia, serif; font-size:15px; line-height:1.5; color:#0f0e0c;">
+            <td style="padding:14px 18px; border-bottom:1px solid rgba(7,21,15,0.08); font-family:Arial, sans-serif; font-size:15px; line-height:1.5; color:#07150f;">
               ${item.html ? item.value : safe(item.value)}
             </td>
           </tr>
@@ -382,12 +385,12 @@ function infoGrid(items = []) {
 }
 
 function noticeBox(content, tone = 'gold') {
-  const border = tone === 'dark' ? '#0f0e0c' : '#b5862a';
-  const bg = tone === 'dark' ? '#ebe5da' : '#e8e2d6';
+  const border = tone === 'dark' ? BRAND.navy : BRAND.lime;
+  const bg = tone === 'dark' ? '#e6eaf7' : '#f1f8df';
 
   return `
-    <div style="background:${bg}; border-left:4px solid ${border}; padding:18px 20px; margin:24px 0;">
-      <div style="font-family:Arial, sans-serif; font-size:14px; line-height:1.75; color:#38342e;">
+    <div style="background:${bg}; border:1px solid rgba(7,21,15,0.1); border-left:5px solid ${border}; border-radius:18px; padding:18px 20px; margin:24px 0;">
+      <div style="font-family:Arial, sans-serif; font-size:14px; line-height:1.75; color:#26312a;">
         ${content}
       </div>
     </div>
@@ -400,7 +403,7 @@ export async function sendBookingNotification(booking) {
   const preferred = getBookingPreferred(booking);
 
   const lawyerHtml = emailShell({
-    title: `Нова заявка за консултация`,
+    title: `Нова заявка за час`,
     children: `
       ${infoGrid([
         { label: 'Клиент', value: client.name },
@@ -455,7 +458,7 @@ export async function sendBookingNotification(booking) {
           fromName: BRAND.name,
           to: client.email,
           replyTo: process.env.LAWYER_EMAIL || process.env.EMAIL_USER,
-          subject: `Получихме заявката ви — ${BRAND.name}`,
+          subject: `Заявката ви е получена — ${BRAND.name}`,
           html: clientHtml,
         });
 
@@ -464,7 +467,7 @@ export async function sendBookingNotification(booking) {
       fromName: 'Сайт Данков',
       to: process.env.LAWYER_EMAIL,
       replyTo: client.email || process.env.EMAIL_USER,
-      subject: `Нова заявка — ${client.name || 'клиент'}`,
+      subject: `Заявка за консултация — ${client.name || 'клиент'}`,
       html: lawyerHtml,
     }),
     clientConfirmation,
@@ -483,7 +486,7 @@ export async function sendChatLeadNotification({ session, messages }) {
   const subjectName = visitor.name || 'Нов клиент';
 
   const html = emailShell({
-    title: `Нов разговор от чат асистента`,
+    title: `Ново запитване от чат асистента`,
     children: `
       ${infoGrid([
         { label: 'Име', value: visitor.name || '—' },
@@ -518,7 +521,7 @@ export async function sendChatLeadNotification({ session, messages }) {
     fromName: 'Чат Асистент',
     to: process.env.LAWYER_EMAIL,
     replyTo: visitor.email || process.env.EMAIL_USER,
-    subject: `Нов чат лийд — ${subjectName}`,
+    subject: `Запитване от чат асистента — ${subjectName}`,
     html,
   });
 }

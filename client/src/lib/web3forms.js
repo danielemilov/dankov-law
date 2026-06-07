@@ -5,6 +5,13 @@ function normalize(value, fallback = '-') {
   return text || fallback;
 }
 
+function section(title, lines = []) {
+  return [
+    `━━ ${title} ━━`,
+    ...lines.map(([label, value]) => `${label}: ${normalize(value)}`),
+  ].join('\n');
+}
+
 function formatTranscript(messages = []) {
   return messages
     .filter((message) => message.id !== 'welcome' && ['user', 'assistant'].includes(message.role))
@@ -58,23 +65,30 @@ export async function submitChatLead({ clean, messages, sessionId }) {
   const transcript = formatTranscript(messages);
 
   return submitWeb3Forms({
-    subject: `Нов чат лийд - ${clean.name || clean.phone || clean.email || 'клиент'}`,
-    from_name: clean.name || 'Клиент от чат',
+    subject: `Ново запитване от чат асистента - ${clean.name || clean.phone || clean.email || 'клиент'}`,
+    from_name: clean.name || 'Чат запитване',
     name: clean.name || 'Клиент от чат',
     email: clean.email || '',
     phone: clean.phone || '',
     message: [
-      'Ново запитване от чат асистента.',
+      'DANKOV LAW / Чат асистент',
+      'Ново запитване от посетител на сайта.',
       '',
-      `Име: ${normalize(clean.name)}`,
-      `Имейл: ${normalize(clean.email)}`,
-      `Телефон: ${normalize(clean.phone)}`,
-      `Session ID: ${sessionId}`,
+      section('Контакт', [
+        ['Име', clean.name],
+        ['Имейл', clean.email],
+        ['Телефон', clean.phone],
+        ['Session ID', sessionId],
+      ]),
       '',
-      'Разговор:',
+      '━━ Разговор ━━',
       transcript || '-',
+      '',
+      '━━ Следваща стъпка ━━',
+      'Свържете се с човека за уточняване на казуса и нужните документи.',
     ].join('\n'),
     source: 'dankov-law-chat-widget',
+    category: 'Чат запитване',
   });
 }
 
@@ -93,27 +107,35 @@ export async function submitBookingLead(payload) {
 
   return submitWeb3Forms({
     subject: `Нова заявка за консултация - ${payload.name || 'клиент'}`,
-    from_name: payload.name || 'Клиент от форма',
+    from_name: payload.name || 'Заявка за консултация',
     name: payload.name || 'Клиент от форма',
     email: payload.email || '',
     phone: payload.phone || '',
     message: [
-      'Нова заявка за консултация от сайта.',
+      'DANKOV LAW / Форма за консултация',
+      'Нова заявка за час от сайта.',
       '',
-      `Име: ${normalize(payload.name)}`,
-      `Имейл: ${normalize(payload.email)}`,
-      `Телефон: ${normalize(payload.phone)}`,
-      `Правна област: ${normalize(payload.area)}`,
-      `Спешност: ${urgencyMap[payload.urgency] || normalize(payload.urgency)}`,
-      `Желана дата: ${normalize(payload.preferredDate, 'Не е посочена')}`,
-      `Желан час: ${normalize(payload.preferredTime, 'Не е посочен')}`,
-      `Предпочитана връзка: ${
-        contactMethodMap[payload.contactMethod] || normalize(payload.contactMethod)
-      }`,
+      section('Контакт', [
+        ['Име', payload.name],
+        ['Имейл', payload.email],
+        ['Телефон', payload.phone],
+        ['Предпочитана връзка', contactMethodMap[payload.contactMethod] || payload.contactMethod],
+      ]),
       '',
-      'Описание:',
+      section('Консултация', [
+        ['Правна област', payload.area],
+        ['Спешност', urgencyMap[payload.urgency] || payload.urgency],
+        ['Желана дата', normalize(payload.preferredDate, 'Не е посочена')],
+        ['Желан час', normalize(payload.preferredTime, 'Не е посочен')],
+      ]),
+      '',
+      '━━ Описание ━━',
       normalize(payload.message),
+      '',
+      '━━ Следваща стъпка ━━',
+      'Прегледайте заявката и върнете контакт за потвърждение на час.',
     ].join('\n'),
     source: 'dankov-law-booking-form',
+    category: 'Заявка за консултация',
   });
 }
