@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import AboutMobilePage from '../components/home/AboutMobilePage/AboutMobilePage.jsx';
 import Cases from '../components/home/Cases/Cases.jsx';
 import Contact from '../components/home/Contact/Contact.jsx';
 import Footer from '../components/home/Footer/Footer.jsx';
@@ -11,6 +12,11 @@ function isMobileContactViewport() {
 }
 
 export default function HomePage() {
+  const [mobileAboutVisible, setMobileAboutVisible] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return isMobileContactViewport() && window.location.hash === '#about';
+  });
+
   const [mobileCasesVisible, setMobileCasesVisible] = useState(() => {
     if (typeof window === 'undefined') return false;
     return isMobileContactViewport() && (window.location.hash === '#cases' || window.location.search.includes('case='));
@@ -18,12 +24,20 @@ export default function HomePage() {
 
   const [mobileContactVisible, setMobileContactVisible] = useState(() => {
     if (typeof window === 'undefined') return false;
-    return !isMobileContactViewport() || window.location.hash === '#contact';
+    return !isMobileContactViewport() || window.location.hash === '#contact' || window.location.hash === '#booking';
   });
 
   useEffect(() => {
+    function revealAbout() {
+      if (!isMobileContactViewport()) return;
+      setMobileAboutVisible(true);
+      setMobileCasesVisible(false);
+      setMobileContactVisible(false);
+    }
+
     function revealCases({ shouldScroll = false } = {}) {
       if (!isMobileContactViewport()) return;
+      setMobileAboutVisible(false);
       setMobileCasesVisible(true);
       setMobileContactVisible(false);
 
@@ -38,6 +52,7 @@ export default function HomePage() {
     }
 
     function revealContact({ shouldScroll = false } = {}) {
+      setMobileAboutVisible(false);
       setMobileCasesVisible(false);
       setMobileContactVisible(true);
 
@@ -54,6 +69,7 @@ export default function HomePage() {
     }
 
     function resetMobileHome({ shouldScroll = false } = {}) {
+      setMobileAboutVisible(false);
       setMobileCasesVisible(false);
 
       if (isMobileContactViewport()) {
@@ -74,17 +90,21 @@ export default function HomePage() {
 
     function syncFromViewport() {
       if (!isMobileContactViewport()) {
+        setMobileAboutVisible(false);
         setMobileCasesVisible(false);
         setMobileContactVisible(true);
         return;
       }
 
+      setMobileAboutVisible(window.location.hash === '#about');
       setMobileCasesVisible(window.location.hash === '#cases' || window.location.search.includes('case='));
-      setMobileContactVisible(window.location.hash === '#contact');
+      setMobileContactVisible(window.location.hash === '#contact' || window.location.hash === '#booking');
     }
 
     function handleHashChange() {
-      if (window.location.hash === '#contact') {
+      if (window.location.hash === '#about') {
+        revealAbout();
+      } else if (window.location.hash === '#contact' || window.location.hash === '#booking') {
         revealContact({ shouldScroll: true });
       } else if (window.location.hash === '#cases') {
         revealCases({ shouldScroll: true });
@@ -101,13 +121,25 @@ export default function HomePage() {
       resetMobileHome({ shouldScroll: true });
     }
 
-    function handleContactLinkClick(event) {
-      const link = event.target.closest?.('a[href="#contact"]');
+    function handleAboutLinkClick(event) {
+      const link = event.target.closest?.('a[href="#about"]');
       if (!link || !isMobileContactViewport()) return;
 
       event.preventDefault();
-      if (window.location.hash !== '#contact') {
-        window.history.pushState(null, '', '#contact');
+      if (window.location.hash !== '#about') {
+        window.history.pushState(null, '', '#about');
+      }
+      revealAbout();
+    }
+
+    function handleContactLinkClick(event) {
+      const link = event.target.closest?.('a[href="#contact"], a[href="#booking"]');
+      if (!link || !isMobileContactViewport()) return;
+
+      event.preventDefault();
+      const href = link.getAttribute('href');
+      if (window.location.hash !== href) {
+        window.history.pushState(null, '', href);
       }
       revealContact({ shouldScroll: true });
     }
@@ -140,6 +172,7 @@ export default function HomePage() {
     window.addEventListener('hashchange', handleHashChange);
     window.addEventListener('dankov:open-contact', handleOpenContact);
     window.addEventListener('dankov:reset-home', handleResetHome);
+    window.addEventListener('click', handleAboutLinkClick, true);
     window.addEventListener('click', handleContactLinkClick, true);
     window.addEventListener('click', handleCasesLinkClick, true);
     window.addEventListener('click', handleHomeLinkClick, true);
@@ -149,6 +182,7 @@ export default function HomePage() {
       window.removeEventListener('hashchange', handleHashChange);
       window.removeEventListener('dankov:open-contact', handleOpenContact);
       window.removeEventListener('dankov:reset-home', handleResetHome);
+      window.removeEventListener('click', handleAboutLinkClick, true);
       window.removeEventListener('click', handleContactLinkClick, true);
       window.removeEventListener('click', handleCasesLinkClick, true);
       window.removeEventListener('click', handleHomeLinkClick, true);
@@ -157,6 +191,7 @@ export default function HomePage() {
   }, []);
 
   function closeMobileCases() {
+    setMobileAboutVisible(false);
     setMobileCasesVisible(false);
     setMobileContactVisible(false);
     window.history.pushState(null, '', '#home');
@@ -166,6 +201,7 @@ export default function HomePage() {
   }
 
   function closeMobileContact() {
+    setMobileAboutVisible(false);
     setMobileCasesVisible(false);
     setMobileContactVisible(false);
     window.history.pushState(null, '', '#home');
@@ -177,12 +213,33 @@ export default function HomePage() {
   const showMobileContactPage = typeof window !== 'undefined' && isMobileContactViewport() && mobileContactVisible;
 
   useEffect(() => {
-    document.body.classList.toggle('mobile-section-page-open', mobileCasesVisible || showMobileContactPage);
+    document.body.classList.toggle(
+      'mobile-section-page-open',
+      mobileAboutVisible || mobileCasesVisible || showMobileContactPage
+    );
 
     return () => {
       document.body.classList.remove('mobile-section-page-open');
     };
-  }, [mobileCasesVisible, showMobileContactPage]);
+  }, [mobileAboutVisible, mobileCasesVisible, showMobileContactPage]);
+
+  function closeMobileAbout() {
+    setMobileAboutVisible(false);
+    setMobileCasesVisible(false);
+    setMobileContactVisible(false);
+    window.history.pushState(null, '', '#home');
+    window.requestAnimationFrame(() => {
+      document.querySelector('#home')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  if (mobileAboutVisible) {
+    return (
+      <main className="hlHome">
+        <AboutMobilePage onBack={closeMobileAbout} />
+      </main>
+    );
+  }
 
   if (mobileCasesVisible) {
     return (

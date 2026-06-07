@@ -35,7 +35,7 @@ export default function AttorneyCinematic() {
 
         <motion.div className="attorneyCinematic__actions" variants={fadeUp}>
           <a href="#contact">Запази консултация ↗</a>
-          <a href="#cases">Виж казуси ↗</a>
+          <a href="#cases">Последни новини ↗</a>
         </motion.div>
       </motion.div>
 

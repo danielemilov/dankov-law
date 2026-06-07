@@ -8,15 +8,11 @@ const LAWYER_PHOTO = '/diyan-dankovv.jpg';
 const navLinks = [
   {
     label: 'За адвоката',
-    href: '#home',
+    href: '#about',
   },
   {
-    label: 'Казуси',
+    label: 'Новини',
     href: '#cases',
-  },
-  {
-    label: 'Видео',
-    href: '#video',
   },
   {
     label: 'Контакт',
@@ -24,7 +20,7 @@ const navLinks = [
   },
 ];
 
-const mobileNavLinks = navLinks.filter((link) => link.href !== '#cases' && link.href !== '#video');
+const mobileNavLinks = navLinks;
 
 const easeOutSoft = [0.16, 1, 0.3, 1];
 const easeExitSoft = [0.4, 0, 0.2, 1];
@@ -44,16 +40,10 @@ const overlayVariants = {
     },
   },
   exit: {
-    opacity: [1, 1, 0.92, 0],
-    backdropFilter: [
-      'blur(20px) saturate(1.1)',
-      'blur(24px) saturate(1.16)',
-      'blur(12px) saturate(1.06)',
-      'blur(0px) saturate(1)',
-    ],
+    opacity: 0,
+    backdropFilter: 'blur(0px) saturate(1)',
     transition: {
-      duration: 1.18,
-      times: [0, 0.34, 0.74, 1],
+      duration: 0.2,
       ease: easeOutSoft,
     },
   },
@@ -141,19 +131,12 @@ const panelVariants = {
     },
   },
   exit: {
-    opacity: [1, 0.98, 0.72, 0.28, 0],
-    y: [0, -3, -6, -10, -14],
-    filter: ['blur(0px)', 'blur(0px)', 'blur(2px)', 'blur(8px)', 'blur(15px)'],
-    clipPath: [
-      'inset(0% 0% 0% 0% round 42px)',
-      'inset(0% 0% 0% 0% round 42px)',
-      'inset(5% 9% 5% 9% round 999px)',
-      'inset(15% 34% 15% 34% round 999px)',
-      'inset(16% -28% 16% 124% round 999px)',
-    ],
+    opacity: 0,
+    y: -10,
+    filter: 'blur(8px)',
+    clipPath: 'inset(0% 0% 0% 0% round 42px)',
     transition: {
-      duration: 1.12,
-      times: [0, 0.24, 0.54, 0.8, 1],
+      duration: 0.18,
       ease: easeOutSoft,
     },
   },
@@ -430,7 +413,7 @@ export default function Navbar() {
 
               <motion.a
                 className="navPrimeMobile__cta"
-                href="#contact"
+                href="#booking"
                 onClick={closeMenu}
                 variants={ctaVariants}
                 initial="hidden"

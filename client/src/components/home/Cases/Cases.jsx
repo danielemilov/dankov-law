@@ -391,7 +391,7 @@ export default function Cases({ pageMode = false, onBack }) {
     const nextHash = target.startsWith('#') ? target : '#home';
     window.history.replaceState(null, '', `${window.location.pathname}${nextHash}`);
     window.requestAnimationFrame(() => {
-      if (nextHash === '#contact') {
+      if (nextHash === '#contact' || nextHash === '#booking') {
         window.dispatchEvent(new CustomEvent('dankov:open-contact'));
         return;
       }
@@ -480,17 +480,17 @@ export default function Cases({ pageMode = false, onBack }) {
               <ArrowLeft size={18} />
               Назад
             </button>
-            <span>Медийна хроника</span>
+            <span>Последни новини</span>
           </motion.div>
         )}
 
         <div className="hlCases__head">
           <div>
             <motion.p className="hlKicker" variants={fadeUp}>
-              Медийна хроника
+              Последни новини
             </motion.p>
             <motion.h2 className="hlSectionTitle" variants={fadeUp}>
-              Видео и казуси в <em>жива емисия.</em>
+              Правни истории и <em>полезни позиции.</em>
             </motion.h2>
           </div>
         </div>

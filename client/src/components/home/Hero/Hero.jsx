@@ -9,7 +9,7 @@
 
 
       {
-        label: 'Виж казуси',
+        label: 'Последни новини',
         href: '#cases',
         Icon: ArrowRight,
         type: 'action',
@@ -61,7 +61,7 @@
                   </a>
 
                   <a className="hlHero__link" href="#cases">
-                    Виж казуси ↗
+                    Последни новини ↗
                   </a>
                 </motion.div>
 
@@ -122,7 +122,7 @@
     </a>
 
     <a className="hlHeroMobile__caseLink" href="#cases">
-      <span>Виж казуси</span>
+      <span>Последни новини</span>
       <ArrowRight size={18} strokeWidth={2} />
     </a>
   </div>
