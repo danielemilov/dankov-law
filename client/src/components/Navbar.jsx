@@ -268,6 +268,10 @@ export default function Navbar() {
 
   const closeMenu = () => setMenuOpen(false);
   const toggleMenu = () => setMenuOpen((value) => !value);
+  const resetHome = () => {
+    closeMenu();
+    window.dispatchEvent(new CustomEvent('dankov:reset-home'));
+  };
 
   return (
     <>
@@ -292,7 +296,7 @@ export default function Navbar() {
             <span className="navPrime__edge navPrime__edge--top" aria-hidden="true" />
             <span className="navPrime__edge navPrime__edge--bottom" aria-hidden="true" />
 
-            <a className="navPrime__brand" href="#home" onClick={closeMenu} aria-label="Към началото">
+            <a className="navPrime__brand" href="#home" onClick={resetHome} aria-label="Към началото">
               <span className="navPrime__photo">
                 <span className="navPrime__photoGlow" aria-hidden="true" />
                 <img src={LAWYER_PHOTO} alt="Адвокат Диян Данков" />

@@ -5,6 +5,7 @@ import rateLimit from 'express-rate-limit';
 import morgan from 'morgan';
 
 import bookingsRouter from './routes/bookings.js';
+import casesRouter from './routes/cases.js';
 import chatRouter from './routes/chat.js';
 import whatsappWebhookRouter from './routes/whatsappWebhook.js';
 import { notFound, errorHandler } from './middleware/errorHandler.js';
@@ -43,6 +44,7 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         'frame-src': ["'self'", 'https://www.google.com', 'https://maps.google.com'],
+        'img-src': ["'self'", 'data:', 'https://res.cloudinary.com'],
       },
     },
   })
@@ -79,6 +81,14 @@ const chatLimiter = rateLimit({
   message: { success: false, message: 'Твърде много съобщения. Опитайте след малко.' },
 });
 
+const casesLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 50,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: { success: false, message: 'Твърде много действия. Опитайте след малко.' },
+});
+
 app.get('/', (req, res) => {
   res.json({
     success: true,
@@ -112,6 +122,7 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/api/bookings', bookingLimiter, bookingsRouter);
+app.use('/api/cases', casesLimiter, casesRouter);
 app.use('/api/chat', chatLimiter, chatRouter);
 app.use('/api/webhooks/whatsapp', whatsappWebhookRouter);
 
