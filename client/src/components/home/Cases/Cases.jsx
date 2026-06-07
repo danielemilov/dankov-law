@@ -1,8 +1,16 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Heart, MessageCircle, SendHorizontal, X } from 'lucide-react';
+import {
+  ArrowLeft,
+  Copy,
+  MessageCircle,
+  Play,
+  SendHorizontal,
+  Share2,
+  X,
+} from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import api from '../../../lib/api.js';
-import { cases as fallbackCases } from '../_shared/homeData.js';
+import { cases as fallbackCases, videos } from '../_shared/homeData.js';
 import { fadeUp, pageStagger } from '../_shared/homeMotion.js';
 import './Cases.css';
 
@@ -17,9 +25,29 @@ function getCaseSessionId() {
 }
 
 function fallbackPosts() {
-  return fallbackCases.map((item, index) => ({
-    id: item.title,
+  const videoPosts = videos.map((item, index) => ({
+    id: `fallback-video-${index + 1}`,
+    slug: `fallback-video-${index + 1}`,
+    type: 'video',
+    title: item.headline.join(' '),
+    excerpt: item.lead,
+    body: item.lead,
+    category: item.label,
+    location: 'Разград',
+    publishedAt: index === 0 ? '2026-06-01' : '2026-05-25',
+    heroImage: {
+      url: index === 0 ? '/diyan-dankov.png' : '/diyan-dankovv.jpg',
+      alt: item.label,
+    },
+    video: item,
+    stats: { comments: 0 },
+    editorialNote: 'Видео',
+  }));
+
+  const casePosts = fallbackCases.map((item, index) => ({
+    id: `fallback-case-${index + 1}`,
     slug: `fallback-case-${index + 1}`,
+    type: 'article',
     title: item.title,
     excerpt: item.text,
     body: `${item.text}\n\nТози материал е обща информационна публикация. За конкретна преценка са важни документите, сроковете и точната хронология.`,
@@ -30,13 +58,11 @@ function fallbackPosts() {
       url: index === 0 ? '/diyan-dankov.png' : index === 1 ? '/diyan-dankovv.jpg' : '/diyan-dankov2.jpg',
       alt: item.title,
     },
-    stats: {
-      likes: 0,
-      comments: 0,
-    },
+    stats: { comments: 0 },
     editorialNote: index === 0 ? 'Последно добавено' : 'Казус',
-    liked: false,
   }));
+
+  return [...videoPosts, ...casePosts];
 }
 
 function formatDate(value) {
@@ -50,10 +76,82 @@ function formatDate(value) {
   }).format(date);
 }
 
-function CaseDetail({ post, comments, loading, onClose, onLike, onSubmitComment }) {
+function getPostUrl(slug) {
+  const origin = typeof window === 'undefined' ? '' : window.location.origin;
+  return `${origin}/?case=${encodeURIComponent(slug)}#cases`;
+}
+
+function MediaVisual({ post, compact = false, reader = false }) {
+  if (post.type === 'video' && post.video?.src) {
+    return (
+      <video
+        src={post.video.src}
+        autoPlay={!reader}
+        controls={reader}
+        muted
+        playsInline
+        loop
+        preload="metadata"
+        style={{ objectPosition: post.video.objectPosition || 'center center' }}
+      />
+    );
+  }
+
+  return (
+    <img
+      src={post.heroImage?.url || '/diyan-dankov.png'}
+      alt={post.heroImage?.alt || post.title}
+      loading={compact ? 'lazy' : 'eager'}
+    />
+  );
+}
+
+function ShareActions({ post, onCopy, copied }) {
+  const url = getPostUrl(post.slug);
+  const encodedUrl = encodeURIComponent(url);
+  const encodedTitle = encodeURIComponent(post.title);
+
+  return (
+    <div className="hlShareActions">
+      <button type="button" onClick={() => onCopy(url)}>
+        <Copy size={16} />
+        {copied ? 'Копирано' : 'Копирай линк'}
+      </button>
+      <a
+        href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <strong>in</strong>
+        LinkedIn
+      </a>
+      <a
+        href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedTitle}`}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <strong>f</strong>
+        Facebook
+      </a>
+    </div>
+  );
+}
+
+function CaseDetail({ post, comments, loading, onClose, onSubmitComment }) {
   const [displayName, setDisplayName] = useState(() => localStorage.getItem('dankov_case_name') || '');
   const [body, setBody] = useState('');
   const [error, setError] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  async function copyLink(url = getPostUrl(post.slug)) {
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    } catch {
+      setError('Не успях да копирам линка автоматично.');
+    }
+  }
 
   async function submit(event) {
     event.preventDefault();
@@ -75,56 +173,57 @@ function CaseDetail({ post, comments, loading, onClose, onLike, onSubmitComment 
     if (ok) {
       setBody('');
       setError('');
+    } else {
+      setError('Коментарът не беше публикуван. Опитайте пак след малко.');
     }
   }
 
   return (
     <motion.div
-      className="hlCaseModal"
+      className="hlCaseReader"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <button className="hlCaseModal__scrim" type="button" onClick={onClose} aria-label="Назад" />
-
       <motion.article
-        className="hlCaseModal__panel"
-        initial={{ opacity: 0, y: 34, scale: 0.985 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 18, scale: 0.985 }}
-        transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
+        className="hlCaseReader__panel"
+        initial={{ y: 28 }}
+        animate={{ y: 0 }}
+        exit={{ y: 18 }}
+        transition={{ duration: 0.36, ease: [0.16, 1, 0.3, 1] }}
       >
-        <div className="hlCaseModal__media">
-          <img src={post.heroImage?.url || '/diyan-dankov.png'} alt={post.heroImage?.alt || post.title} />
-          <button type="button" onClick={onClose} className="hlCaseModal__back">
+        <header className="hlCaseReader__bar">
+          <button type="button" onClick={onClose}>
             <ArrowLeft size={18} />
             Назад
           </button>
-          <button type="button" onClick={onClose} className="hlCaseModal__close" aria-label="Затвори">
-            <X size={22} />
+          <span>{post.type === 'video' ? 'Видео' : 'Новина'}</span>
+          <button type="button" onClick={onClose} aria-label="Затвори">
+            <X size={20} />
           </button>
+        </header>
+
+        <div className="hlCaseReader__media">
+          <MediaVisual post={post} reader />
+          {post.type === 'video' && (
+            <a href={post.video?.youtubeUrl || post.video?.src} target="_blank" rel="noreferrer">
+              <Play size={18} fill="currentColor" />
+              Гледай цялото видео
+            </a>
+          )}
         </div>
 
-        <div className="hlCaseModal__body">
-          <div className="hlCaseModal__meta">
-            <span>{post.category}</span>
+        <div className="hlCaseReader__content">
+          <div className="hlCaseReader__meta">
+            <strong>{post.category}</strong>
             <time>{formatDate(post.publishedAt)}</time>
           </div>
 
           <h3>{post.title}</h3>
-          <p className="hlCaseModal__lead">{post.excerpt}</p>
-          <p className="hlCaseModal__text">{post.body}</p>
+          <p className="hlCaseReader__lead">{post.excerpt}</p>
+          <p className="hlCaseReader__text">{post.body}</p>
 
-          <div className="hlCaseModal__actions">
-            <button type="button" onClick={onLike} className={post.liked ? 'is-liked' : ''}>
-              <Heart size={18} fill={post.liked ? 'currentColor' : 'none'} />
-              {post.stats?.likes || 0}
-            </button>
-            <span>
-              <MessageCircle size={18} />
-              {post.stats?.comments || comments.length || 0}
-            </span>
-          </div>
+          <ShareActions post={post} onCopy={copyLink} copied={copied} />
 
           <section className="hlCaseComments">
             <div className="hlCaseComments__head">
@@ -176,13 +275,14 @@ function CaseDetail({ post, comments, loading, onClose, onLike, onSubmitComment 
 
 export default function Cases() {
   const [posts, setPosts] = useState(() => fallbackPosts());
-  const [activeIndex, setActiveIndex] = useState(0);
   const [selected, setSelected] = useState(null);
   const [comments, setComments] = useState([]);
   const [commentsLoading, setCommentsLoading] = useState(false);
+  const [copiedSlug, setCopiedSlug] = useState('');
   const [sessionId] = useState(getCaseSessionId);
 
-  const activePost = posts[activeIndex] || posts[0];
+  const featured = posts[0];
+  const rest = posts.slice(1);
 
   useEffect(() => {
     let cancelled = false;
@@ -194,7 +294,6 @@ export default function Cases() {
         });
         if (!cancelled && response.data?.posts?.length) {
           setPosts(response.data.posts);
-          setActiveIndex(0);
         }
       } catch {
         // Keep local editorial fallback.
@@ -207,6 +306,14 @@ export default function Cases() {
       cancelled = true;
     };
   }, [sessionId]);
+
+  useEffect(() => {
+    if (!posts.length) return;
+    const slug = new URLSearchParams(window.location.search).get('case');
+    if (!slug || selected) return;
+    const found = posts.find((post) => post.slug === slug);
+    if (found) setSelected(found);
+  }, [posts, selected]);
 
   useEffect(() => {
     if (!selected) return undefined;
@@ -229,6 +336,9 @@ export default function Cases() {
       }
     }
 
+    const params = new URLSearchParams(window.location.search);
+    params.set('case', selected.slug);
+    window.history.replaceState(null, '', `?${params.toString()}#cases`);
     loadCase();
 
     return () => {
@@ -236,62 +346,22 @@ export default function Cases() {
     };
   }, [selected?.slug, sessionId]);
 
-  const railStyle = useMemo(
-    () => ({
-      transform: `translateX(calc(${activeIndex} * -100%))`,
-    }),
-    [activeIndex]
-  );
-
-  function move(direction) {
-    setActiveIndex((value) => {
-      const next = value + direction;
-      if (next < 0) return posts.length - 1;
-      if (next >= posts.length) return 0;
-      return next;
+  function closeReader() {
+    setSelected(null);
+    setComments([]);
+    window.history.replaceState(null, '', `${window.location.pathname}#cases`);
+    window.requestAnimationFrame(() => {
+      document.querySelector('#cases')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }
 
-  async function likePost(slug = selected?.slug) {
-    if (!slug) return;
-
-    setPosts((current) =>
-      current.map((post) =>
-        post.slug === slug && !post.liked
-          ? { ...post, liked: true, stats: { ...post.stats, likes: (post.stats?.likes || 0) + 1 } }
-          : post
-      )
-    );
-    if (selected?.slug === slug && !selected.liked) {
-      setSelected((post) => ({
-        ...post,
-        liked: true,
-        stats: { ...post.stats, likes: (post.stats?.likes || 0) + 1 },
-      }));
-    }
-
+  async function copyPostLink(post) {
     try {
-      const response = await api.post(`/api/cases/${slug}/like`, {
-        sessionId,
-        fingerprint: navigator.userAgent.slice(0, 160),
-      });
-
-      setPosts((current) =>
-        current.map((post) =>
-          post.slug === slug
-            ? { ...post, liked: true, stats: { ...post.stats, likes: response.data.likes } }
-            : post
-        )
-      );
-      if (selected?.slug === slug) {
-        setSelected((post) => ({
-          ...post,
-          liked: true,
-          stats: { ...post.stats, likes: response.data.likes },
-        }));
-      }
+      await navigator.clipboard.writeText(getPostUrl(post.slug));
+      setCopiedSlug(post.slug);
+      window.setTimeout(() => setCopiedSlug(''), 1500);
     } catch {
-      // Optimistic like remains local; backend uniqueness prevents duplicates.
+      setCopiedSlug('');
     }
   }
 
@@ -334,74 +404,95 @@ export default function Cases() {
         <div className="hlCases__head">
           <div>
             <motion.p className="hlKicker" variants={fadeUp}>
-              Последни казуси
+              Медийна хроника
             </motion.p>
             <motion.h2 className="hlSectionTitle" variants={fadeUp}>
-              Правни истории като <em>медийна хроника.</em>
+              Видео и казуси в <em>жива емисия.</em>
             </motion.h2>
           </div>
-
-          <motion.div className="hlCases__controls" variants={fadeUp}>
-            <button type="button" onClick={() => move(-1)} aria-label="Предишна новина">
-              <ArrowLeft size={18} />
-            </button>
-            <button type="button" onClick={() => move(1)} aria-label="Следваща новина">
-              <ArrowRight size={18} />
-            </button>
-          </motion.div>
         </div>
 
-        <motion.div className="hlCasesTicker" variants={fadeUp}>
-          <span>последно добавено</span>
-          <div>
-            <p>{activePost?.title}</p>
-            <p>{activePost?.title}</p>
-          </div>
-        </motion.div>
+        {featured && (
+          <motion.article className="hlFeaturedStory" variants={fadeUp}>
+            <button type="button" onClick={() => setSelected(featured)}>
+              <span className="hlFeaturedStory__visual">
+                <MediaVisual post={featured} />
+                <i>
+                  {featured.type === 'video' ? <Play size={15} fill="currentColor" /> : null}
+                  {featured.editorialNote || (featured.type === 'video' ? 'Видео' : 'Последно добавено')}
+                </i>
+              </span>
+              <span className="hlFeaturedStory__content">
+                <span className="hlStoryMeta">
+                  <strong>{featured.category}</strong>
+                  <time>{formatDate(featured.publishedAt)}</time>
+                </span>
+                <span className="hlFeaturedStory__title">{featured.title}</span>
+                <span className="hlFeaturedStory__excerpt">{featured.excerpt}</span>
+                <span className="hlStoryActions">
+                  <span>
+                    <MessageCircle size={16} />
+                    {featured.stats?.comments || 0}
+                  </span>
+                  <em>Отвори</em>
+                </span>
+              </span>
+            </button>
+          </motion.article>
+        )}
 
-        <div className="hlCasesCarousel">
-          <div className="hlCasesCarousel__rail" style={railStyle}>
-            {posts.map((post) => (
-              <article className="hlMediaCard" key={post.slug}>
-                <button type="button" onClick={() => setSelected(post)}>
-                  <span className="hlMediaCard__image">
-                    <img src={post.heroImage?.url || '/diyan-dankov.png'} alt={post.heroImage?.alt || post.title} />
-                    <i>{post.editorialNote || 'Казус'}</i>
+        <div className="hlStoryFeed">
+          {rest.map((post, index) => (
+            <motion.article className="hlStoryCard" key={post.slug} variants={fadeUp}>
+              <button type="button" onClick={() => setSelected(post)}>
+                <span className="hlStoryCard__visual">
+                  <MediaVisual post={post} compact />
+                  {post.type === 'video' && (
+                    <i>
+                      <Play size={16} fill="currentColor" />
+                    </i>
+                  )}
+                </span>
+                <span className="hlStoryCard__content">
+                  <span className="hlStoryMeta">
+                    <strong>{post.category}</strong>
+                    <time>{formatDate(post.publishedAt)}</time>
                   </span>
-                  <span className="hlMediaCard__content">
-                    <span className="hlMediaCard__meta">
-                      <strong>{post.category}</strong>
-                      <time>{formatDate(post.publishedAt)}</time>
+                  <span className="hlStoryCard__title">{post.title}</span>
+                  <span className="hlStoryCard__excerpt">{post.excerpt}</span>
+                  <span className="hlStoryActions">
+                    <span>
+                      <MessageCircle size={16} />
+                      {post.stats?.comments || 0}
                     </span>
-                    <span className="hlMediaCard__title">{post.title}</span>
-                    <span className="hlMediaCard__excerpt">{post.excerpt}</span>
-                    <span className="hlMediaCard__footer">
-                      <span>
-                        <Heart size={16} fill={post.liked ? 'currentColor' : 'none'} />
-                        {post.stats?.likes || 0}
-                      </span>
-                      <span>
-                        <MessageCircle size={16} />
-                        {post.stats?.comments || 0}
-                      </span>
-                      <em>Отвори</em>
-                    </span>
+                    <em>Отвори</em>
                   </span>
+                </span>
+              </button>
+
+              <div className="hlStoryCard__share">
+                <button type="button" onClick={() => copyPostLink(post)}>
+                  <Share2 size={15} />
+                  {copiedSlug === post.slug ? 'Копирано' : 'Share'}
                 </button>
-              </article>
-            ))}
-          </div>
-        </div>
-
-        <div className="hlCasesDots" aria-label="Избор на новина">
-          {posts.map((post, index) => (
-            <button
-              type="button"
-              key={post.slug}
-              className={index === activeIndex ? 'is-active' : ''}
-              onClick={() => setActiveIndex(index)}
-              aria-label={`Новина ${index + 1}`}
-            />
+                <a
+                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(getPostUrl(post.slug))}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Сподели в LinkedIn"
+                >
+                  <strong>in</strong>
+                </a>
+                <a
+                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(getPostUrl(post.slug))}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Сподели във Facebook"
+                >
+                  <strong>f</strong>
+                </a>
+              </div>
+            </motion.article>
           ))}
         </div>
       </motion.div>
@@ -412,8 +503,7 @@ export default function Cases() {
             post={selected}
             comments={comments}
             loading={commentsLoading}
-            onClose={() => setSelected(null)}
-            onLike={() => likePost(selected.slug)}
+            onClose={closeReader}
             onSubmitComment={submitComment}
           />
         )}

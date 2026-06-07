@@ -6,6 +6,7 @@ const casePostSchema = new mongoose.Schema(
     title: { type: String, required: true, trim: true, maxlength: 180 },
     excerpt: { type: String, required: true, trim: true, maxlength: 420 },
     body: { type: String, required: true, trim: true, maxlength: 6000 },
+    type: { type: String, enum: ['article', 'video'], default: 'article', index: true },
     category: { type: String, required: true, trim: true, maxlength: 80, index: true },
     location: { type: String, trim: true, maxlength: 80, default: 'България' },
     publishedAt: { type: Date, default: Date.now, index: true },
@@ -17,8 +18,14 @@ const casePostSchema = new mongoose.Schema(
       publicId: { type: String, trim: true, default: '' },
     },
     stats: {
-      likes: { type: Number, default: 0, min: 0 },
       comments: { type: Number, default: 0, min: 0 },
+    },
+    video: {
+      src: { type: String, trim: true, default: '' },
+      youtubeUrl: { type: String, trim: true, default: '' },
+      startAt: { type: Number, default: 0, min: 0 },
+      endAt: { type: Number, default: 0, min: 0 },
+      objectPosition: { type: String, trim: true, default: 'center center' },
     },
     featured: { type: Boolean, default: true, index: true },
     editorialNote: { type: String, trim: true, maxlength: 300, default: '' },

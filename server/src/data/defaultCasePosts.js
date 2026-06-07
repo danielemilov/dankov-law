@@ -1,6 +1,58 @@
 export const defaultCasePosts = [
   {
+    slug: 'video-malki-istorii-prava',
+    type: 'video',
+    title: 'Има правила, има и права',
+    excerpt:
+      'Видео история за личното преживяване, несправедливостта и защо правната реакция има човешко лице.',
+    body:
+      'Видео материал от поредицата „Малки истории“. Темата е човешката страна на правото: защо сроковете, документите и ясната позиция имат значение, когато човек се сблъска с институция, работодател или публична несправедливост.',
+    category: 'Видео',
+    location: 'Разград',
+    publishedAt: new Date('2026-06-01T09:00:00.000Z'),
+    heroImage: {
+      url: '/diyan-dankov.png',
+      alt: 'Видео - Има правила, има и права',
+      provider: 'local',
+      publicId: '',
+    },
+    video: {
+      src: '/video-1-web.mp4',
+      youtubeUrl: 'https://www.youtube.com/watch?v=Qu4e-WKOZ6Y',
+      startAt: 7 * 60 + 59,
+      endAt: 8 * 60 + 65,
+      objectPosition: 'center center',
+    },
+    editorialNote: 'Видео',
+  },
+  {
+    slug: 'video-pravoto-ima-choveshko-litse',
+    type: 'video',
+    title: 'Правото има човешко лице',
+    excerpt:
+      'Юридическата защита не е само процедура. Тя е подготовка, позиция и ясна реакция.',
+    body:
+      'Видео за професията, каузата и нуждата от навременна правна ориентация. Материалът е част от публичната медийна хроника на кантората.',
+    category: 'Видео',
+    location: 'Разград',
+    publishedAt: new Date('2026-05-25T09:00:00.000Z'),
+    heroImage: {
+      url: '/diyan-dankovv.jpg',
+      alt: 'Видео - Правото има човешко лице',
+      provider: 'local',
+      publicId: '',
+    },
+    video: {
+      src: '/video-2-web.mp4',
+      youtubeUrl: 'https://www.youtube.com/watch?v=4Cd8XbMtMO8',
+      startAt: 2 * 60 + 30,
+      objectPosition: 'center center',
+    },
+    editorialNote: 'Видео',
+  },
+  {
     slug: 'nezakonno-uvolnenie-vratsa',
+    type: 'article',
     title: 'Победа за Митко: незаконно уволнение във Враца',
     excerpt:
       'Съдът приема, че заповедта е немотивирана, процедурата е прибързана, а дисциплинарното уволнение е несъразмерно.',
