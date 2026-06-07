@@ -8,7 +8,7 @@ import {
   Share2,
   X,
 } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import api from '../../../lib/api.js';
 import { cases as fallbackCases, videos } from '../_shared/homeData.js';
 import { fadeUp, pageStagger } from '../_shared/homeMotion.js';
@@ -118,6 +118,7 @@ function ShareActions({ post, onCopy, copied }) {
         {copied ? 'Копирано' : 'Копирай линк'}
       </button>
       <a
+        className="hlShareBrand hlShareBrand--linkedin"
         href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`}
         target="_blank"
         rel="noreferrer"
@@ -126,6 +127,7 @@ function ShareActions({ post, onCopy, copied }) {
         LinkedIn
       </a>
       <a
+        className="hlShareBrand hlShareBrand--facebook"
         href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedTitle}`}
         target="_blank"
         rel="noreferrer"
@@ -275,7 +277,7 @@ function CaseDetail({ post, comments, loading, onClose, onSubmitComment }) {
   );
 }
 
-export default function Cases() {
+export default function Cases({ pageMode = false, onBack }) {
   const [posts, setPosts] = useState(() => fallbackPosts());
   const [selected, setSelected] = useState(null);
   const [returnScrollY, setReturnScrollY] = useState(0);
@@ -286,6 +288,18 @@ export default function Cases() {
 
   const featured = posts[0];
   const rest = posts.slice(1);
+
+  function closePage() {
+    if (onBack) {
+      onBack();
+      return;
+    }
+
+    window.history.pushState(null, '', '#home');
+    window.requestAnimationFrame(() => {
+      document.querySelector('#home')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
 
   function openPost(post) {
     setReturnScrollY(window.scrollY);
@@ -452,7 +466,7 @@ export default function Cases() {
   }
 
   return (
-    <section className="hlSection hlCases" id="cases">
+    <section className={`hlSection hlCases ${pageMode ? 'hlCases--page' : ''}`} id="cases">
       <motion.div
         className="hlCases__shell"
         variants={pageStagger}
@@ -460,6 +474,16 @@ export default function Cases() {
         whileInView="show"
         viewport={{ once: true, amount: 0.16 }}
       >
+        {pageMode && (
+          <motion.div className="hlCasesPageBar" variants={fadeUp}>
+            <button type="button" onClick={closePage}>
+              <ArrowLeft size={18} />
+              Назад
+            </button>
+            <span>Медийна хроника</span>
+          </motion.div>
+        )}
+
         <div className="hlCases__head">
           <div>
             <motion.p className="hlKicker" variants={fadeUp}>
@@ -539,6 +563,7 @@ export default function Cases() {
                   {copiedSlug === post.slug ? 'Копирано' : 'Share'}
                 </button>
                 <a
+                  className="hlShareBrand hlShareBrand--linkedin"
                   href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(getPostUrl(post.slug))}`}
                   target="_blank"
                   rel="noreferrer"
@@ -547,6 +572,7 @@ export default function Cases() {
                   <strong>in</strong>
                 </a>
                 <a
+                  className="hlShareBrand hlShareBrand--facebook"
                   href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(getPostUrl(post.slug))}`}
                   target="_blank"
                   rel="noreferrer"
