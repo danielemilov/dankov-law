@@ -350,7 +350,13 @@ router.post('/contact', validateBody(contactCaptureInput), asyncHandler(async (r
     .sort({ createdAt: 1 })
     .lean();
 
-  const shouldSendLeadToLawyer = !alreadyNotified || !hadContactBefore;
+  const contactChanged =
+    cleanVisitor.name !== (previousVisitor.name || '') ||
+    cleanVisitor.email !== (previousVisitor.email || '') ||
+    cleanVisitor.phone !== (previousVisitor.phone || '');
+
+  const shouldSendLeadToLawyer =
+    Boolean(process.env.WEB3FORMS_ACCESS_KEY) || !alreadyNotified || !hadContactBefore || contactChanged;
   let leadNotification = null;
   let clientConfirmationSent = false;
 
