@@ -1723,3 +1723,18 @@ body.nav-menu-open .navPrimeMobile {
     display: none !important;
   }
 }
+
+@media (max-width: 720px) {
+  body.mobile-section-page-open .navPrime,
+  body.case-reader-open .navPrime {
+    opacity: 0 !important;
+    transform: translateY(-18px) !important;
+    pointer-events: none !important;
+  }
+
+  body.mobile-section-page-open .chat,
+  body.case-reader-open .chat {
+    opacity: 0;
+    pointer-events: none;
+  }
+}

@@ -48,6 +48,39 @@
   align-items: start;
 }
 
+.hlContact--page {
+  min-height: 100dvh;
+}
+
+.hlContactPageBar {
+  display: none;
+}
+
+.hlContactPageBar button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  background: linear-gradient(135deg, #151a3f, #27321d);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.hlContactPageBar span {
+  padding-right: 14px;
+  color: rgba(13, 20, 15, 0.56);
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .hlContact__intro {
   min-width: 0;
 }
@@ -132,6 +165,31 @@
   .hlContact {
     padding-top: 74px;
     padding-bottom: 82px;
+  }
+
+  .hlContact--page {
+    padding-top: max(18px, env(safe-area-inset-top));
+  }
+
+  .hlContact--page .hlContactPageBar {
+    position: sticky;
+    top: max(10px, env(safe-area-inset-top));
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    width: min(100% - 28px, 560px);
+    margin: 0 auto 18px;
+    padding: 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(17, 22, 17, 0.08);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(244, 249, 232, 0.84));
+    box-shadow:
+      0 18px 44px rgba(12, 18, 13, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.92);
+    -webkit-backdrop-filter: blur(18px) saturate(1.08);
+    backdrop-filter: blur(18px) saturate(1.08);
   }
 
   .hlContact__intro > .hlSectionTitle {

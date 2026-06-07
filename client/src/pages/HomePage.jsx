@@ -165,10 +165,37 @@ export default function HomePage() {
     });
   }
 
+  function closeMobileContact() {
+    setMobileCasesVisible(false);
+    setMobileContactVisible(false);
+    window.history.pushState(null, '', '#home');
+    window.requestAnimationFrame(() => {
+      document.querySelector('#home')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  const showMobileContactPage = typeof window !== 'undefined' && isMobileContactViewport() && mobileContactVisible;
+
+  useEffect(() => {
+    document.body.classList.toggle('mobile-section-page-open', mobileCasesVisible || showMobileContactPage);
+
+    return () => {
+      document.body.classList.remove('mobile-section-page-open');
+    };
+  }, [mobileCasesVisible, showMobileContactPage]);
+
   if (mobileCasesVisible) {
     return (
       <main className="hlHome">
         <Cases pageMode onBack={closeMobileCases} />
+      </main>
+    );
+  }
+
+  if (showMobileContactPage) {
+    return (
+      <main className="hlHome">
+        <Contact pageMode onBack={closeMobileContact} />
       </main>
     );
   }

@@ -1,14 +1,30 @@
 import { motion } from 'framer-motion';
+import { ArrowLeft } from 'lucide-react';
 import BookingForm from '../../BookingForm.jsx';
 import { fadeUp, pageStagger } from '../_shared/homeMotion.js';
 import './Contact.css';
 
-export default function Contact() {
+export default function Contact({ pageMode = false, onBack }) {
   const mapQuery = encodeURIComponent('ул. Осъм 4, ет. 3, офис 321, Разград 7200, България');
   const mapSrc = `https://maps.google.com/maps?hl=bg&q=${mapQuery}&z=17&ie=UTF8&iwloc=&output=embed`;
 
   return (
-    <section className="hlSection hlContact" id="contact">
+    <section className={`hlSection hlContact ${pageMode ? 'hlContact--page' : ''}`} id="contact">
+      {pageMode && (
+        <motion.div
+          className="hlContactPageBar"
+          variants={fadeUp}
+          initial="hidden"
+          animate="show"
+        >
+          <button type="button" onClick={onBack}>
+            <ArrowLeft size={18} />
+            Назад
+          </button>
+          <span>Контакт</span>
+        </motion.div>
+      )}
+
       <div className="hlContact__grid">
         <motion.div
           className="hlContact__intro"
