@@ -1,0 +1,554 @@
+
+/* =========================================================
+   PageBackButton.css
+
+   One shared visual language for all internal-page arrows.
+
+   Placements:
+   - inside
+   - edge
+   - compact
+   - inline
+
+   Important:
+   "inline" changes only positioning.
+   It does NOT use a different visual design.
+========================================================= */
+
+.pageBackControl,
+.pageBackControl * {
+  box-sizing: border-box;
+}
+
+.pageBackControl {
+  position: absolute;
+  z-index: 40;
+
+  width: 42px;
+  height: 42px;
+
+  pointer-events: none;
+}
+
+/* =========================================================
+   Placements
+========================================================= */
+
+.pageBackControl--inside {
+  top: clamp(14px, 1.8vw, 22px);
+  left: clamp(14px, 1.8vw, 22px);
+}
+
+.pageBackControl--edge {
+  top: clamp(20px, 2.4vw, 30px);
+  left: 0;
+
+  transform: translateX(-50%);
+}
+
+.pageBackControl--compact {
+  top: 12px;
+  left: 12px;
+
+  width: 38px;
+  height: 38px;
+}
+
+/*
+  Inline participates naturally in the kicker row.
+  It has the same visual treatment as every other arrow.
+*/
+
+
+/* =========================================================
+   Main glass button
+========================================================= */
+
+.pageBackButton {
+  position: relative;
+  isolation: isolate;
+
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+
+  padding: 0;
+  overflow: visible;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.3);
+
+  border-radius: 50%;
+
+  color:
+    rgba(255, 255, 255, 0.98);
+
+  background:
+    radial-gradient(
+      circle at 27% 17%,
+      rgba(255, 255, 255, 0.25),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 78% 82%,
+      rgba(177, 205, 126, 0.11),
+      transparent 42%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(13, 20, 57, 0.9),
+      rgba(19, 30, 45, 0.8)
+    );
+
+  -webkit-backdrop-filter:
+    blur(18px)
+    saturate(1.18);
+
+  backdrop-filter:
+    blur(18px)
+    saturate(1.18);
+
+  box-shadow:
+    0 15px 36px
+    rgba(7, 12, 38, 0.25),
+    0 5px 14px
+    rgba(7, 12, 38, 0.12),
+    0 0 0 1px
+    rgba(255, 255, 255, 0.045),
+    inset 0 1px 0
+    rgba(255, 255, 255, 0.25),
+    inset 0 -1px 0
+    rgba(0, 0, 0, 0.16);
+
+  cursor: pointer;
+  pointer-events: auto;
+
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 200ms ease,
+    filter 180ms ease;
+}
+
+.pageBackButton::before {
+  content: '';
+
+  position: absolute;
+  inset: -6px;
+  z-index: -2;
+
+  border-radius: inherit;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(112, 133, 207, 0.18),
+      rgba(218, 235, 158, 0.07) 42%,
+      transparent 72%
+    );
+
+  filter: blur(9px);
+
+  opacity: 0;
+
+  transition:
+    opacity 180ms ease;
+}
+
+.pageBackButton::after {
+  content: '';
+
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+
+  border-radius: inherit;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.18),
+      transparent 38%,
+      transparent 68%,
+      rgba(255, 255, 255, 0.035)
+    );
+}
+
+/* =========================================================
+   Decorative layers
+========================================================= */
+
+.pageBackButton__glow {
+  position: absolute;
+  inset: 5px;
+  z-index: -1;
+
+  border-radius: inherit;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(255, 255, 255, 0.11),
+      transparent 70%
+    );
+
+  opacity: 0.72;
+
+  transition:
+    opacity 180ms ease,
+    transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pageBackButton__shine {
+  position: absolute;
+  top: 4px;
+  left: 8px;
+
+  width: 15px;
+  height: 8px;
+
+  border-radius: 999px;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.46),
+      transparent
+    );
+
+  filter: blur(2px);
+
+  opacity: 0.65;
+
+  transform:
+    rotate(-24deg);
+
+  transition:
+    opacity 180ms ease,
+    transform 220ms ease;
+}
+
+.pageBackButton__icon {
+  position: relative;
+  z-index: 2;
+
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+
+  color: inherit;
+
+  filter:
+    drop-shadow(
+      0 3px 8px
+      rgba(0, 0, 0, 0.34)
+    );
+}
+
+.pageBackButton__icon svg {
+  display: block;
+
+  transition:
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* =========================================================
+   Tooltip
+========================================================= */
+
+.pageBackButton__tooltip {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 10px);
+  z-index: 50;
+
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+
+  padding:
+    0
+    11px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.16);
+
+  border-radius: 999px;
+
+  color:
+    rgba(255, 255, 255, 0.94);
+
+  background:
+    rgba(8, 13, 38, 0.82);
+
+  -webkit-backdrop-filter:
+    blur(15px)
+    saturate(1.12);
+
+  backdrop-filter:
+    blur(15px)
+    saturate(1.12);
+
+  box-shadow:
+    0 12px 30px
+    rgba(3, 6, 20, 0.22);
+
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+
+  white-space: nowrap;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transform:
+    translate(
+      -4px,
+      -50%
+    );
+
+  transition:
+    opacity 160ms ease,
+    visibility 160ms ease,
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/*
+  Inline is positioned beside text, so the tooltip would
+  cover the kicker. We hide only the tooltip, not the design.
+*/
+.pageBackButton__tooltip {
+  display: none;
+}
+
+/* =========================================================
+   Interactions
+========================================================= */
+
+.pageBackButton:hover,
+.pageBackButton:focus-visible {
+  border-color:
+    rgba(255, 255, 255, 0.46);
+
+  background:
+    radial-gradient(
+      circle at 27% 17%,
+      rgba(255, 255, 255, 0.31),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 78% 82%,
+      rgba(177, 205, 126, 0.16),
+      transparent 42%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(13, 20, 57, 0.98),
+      rgba(20, 33, 48, 0.92)
+    );
+
+  box-shadow:
+    0 19px 44px
+    rgba(7, 12, 38, 0.32),
+    0 7px 17px
+    rgba(7, 12, 38, 0.16),
+    0 0 26px
+    rgba(116, 138, 208, 0.08),
+    inset 0 1px 0
+    rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0
+    rgba(0, 0, 0, 0.18);
+}
+
+.pageBackButton:hover::before,
+.pageBackButton:focus-visible::before {
+  opacity: 1;
+}
+
+.pageBackButton:hover
+.pageBackButton__glow,
+.pageBackButton:focus-visible
+.pageBackButton__glow {
+  opacity: 1;
+
+  transform:
+    scale(1.08);
+}
+
+.pageBackButton:hover
+.pageBackButton__shine,
+.pageBackButton:focus-visible
+.pageBackButton__shine {
+  opacity: 0.9;
+
+  transform:
+    translateX(2px)
+    rotate(-24deg);
+}
+
+.pageBackButton:hover
+.pageBackButton__icon svg,
+.pageBackButton:focus-visible
+.pageBackButton__icon svg {
+  transform:
+    translateX(-2px);
+}
+
+.pageBackButton:hover
+.pageBackButton__tooltip,
+.pageBackButton:focus-visible
+.pageBackButton__tooltip {
+  opacity: 1;
+  visibility: visible;
+
+  transform:
+    translate(
+      0,
+      -50%
+    );
+}
+
+.pageBackButton:focus-visible {
+  outline:
+    3px solid
+    rgba(91, 111, 180, 0.24);
+
+  outline-offset: 4px;
+}
+
+.pageBackButton:disabled {
+  opacity: 0.46;
+
+  cursor: not-allowed;
+
+  filter:
+    grayscale(0.25);
+}
+
+/* =========================================================
+   Tablet
+========================================================= */
+
+@media (max-width: 920px) {
+  .pageBackControl--edge {
+    top: 16px;
+    left: 16px;
+
+    transform: none;
+  }
+}
+
+/* =========================================================
+   Mobile
+========================================================= */
+
+@media (max-width: 720px) {
+  .pageBackControl--inside,
+  .pageBackControl--edge {
+    top: 12px;
+    left: 12px;
+
+    width: 38px;
+    height: 38px;
+
+    transform: none;
+  }
+
+  .pageBackControl--compact {
+    top: 12px;
+    left: 12px;
+
+    width: 36px;
+    height: 36px;
+  }
+
+
+  .pageBackButton {
+    box-shadow:
+      0 12px 29px
+      rgba(7, 12, 38, 0.25),
+      0 4px 12px
+      rgba(7, 12, 38, 0.12),
+      inset 0 1px 0
+      rgba(255, 255, 255, 0.24);
+  }
+
+  .pageBackButton__tooltip {
+    display: none;
+  }
+
+  .pageBackButton__icon svg {
+    width: 17px;
+    height: 17px;
+  }
+}
+
+/* =========================================================
+   Small phones
+========================================================= */
+
+@media (max-width: 390px) {
+  .pageBackControl--inside,
+  .pageBackControl--edge {
+    top: 10px;
+    left: 10px;
+
+    width: 36px;
+    height: 36px;
+  }
+
+  .pageBackControl--compact {
+    top: 10px;
+    left: 10px;
+
+    width: 34px;
+    height: 34px;
+  }
+
+
+}
+
+/* =========================================================
+   Reduced motion
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .pageBackButton,
+  .pageBackButton::before,
+  .pageBackButton__glow,
+  .pageBackButton__shine,
+  .pageBackButton__icon svg,
+  .pageBackButton__tooltip {
+    animation: none !important;
+
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.pageBackControl--inline {
+  position: relative;
+  top: auto;
+  left: auto;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  transform: none;
+}
