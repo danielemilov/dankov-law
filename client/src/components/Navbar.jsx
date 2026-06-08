@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import './Navbar.css';
 
 const LAWYER_PHOTO = '/diyan-dankovv.jpg';
@@ -238,6 +239,7 @@ const ctaVariants = {
 };
 
 export default function Navbar() {
+  const navigate = useNavigate();
   const rootRef = useRef(null);
 
   const [scrolled, setScrolled] = useState(false);
@@ -296,27 +298,22 @@ export default function Navbar() {
     );
   };
 
-  const resetHome = (event) => {
+  const navigateFromNavbar = (event, href) => {
     event?.preventDefault();
 
     closeMenu();
 
-    if (window.location.pathname !== '/') {
-      window.location.assign('/');
-      return;
+    if (href === '/') {
+      window.dispatchEvent(
+        new CustomEvent('dankov:reset-home')
+      );
     }
 
-    window.dispatchEvent(
-      new CustomEvent('dankov:reset-home')
-    );
-
-    window.history.pushState(null, '', '#home');
-
-    window.requestAnimationFrame(() => {
-      document.querySelector('#home')?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
+    navigate(href, {
+      state: {
+        navigationSource: 'navbar',
+        navigationRequestId: `${Date.now()}-${Math.random()}`,
+      },
     });
   };
 
@@ -379,7 +376,8 @@ export default function Navbar() {
             <a
               className="navPrime__brand"
               href="/"
-              onClick={resetHome}
+              onClick={(event) => navigateFromNavbar(event, '/')}
+              data-navigation-source="navbar"
               aria-label="Към официалната начална страница"
             >
               <span className="navPrime__photo">
@@ -425,11 +423,12 @@ export default function Navbar() {
                   className="navPrime__link"
                   key={`${link.label}-${link.href}`}
                   href={link.href}
-                  onClick={
+                  onClick={(event) =>
                     link.action === 'chat'
-                      ? openChat
-                      : closeMenu
+                      ? openChat(event)
+                      : navigateFromNavbar(event, link.href)
                   }
+                  data-navigation-source="navbar"
                 >
                   <span
                     className="navPrime__linkFill"
@@ -447,6 +446,10 @@ export default function Navbar() {
               <a
                 className="navPrime__cta"
                 href="/kontakt#booking"
+                onClick={(event) =>
+                  navigateFromNavbar(event, '/kontakt#booking')
+                }
+                data-navigation-source="navbar"
               >
                 <span
                   className="navPrime__ctaShine"
@@ -568,11 +571,12 @@ export default function Navbar() {
                   <motion.a
                     key={`${link.label}-${link.href}`}
                     href={link.href}
-                    onClick={
+                    onClick={(event) =>
                       link.action === 'chat'
-                        ? openChat
-                        : closeMenu
+                        ? openChat(event)
+                        : navigateFromNavbar(event, link.href)
                     }
+                    data-navigation-source="navbar"
                     custom={index}
                     variants={linkVariants}
                     initial="hidden"
@@ -589,7 +593,10 @@ export default function Navbar() {
               <motion.a
                 className="navPrimeMobile__cta"
                 href="/kontakt#booking"
-                onClick={closeMenu}
+                onClick={(event) =>
+                  navigateFromNavbar(event, '/kontakt#booking')
+                }
+                data-navigation-source="navbar"
                 variants={ctaVariants}
                 initial="hidden"
                 animate="visible"

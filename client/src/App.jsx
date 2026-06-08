@@ -1,10 +1,15 @@
-import { Route, Routes } from 'react-router-dom';
+import {
+  Route,
+  Routes,
+} from 'react-router-dom';
+
 import { Toaster } from 'react-hot-toast';
 
 import Navbar from './components/Navbar';
 import ChatWidget from './components/ChatWidget';
 import CookieBanner from './components/CookieBanner';
 import BrandIntroLoader from './components/BrandIntroLoader.jsx';
+import ScrollRestoration from './components/ScrollRestoration.jsx';
 
 import HomePage from './pages/HomePage';
 import PrivacyPage from './pages/PrivatePage';
@@ -15,20 +20,46 @@ import ContactPage from './pages/ContactPage.jsx';
 export default function App() {
   return (
     <>
+      <ScrollRestoration />
+
       <BrandIntroLoader oncePerSession />
 
       <Navbar />
 
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/za-advokata" element={<AboutPage />} />
-        <Route path="/novini" element={<NewsPage />} />
-        <Route path="/novini/:slug" element={<NewsPage />} />
-        <Route path="/kontakt" element={<ContactPage />} />
-        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route
+          path="/"
+          element={<HomePage />}
+        />
+
+        <Route
+          path="/za-advokata"
+          element={<AboutPage />}
+        />
+
+        <Route
+          path="/novini"
+          element={<NewsPage />}
+        />
+
+        <Route
+          path="/novini/:slug"
+          element={<NewsPage />}
+        />
+
+        <Route
+          path="/kontakt"
+          element={<ContactPage />}
+        />
+
+        <Route
+          path="/privacy"
+          element={<PrivacyPage />}
+        />
       </Routes>
 
       <ChatWidget />
+
       <CookieBanner />
 
       <Toaster

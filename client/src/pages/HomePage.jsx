@@ -160,16 +160,32 @@ export default function HomePage() {
       revealCases({ shouldScroll: true });
     }
 
-    function handleHomeLinkClick(event) {
-      const link = event.target.closest?.('a[href="#home"], a[href="/"], a[href="./"]');
-      if (!link || !isMobileContactViewport()) return;
+   function handleHomeLinkClick(event) {
+  const link = event.target.closest?.(
+    'a[href="#home"], a[href="/"], a[href="./"]'
+  );
 
-      event.preventDefault();
-      if (window.location.hash !== '#home') {
-        window.history.pushState(null, '', '#home');
-      }
-      resetMobileHome({ shouldScroll: true });
-    }
+  if (!link || !isMobileContactViewport()) return;
+
+  /*
+   * Navbar управлява собствената си fresh navigation.
+   * Не позволяваме старият mobile handler да добави
+   * отделен #home history entry.
+   */
+  if (link.closest('.navPrime, .navPrimeMobile')) {
+    return;
+  }
+
+  event.preventDefault();
+
+  if (window.location.hash !== '#home') {
+    window.history.pushState(null, '', '#home');
+  }
+
+  resetMobileHome({
+    shouldScroll: true,
+  });
+}
 
     const media = window.matchMedia('(max-width: 720px)');
 
