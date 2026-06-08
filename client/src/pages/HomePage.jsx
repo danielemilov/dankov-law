@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import AboutMobilePage from '../components/home/AboutMobilePage/AboutMobilePage.jsx';
-import AttorneyCinematic from '../components/home/AttorneyCinematic/AttorneyCinematic.jsx';
 import Cases from '../components/home/Cases/Cases.jsx';
 import Contact from '../components/home/Contact/Contact.jsx';
 import Footer from '../components/home/Footer/Footer.jsx';
@@ -282,7 +281,6 @@ export default function HomePage() {
   return (
     <main className="hlHome">
       <Hero />
-      <AttorneyCinematic />
       <Cases />
 
       {mobileContactVisible && <Contact />}

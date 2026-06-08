@@ -1,19 +1,22 @@
 import { Route, Routes } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+
 import Navbar from './components/Navbar';
 import ChatWidget from './components/ChatWidget';
 import CookieBanner from './components/CookieBanner';
+import BrandIntroLoader from './components/BrandIntroLoader.jsx';
 
 import HomePage from './pages/HomePage';
 import PrivacyPage from './pages/PrivatePage';
 import AboutPage from './pages/AboutPage.jsx';
 import NewsPage from './pages/NewsPage.jsx';
-import BrandIntroLoader from './components/BrandIntroLoader.jsx';
+import ContactPage from './pages/ContactPage.jsx';
 
 export default function App() {
   return (
     <>
       <BrandIntroLoader oncePerSession />
+
       <Navbar />
 
       <Routes>
@@ -21,12 +24,12 @@ export default function App() {
         <Route path="/za-advokata" element={<AboutPage />} />
         <Route path="/novini" element={<NewsPage />} />
         <Route path="/novini/:slug" element={<NewsPage />} />
+        <Route path="/kontakt" element={<ContactPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
       </Routes>
 
       <ChatWidget />
       <CookieBanner />
-
 
       <Toaster
         position="bottom-left"

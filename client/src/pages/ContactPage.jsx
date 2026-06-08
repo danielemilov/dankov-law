@@ -1,15 +1,19 @@
 import { useNavigate } from 'react-router-dom';
 
-import AboutMobilePage from '../components/home/AboutMobilePage/AboutMobilePage.jsx';
+import Contact from '../components/home/Contact/Contact.jsx';
 import Footer from '../components/home/Footer/Footer.jsx';
 import './HomePage.css';
 
-export default function AboutPage() {
+export default function ContactPage() {
   const navigate = useNavigate();
 
   return (
     <main className="hlHome">
-      <AboutMobilePage onBack={() => navigate('/')} />
+      <Contact
+        pageMode
+        onBack={() => navigate('/')}
+      />
+
       <Footer />
     </main>
   );

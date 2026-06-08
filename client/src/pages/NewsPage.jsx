@@ -9,7 +9,7 @@ export default function NewsPage() {
 
   return (
     <main className="hlHome">
-      <Cases pageMode initialSlug={slug} onBack={() => navigate('/#home')} />
+      <Cases pageMode initialSlug={slug} onBack={() => navigate('/')} />
       <Footer />
     </main>
   );

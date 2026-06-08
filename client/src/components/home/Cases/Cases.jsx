@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   ArrowLeft,
+  ArrowUpRight,
   Copy,
   MessageCircle,
   Play,
@@ -9,9 +10,11 @@ import {
   X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+
 import api from '../../../lib/api.js';
 import { cases as fallbackCases, videos } from '../_shared/homeData.js';
 import { fadeUp, pageStagger } from '../_shared/homeMotion.js';
+
 import './Cases.css';
 
 const FALLBACK_VIDEO_SLUGS = [
@@ -35,16 +38,20 @@ const LEGACY_SLUGS = {
 
 function resolvePostSlug(slug = '') {
   const clean = String(slug).trim();
+
   return LEGACY_SLUGS[clean] || clean;
 }
 
 function getCaseSessionId() {
   const key = 'dankov_case_session_id';
   const existing = localStorage.getItem(key);
+
   if (existing) return existing;
 
   const next = crypto.randomUUID();
+
   localStorage.setItem(key, next);
+
   return next;
 }
 
@@ -60,11 +67,16 @@ function fallbackPosts() {
     location: 'Разград',
     publishedAt: index === 0 ? '2026-06-01' : '2026-05-25',
     heroImage: {
-      url: index === 0 ? '/diyan-dankov.png' : '/diyan-dankovv.jpg',
+      url:
+        index === 0
+          ? '/diyan-dankov.png'
+          : '/diyan-dankovv.jpg',
       alt: item.label,
     },
     video: item,
-    stats: { comments: 0 },
+    stats: {
+      comments: 0,
+    },
     editorialNote: 'Видео',
   }));
 
@@ -79,11 +91,21 @@ function fallbackPosts() {
     location: index === 0 ? 'Враца' : 'България',
     publishedAt: item.date,
     heroImage: {
-      url: index === 0 ? '/diyan-dankov.png' : index === 1 ? '/diyan-dankovv.jpg' : '/diyan-dankov2.jpg',
+      url:
+        index === 0
+          ? '/diyan-dankov.png'
+          : index === 1
+            ? '/diyan-dankovv.jpg'
+            : '/diyan-dankov2.jpg',
       alt: item.title,
     },
-    stats: { comments: 0 },
-    editorialNote: index === 0 ? 'Последно добавено' : 'Казус',
+    stats: {
+      comments: 0,
+    },
+    editorialNote:
+      index === 0
+        ? 'Последно добавено'
+        : 'Казус',
   }));
 
   return [...videoPosts, ...casePosts];
@@ -91,7 +113,10 @@ function fallbackPosts() {
 
 function formatDate(value) {
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return String(value || '2026');
+
+  if (Number.isNaN(date.getTime())) {
+    return String(value || '2026');
+  }
 
   return new Intl.DateTimeFormat('bg-BG', {
     day: '2-digit',
@@ -101,11 +126,21 @@ function formatDate(value) {
 }
 
 function getPostUrl(slug) {
-  const origin = typeof window === 'undefined' ? '' : window.location.origin;
-  return `${origin}/novini/${encodeURIComponent(resolvePostSlug(slug))}`;
+  const origin =
+    typeof window === 'undefined'
+      ? ''
+      : window.location.origin;
+
+  return `${origin}/novini/${encodeURIComponent(
+    resolvePostSlug(slug)
+  )}`;
 }
 
-function MediaVisual({ post, compact = false, reader = false }) {
+function MediaVisual({
+  post,
+  compact = false,
+  reader = false,
+}) {
   if (post.type === 'video' && post.video?.src) {
     return (
       <video
@@ -116,31 +151,52 @@ function MediaVisual({ post, compact = false, reader = false }) {
         playsInline
         loop
         preload="metadata"
-        style={{ objectPosition: post.video.objectPosition || 'center center' }}
+        style={{
+          objectPosition:
+            post.video.objectPosition || 'center center',
+        }}
       />
     );
   }
 
   return (
     <img
-      src={post.heroImage?.url || '/diyan-dankov.png'}
-      alt={post.heroImage?.alt || post.title}
+      src={
+        post.heroImage?.url ||
+        '/diyan-dankov.png'
+      }
+      alt={
+        post.heroImage?.alt ||
+        post.title
+      }
       loading={compact ? 'lazy' : 'eager'}
     />
   );
 }
 
-function ShareActions({ post, onCopy, copied }) {
+function ShareActions({
+  post,
+  onCopy,
+  copied,
+}) {
   const url = getPostUrl(post.slug);
   const encodedUrl = encodeURIComponent(url);
   const encodedTitle = encodeURIComponent(post.title);
 
   return (
     <div className="hlShareActions">
-      <button className={copied ? 'is-copied' : ''} type="button" onClick={() => onCopy(url)}>
+      <button
+        className={copied ? 'is-copied' : ''}
+        type="button"
+        onClick={() => onCopy(url)}
+      >
         <Copy size={16} />
-        {copied ? 'Копирано' : 'Копирай линк'}
+
+        {copied
+          ? 'Копирано'
+          : 'Копирай линк'}
       </button>
+
       <a
         className="hlShareBrand hlShareBrand--linkedin"
         href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`}
@@ -150,6 +206,7 @@ function ShareActions({ post, onCopy, copied }) {
         <strong>in</strong>
         LinkedIn
       </a>
+
       <a
         className="hlShareBrand hlShareBrand--facebook"
         href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedTitle}`}
@@ -163,76 +220,146 @@ function ShareActions({ post, onCopy, copied }) {
   );
 }
 
-function CaseDetail({ post, comments, loading, onClose, onSubmitComment }) {
+function CaseDetail({
+  post,
+  comments,
+  loading,
+  onClose,
+  onSubmitComment,
+}) {
   const [displayName, setDisplayName] = useState('');
   const [body, setBody] = useState('');
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
 
-  async function copyLink(url = getPostUrl(post.slug)) {
+  async function copyLink(
+    url = getPostUrl(post.slug)
+  ) {
     try {
       await navigator.clipboard.writeText(url);
+
       setCopied(true);
-      window.setTimeout(() => setCopied(false), 1500);
+
+      window.setTimeout(() => {
+        setCopied(false);
+      }, 1500);
     } catch {
-      setError('Не успях да копирам линка автоматично.');
+      setError(
+        'Не успях да копирам линка автоматично.'
+      );
     }
   }
 
   async function submit(event) {
     event.preventDefault();
+
     const cleanName = displayName.trim();
     const cleanBody = body.trim();
 
     if (cleanName.length < 2) {
-      setError('Изберете псевдоним за коментара.');
+      setError(
+        'Изберете псевдоним за коментара.'
+      );
+
       return;
     }
 
     if (cleanBody.length < 2) {
-      setError('Напишете кратък коментар.');
+      setError(
+        'Напишете кратък коментар.'
+      );
+
       return;
     }
 
-    const ok = await onSubmitComment({ displayName: cleanName, body: cleanBody });
+    const ok = await onSubmitComment({
+      displayName: cleanName,
+      body: cleanBody,
+    });
+
     if (ok) {
       setBody('');
       setError('');
     } else {
-      setError('Коментарът не беше публикуван. Опитайте пак след малко.');
+      setError(
+        'Коментарът не беше публикуван. Опитайте пак след малко.'
+      );
     }
   }
 
   return (
     <motion.div
       className="hlCaseReader"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      initial={{
+        opacity: 0,
+      }}
+      animate={{
+        opacity: 1,
+      }}
+      exit={{
+        opacity: 0,
+      }}
     >
       <motion.article
         className="hlCaseReader__panel"
-        initial={{ y: 28 }}
-        animate={{ y: 0 }}
-        exit={{ y: 18 }}
-        transition={{ duration: 0.36, ease: [0.16, 1, 0.3, 1] }}
+        initial={{
+          y: 28,
+        }}
+        animate={{
+          y: 0,
+        }}
+        exit={{
+          y: 18,
+        }}
+        transition={{
+          duration: 0.36,
+          ease: [0.16, 1, 0.3, 1],
+        }}
       >
         <header className="hlCaseReader__bar">
-          <button type="button" onClick={() => onClose()}>
+          <button
+            type="button"
+            onClick={() => onClose()}
+          >
             <ArrowLeft size={18} />
             Назад
           </button>
-          <span>{post.type === 'video' ? 'Видео' : 'Новина'}</span>
-          <button type="button" onClick={() => onClose()} aria-label="Затвори">
+
+          <span>
+            {post.type === 'video'
+              ? 'Видео'
+              : 'Новина'}
+          </span>
+
+          <button
+            type="button"
+            onClick={() => onClose()}
+            aria-label="Затвори"
+          >
             <X size={20} />
           </button>
         </header>
 
         <div className="hlCaseReader__media">
-          <MediaVisual post={post} reader />
+          <MediaVisual
+            post={post}
+            reader
+          />
+
           {post.type === 'video' && (
-            <a href={post.video?.youtubeUrl || post.video?.src} target="_blank" rel="noreferrer">
-              <Play size={18} fill="currentColor" />
+            <a
+              href={
+                post.video?.youtubeUrl ||
+                post.video?.src
+              }
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Play
+                size={18}
+                fill="currentColor"
+              />
+
               Гледай цялото видео
             </a>
           )}
@@ -240,39 +367,81 @@ function CaseDetail({ post, comments, loading, onClose, onSubmitComment }) {
 
         <div className="hlCaseReader__content">
           <div className="hlCaseReader__meta">
-            <strong>{post.category}</strong>
-            <time>{formatDate(post.publishedAt)}</time>
+            <strong>
+              {post.category}
+            </strong>
+
+            <time>
+              {formatDate(
+                post.publishedAt
+              )}
+            </time>
           </div>
 
-          <h3>{post.title}</h3>
-          <p className="hlCaseReader__lead">{post.excerpt}</p>
-          <p className="hlCaseReader__text">{post.body}</p>
+          <h3>
+            {post.title}
+          </h3>
 
-          <ShareActions post={post} onCopy={copyLink} copied={copied} />
+          <p className="hlCaseReader__lead">
+            {post.excerpt}
+          </p>
+
+          <p className="hlCaseReader__text">
+            {post.body}
+          </p>
+
+          <ShareActions
+            post={post}
+            onCopy={copyLink}
+            copied={copied}
+          />
 
           <section className="hlCaseComments">
             <div className="hlCaseComments__head">
-              <strong>Коментари</strong>
+              <strong>
+                Коментари
+              </strong>
+
               <small>
-                Пишете с псевдоним, не с лични данни. Без обиди, линкове и спам. Коментари могат
-                да бъдат премахвани.
+                Пишете с псевдоним, не с лични
+                данни. Без обиди, линкове и
+                спам. Коментари могат да бъдат
+                премахвани.
               </small>
             </div>
 
-            <form className="hlCaseComments__form" onSubmit={submit}>
+            <form
+              className="hlCaseComments__form"
+              onSubmit={submit}
+            >
               <input
                 value={displayName}
-                onChange={(event) => setDisplayName(event.target.value)}
+                onChange={(event) =>
+                  setDisplayName(
+                    event.target.value
+                  )
+                }
                 placeholder="Псевдоним"
                 maxLength={48}
               />
+
               <textarea
                 value={body}
-                onChange={(event) => setBody(event.target.value)}
+                onChange={(event) =>
+                  setBody(
+                    event.target.value
+                  )
+                }
                 placeholder="Кратък коментар..."
                 maxLength={900}
               />
-              {error && <p className="hlCaseComments__error">{error}</p>}
+
+              {error && (
+                <p className="hlCaseComments__error">
+                  {error}
+                </p>
+              )}
+
               <button type="submit">
                 <SendHorizontal size={17} />
                 Публикувай
@@ -281,17 +450,32 @@ function CaseDetail({ post, comments, loading, onClose, onSubmitComment }) {
 
             <div className="hlCaseComments__list">
               {loading ? (
-                <p className="hlCaseComments__empty">Зареждане...</p>
+                <p className="hlCaseComments__empty">
+                  Зареждане...
+                </p>
               ) : comments.length ? (
                 comments.map((comment) => (
                   <article key={comment.id}>
-                    <strong>{comment.displayName}</strong>
-                    <time>{formatDate(comment.createdAt)}</time>
-                    <p>{comment.body}</p>
+                    <strong>
+                      {comment.displayName}
+                    </strong>
+
+                    <time>
+                      {formatDate(
+                        comment.createdAt
+                      )}
+                    </time>
+
+                    <p>
+                      {comment.body}
+                    </p>
                   </article>
                 ))
               ) : (
-                <p className="hlCaseComments__empty">Още няма коментари. Бъдете първият с кратка позиция.</p>
+                <p className="hlCaseComments__empty">
+                  Още няма коментари. Бъдете
+                  първият с кратка позиция.
+                </p>
               )}
             </div>
           </section>
@@ -301,8 +485,15 @@ function CaseDetail({ post, comments, loading, onClose, onSubmitComment }) {
   );
 }
 
-export default function Cases({ pageMode = false, onBack, initialSlug = '' }) {
-  const [posts, setPosts] = useState(() => fallbackPosts());
+export default function Cases({
+  pageMode = false,
+  onBack,
+  initialSlug = '',
+}) {
+  const [posts, setPosts] = useState(
+    () => fallbackPosts()
+  );
+
   const [selected, setSelected] = useState(null);
   const [returnScrollY, setReturnScrollY] = useState(0);
   const [returnTargetUrl, setReturnTargetUrl] = useState('');
@@ -310,7 +501,10 @@ export default function Cases({ pageMode = false, onBack, initialSlug = '' }) {
   const [comments, setComments] = useState([]);
   const [commentsLoading, setCommentsLoading] = useState(false);
   const [copiedSlug, setCopiedSlug] = useState('');
-  const [sessionId] = useState(getCaseSessionId);
+
+  const [sessionId] = useState(
+    getCaseSessionId
+  );
 
   const featured = posts[0];
   const rest = posts.slice(1);
@@ -321,15 +515,36 @@ export default function Cases({ pageMode = false, onBack, initialSlug = '' }) {
       return;
     }
 
-    window.history.pushState(null, '', '#home');
+    window.history.pushState(
+      null,
+      '',
+      '#home'
+    );
+
     window.requestAnimationFrame(() => {
-      document.querySelector('#home')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document
+        .querySelector('#home')
+        ?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
     });
   }
 
   function openPost(post) {
-    setReturnScrollY(window.scrollY);
-    setReturnTargetUrl(pageMode || window.location.pathname.startsWith('/novini') ? '/novini' : '/#cases');
+    setReturnScrollY(
+      window.scrollY
+    );
+
+    setReturnTargetUrl(
+      pageMode ||
+        window.location.pathname.startsWith(
+          '/novini'
+        )
+        ? '/novini'
+        : '/#cases'
+    );
+
     setSelected(post);
   }
 
@@ -338,11 +553,22 @@ export default function Cases({ pageMode = false, onBack, initialSlug = '' }) {
 
     async function loadPosts() {
       try {
-        const response = await api.get('/api/cases', {
-          params: { sessionId },
-        });
-        if (!cancelled && response.data?.posts?.length) {
-          setPosts(response.data.posts);
+        const response = await api.get(
+          '/api/cases',
+          {
+            params: {
+              sessionId,
+            },
+          }
+        );
+
+        if (
+          !cancelled &&
+          response.data?.posts?.length
+        ) {
+          setPosts(
+            response.data.posts
+          );
         }
       } catch {
         // Keep local editorial fallback.
@@ -358,64 +584,141 @@ export default function Cases({ pageMode = false, onBack, initialSlug = '' }) {
 
   useEffect(() => {
     if (!posts.length) return;
-    const pathMatch = window.location.pathname.match(/^\/novini\/([^/?#]+)/);
-    const routeSlug = initialSlug || (pathMatch ? decodeURIComponent(pathMatch[1]) : '');
-    const legacySlug = new URLSearchParams(window.location.search).get('case');
-    const slug = resolvePostSlug(routeSlug || legacySlug || '');
-    if (!slug || selected || slug === dismissedInitialSlug) return;
-    const found = posts.find((post) => post.slug === slug);
+
+    const pathMatch =
+      window.location.pathname.match(
+        /^\/novini\/([^/?#]+)/
+      );
+
+    const routeSlug =
+      initialSlug ||
+      (pathMatch
+        ? decodeURIComponent(pathMatch[1])
+        : '');
+
+    const legacySlug =
+      new URLSearchParams(
+        window.location.search
+      ).get('case');
+
+    const slug = resolvePostSlug(
+      routeSlug ||
+        legacySlug ||
+        ''
+    );
+
+    if (
+      !slug ||
+      selected ||
+      slug === dismissedInitialSlug
+    ) {
+      return;
+    }
+
+    const found = posts.find(
+      (post) => post.slug === slug
+    );
+
     if (found) {
       setReturnTargetUrl('/novini');
       setSelected(found);
     }
-  }, [dismissedInitialSlug, initialSlug, posts, selected]);
+  }, [
+    dismissedInitialSlug,
+    initialSlug,
+    posts,
+    selected,
+  ]);
 
   useEffect(() => {
     setDismissedInitialSlug('');
   }, [initialSlug]);
 
   useEffect(() => {
-    document.body.classList.toggle('case-reader-open', Boolean(selected));
+    document.body.classList.toggle(
+      'case-reader-open',
+      Boolean(selected)
+    );
 
     return () => {
-      document.body.classList.remove('case-reader-open');
+      document.body.classList.remove(
+        'case-reader-open'
+      );
     };
   }, [selected]);
 
   useEffect(() => {
-    if (!selected) return undefined;
+    if (!selected) {
+      return undefined;
+    }
+
     let cancelled = false;
 
     async function loadCase() {
       setCommentsLoading(true);
+
       try {
-        const response = await api.get(`/api/cases/${selected.slug}`, {
-          params: { sessionId },
-        });
+        const response = await api.get(
+          `/api/cases/${selected.slug}`,
+          {
+            params: {
+              sessionId,
+            },
+          }
+        );
+
         if (!cancelled) {
-          setSelected(response.data.post);
-          setComments(response.data.comments || []);
+          setSelected(
+            response.data.post
+          );
+
+          setComments(
+            response.data.comments || []
+          );
         }
       } catch {
-        if (!cancelled) setComments([]);
+        if (!cancelled) {
+          setComments([]);
+        }
       } finally {
-        if (!cancelled) setCommentsLoading(false);
+        if (!cancelled) {
+          setCommentsLoading(false);
+        }
       }
     }
 
-    const nextPath = `/novini/${encodeURIComponent(selected.slug)}`;
-    if (window.location.pathname !== nextPath || window.location.search || window.location.hash) {
-      window.history.replaceState(null, '', nextPath);
+    const nextPath =
+      `/novini/${encodeURIComponent(
+        selected.slug
+      )}`;
+
+    if (
+      window.location.pathname !== nextPath ||
+      window.location.search ||
+      window.location.hash
+    ) {
+      window.history.replaceState(
+        null,
+        '',
+        nextPath
+      );
     }
+
     loadCase();
 
     return () => {
       cancelled = true;
     };
-  }, [selected?.slug, sessionId]);
+  }, [
+    selected?.slug,
+    sessionId,
+  ]);
 
-  function closeReader({ target = 'return' } = {}) {
-    const closedSlug = selected?.slug || '';
+  function closeReader({
+    target = 'return',
+  } = {}) {
+    const closedSlug =
+      selected?.slug || '';
 
     setSelected(null);
     setComments([]);
@@ -423,95 +726,218 @@ export default function Cases({ pageMode = false, onBack, initialSlug = '' }) {
     if (target === 'return') {
       const targetUrl =
         returnTargetUrl ||
-        (pageMode || window.location.pathname.startsWith('/novini') ? '/novini' : '/#cases');
+        (
+          pageMode ||
+          window.location.pathname.startsWith(
+            '/novini'
+          )
+            ? '/novini'
+            : '/#cases'
+        );
 
-      if (targetUrl === '/novini' && closedSlug) {
-        setDismissedInitialSlug(closedSlug);
+      if (
+        targetUrl === '/novini' &&
+        closedSlug
+      ) {
+        setDismissedInitialSlug(
+          closedSlug
+        );
       }
 
-      window.history.replaceState(null, '', targetUrl);
+      window.history.replaceState(
+        null,
+        '',
+        targetUrl
+      );
+
       window.requestAnimationFrame(() => {
         if (targetUrl === '/novini') {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+          });
+
           return;
         }
 
-        window.scrollTo({ top: returnScrollY, behavior: 'smooth' });
+        window.scrollTo({
+          top: returnScrollY,
+          behavior: 'smooth',
+        });
       });
+
       return;
     }
 
-    const nextHash = target.startsWith('#') ? target : '#home';
-    window.history.replaceState(null, '', `${window.location.pathname}${nextHash}`);
+    const nextHash =
+      target.startsWith('#')
+        ? target
+        : '#home';
+
+    window.history.replaceState(
+      null,
+      '',
+      `${window.location.pathname}${nextHash}`
+    );
+
     window.requestAnimationFrame(() => {
-      if (nextHash === '#contact' || nextHash === '#booking') {
-        window.dispatchEvent(new CustomEvent('dankov:open-contact'));
+      if (
+        nextHash === '#contact' ||
+        nextHash === '#booking'
+      ) {
+        window.dispatchEvent(
+          new CustomEvent(
+            'dankov:open-contact'
+          )
+        );
+
         return;
       }
-      document.querySelector(nextHash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      document
+        .querySelector(nextHash)
+        ?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
     });
   }
 
   useEffect(() => {
-    if (!selected) return undefined;
+    if (!selected) {
+      return undefined;
+    }
 
     function handlePageNavigation(event) {
-      const link = event.target.closest?.('a[href]');
+      const link =
+        event.target.closest?.(
+          'a[href]'
+        );
+
       if (!link) return;
 
-      const href = link.getAttribute('href');
-      const isHomeLink = href === '/' || href === './' || href === '#home';
-      const isSectionLink = href?.startsWith('#');
-      if (!isHomeLink && !isSectionLink) return;
+      const href =
+        link.getAttribute('href');
+
+      const isHomeLink =
+        href === '/' ||
+        href === './' ||
+        href === '#home';
+
+      const isSectionLink =
+        href?.startsWith('#');
+
+      if (
+        !isHomeLink &&
+        !isSectionLink
+      ) {
+        return;
+      }
 
       event.preventDefault();
-      closeReader({ target: isHomeLink ? '#home' : href });
+
+      closeReader({
+        target: isHomeLink
+          ? '#home'
+          : href,
+      });
     }
 
     function handleResetHome() {
-      closeReader({ target: '#home' });
+      closeReader({
+        target: '#home',
+      });
     }
 
-    window.addEventListener('click', handlePageNavigation, true);
-    window.addEventListener('dankov:reset-home', handleResetHome);
+    window.addEventListener(
+      'click',
+      handlePageNavigation,
+      true
+    );
+
+    window.addEventListener(
+      'dankov:reset-home',
+      handleResetHome
+    );
 
     return () => {
-      window.removeEventListener('click', handlePageNavigation, true);
-      window.removeEventListener('dankov:reset-home', handleResetHome);
+      window.removeEventListener(
+        'click',
+        handlePageNavigation,
+        true
+      );
+
+      window.removeEventListener(
+        'dankov:reset-home',
+        handleResetHome
+      );
     };
-  }, [selected, returnScrollY]);
+  }, [
+    selected,
+    returnScrollY,
+  ]);
 
   async function copyPostLink(post) {
     try {
-      await navigator.clipboard.writeText(getPostUrl(post.slug));
-      setCopiedSlug(post.slug);
-      window.setTimeout(() => setCopiedSlug(''), 1500);
+      await navigator.clipboard.writeText(
+        getPostUrl(post.slug)
+      );
+
+      setCopiedSlug(
+        post.slug
+      );
+
+      window.setTimeout(() => {
+        setCopiedSlug('');
+      }, 1500);
     } catch {
       setCopiedSlug('');
     }
   }
 
   async function submitComment(payload) {
-    if (!selected) return false;
+    if (!selected) {
+      return false;
+    }
 
     try {
-      const response = await api.post(`/api/cases/${selected.slug}/comments`, {
-        ...payload,
-        sessionId,
-      });
+      const response = await api.post(
+        `/api/cases/${selected.slug}/comments`,
+        {
+          ...payload,
+          sessionId,
+        }
+      );
 
-      setComments((current) => [response.data.comment, ...current]);
+      setComments((current) => [
+        response.data.comment,
+        ...current,
+      ]);
+
       setPosts((current) =>
         current.map((post) =>
           post.slug === selected.slug
-            ? { ...post, stats: { ...post.stats, comments: response.data.comments } }
+            ? {
+                ...post,
+                stats: {
+                  ...post.stats,
+                  comments:
+                    response.data.comments,
+                },
+              }
             : post
         )
       );
+
       setSelected((post) => ({
         ...post,
-        stats: { ...post.stats, comments: response.data.comments },
+        stats: {
+          ...post.stats,
+          comments:
+            response.data.comments,
+        },
       }));
+
       return true;
     } catch {
       return false;
@@ -519,119 +945,322 @@ export default function Cases({ pageMode = false, onBack, initialSlug = '' }) {
   }
 
   return (
-    <section className={`hlSection hlCases ${pageMode ? 'hlCases--page' : ''}`} id="cases">
+    <section
+      className={`hlSection hlCases ${
+        pageMode
+          ? 'hlCases--page'
+          : ''
+      }`}
+      id="cases"
+    >
       <motion.div
         className="hlCases__shell"
         variants={pageStagger}
         initial="hidden"
         whileInView="show"
-        viewport={{ once: true, amount: 0.16 }}
+        viewport={{
+          once: true,
+          amount: 0.16,
+        }}
       >
         {pageMode && (
-          <motion.div className="hlCasesPageBar" variants={fadeUp}>
-            <button type="button" onClick={closePage}>
+          <motion.div
+            className="hlCasesPageBar"
+            variants={fadeUp}
+          >
+            <button
+              type="button"
+              onClick={closePage}
+            >
               <ArrowLeft size={18} />
-              Назад
+              Към началото
             </button>
-            <span>Последни новини</span>
           </motion.div>
         )}
 
         <div className="hlCases__head">
           <div>
-            <motion.p className="hlKicker" variants={fadeUp}>
+            <motion.p
+              className="hlKicker"
+              variants={fadeUp}
+            >
               Последни новини
             </motion.p>
-            <motion.h2 className="hlSectionTitle" variants={fadeUp}>
-              Правни истории и <em>полезни позиции.</em>
+
+            <motion.h2
+              className="hlSectionTitle"
+              variants={fadeUp}
+            >
+              Правни истории и{' '}
+              <em>
+                полезни позиции.
+              </em>
             </motion.h2>
           </div>
+
+          {!pageMode && (
+            <motion.a
+              className="hlCases__allLink"
+              href="/novini"
+              variants={fadeUp}
+            >
+              Всички новини
+
+              <ArrowUpRight
+                size={18}
+              />
+            </motion.a>
+          )}
         </div>
 
         {featured && (
-          <motion.article className="hlFeaturedStory" variants={fadeUp}>
-            <button type="button" onClick={() => openPost(featured)}>
+          <motion.article
+            className="hlFeaturedStory"
+            variants={fadeUp}
+          >
+            <button
+              type="button"
+              onClick={() =>
+                openPost(featured)
+              }
+            >
               <span className="hlFeaturedStory__visual">
-                <MediaVisual post={featured} />
+                <MediaVisual
+                  post={featured}
+                />
+
                 <i>
-                  {featured.type === 'video' ? <Play size={15} fill="currentColor" /> : null}
-                  {featured.editorialNote || (featured.type === 'video' ? 'Видео' : 'Последно добавено')}
+                  {featured.type ===
+                  'video' ? (
+                    <Play
+                      size={15}
+                      fill="currentColor"
+                    />
+                  ) : null}
+
+                  {featured.editorialNote ||
+                    (
+                      featured.type ===
+                      'video'
+                        ? 'Видео'
+                        : 'Последно добавено'
+                    )}
                 </i>
               </span>
+
               <span className="hlFeaturedStory__content">
                 <span className="hlStoryMeta">
-                  <strong>{featured.category}</strong>
-                  <time>{formatDate(featured.publishedAt)}</time>
+                  <strong>
+                    {featured.category}
+                  </strong>
+
+                  <time>
+                    {formatDate(
+                      featured.publishedAt
+                    )}
+                  </time>
                 </span>
-                <span className="hlFeaturedStory__title">{featured.title}</span>
-                <span className="hlFeaturedStory__excerpt">{featured.excerpt}</span>
+
+                <span className="hlFeaturedStory__title">
+                  {featured.title}
+                </span>
+
+                <span className="hlFeaturedStory__excerpt">
+                  {featured.excerpt}
+                </span>
+
                 <span className="hlStoryActions">
                   <span>
-                    <MessageCircle size={16} />
-                    {featured.stats?.comments || 0}
+                    <MessageCircle
+                      size={16}
+                    />
+
+                    {featured.stats
+                      ?.comments || 0}
                   </span>
-                  <em>Отвори</em>
+
+                  <em>
+                    Отвори
+                  </em>
                 </span>
               </span>
             </button>
+
+            <div className="hlFeaturedStory__share">
+              <button
+                className={
+                  copiedSlug ===
+                  featured.slug
+                    ? 'is-copied'
+                    : ''
+                }
+                type="button"
+                onClick={() =>
+                  copyPostLink(featured)
+                }
+              >
+                <Share2 size={15} />
+
+                {copiedSlug ===
+                featured.slug
+                  ? 'Копирано'
+                  : 'Сподели'}
+              </button>
+
+              <a
+                className="hlShareBrand hlShareBrand--linkedin"
+                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                  getPostUrl(
+                    featured.slug
+                  )
+                )}`}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Сподели в LinkedIn"
+              >
+                <strong>
+                  in
+                </strong>
+              </a>
+
+              <a
+                className="hlShareBrand hlShareBrand--facebook"
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                  getPostUrl(
+                    featured.slug
+                  )
+                )}`}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Сподели във Facebook"
+              >
+                <strong>
+                  f
+                </strong>
+              </a>
+            </div>
           </motion.article>
         )}
 
         <div className="hlStoryFeed">
-          {rest.map((post, index) => (
-            <motion.article className="hlStoryCard" key={post.slug} variants={fadeUp}>
-              <button type="button" onClick={() => openPost(post)}>
+          {rest.map((post) => (
+            <motion.article
+              className="hlStoryCard"
+              key={post.slug}
+              variants={fadeUp}
+            >
+              <button
+                type="button"
+                onClick={() =>
+                  openPost(post)
+                }
+              >
                 <span className="hlStoryCard__visual">
-                  <MediaVisual post={post} compact />
-                  {post.type === 'video' && (
+                  <MediaVisual
+                    post={post}
+                    compact
+                  />
+
+                  {post.type ===
+                    'video' && (
                     <i>
-                      <Play size={16} fill="currentColor" />
+                      <Play
+                        size={16}
+                        fill="currentColor"
+                      />
                     </i>
                   )}
                 </span>
+
                 <span className="hlStoryCard__content">
                   <span className="hlStoryMeta">
-                    <strong>{post.category}</strong>
-                    <time>{formatDate(post.publishedAt)}</time>
+                    <strong>
+                      {post.category}
+                    </strong>
+
+                    <time>
+                      {formatDate(
+                        post.publishedAt
+                      )}
+                    </time>
                   </span>
-                  <span className="hlStoryCard__title">{post.title}</span>
-                  <span className="hlStoryCard__excerpt">{post.excerpt}</span>
+
+                  <span className="hlStoryCard__title">
+                    {post.title}
+                  </span>
+
+                  <span className="hlStoryCard__excerpt">
+                    {post.excerpt}
+                  </span>
+
                   <span className="hlStoryActions">
                     <span>
-                      <MessageCircle size={16} />
-                      {post.stats?.comments || 0}
+                      <MessageCircle
+                        size={16}
+                      />
+
+                      {post.stats
+                        ?.comments || 0}
                     </span>
-                    <em>Отвори</em>
+
+                    <em>
+                      Отвори
+                    </em>
                   </span>
                 </span>
               </button>
 
               <div className="hlStoryCard__share">
                 <button
-                  className={copiedSlug === post.slug ? 'is-copied' : ''}
+                  className={
+                    copiedSlug ===
+                    post.slug
+                      ? 'is-copied'
+                      : ''
+                  }
                   type="button"
-                  onClick={() => copyPostLink(post)}
+                  onClick={() =>
+                    copyPostLink(post)
+                  }
                 >
                   <Share2 size={15} />
-                  {copiedSlug === post.slug ? 'Копирано' : 'Сподели'}
+
+                  {copiedSlug ===
+                  post.slug
+                    ? 'Копирано'
+                    : 'Сподели'}
                 </button>
+
                 <a
                   className="hlShareBrand hlShareBrand--linkedin"
-                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(getPostUrl(post.slug))}`}
+                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                    getPostUrl(
+                      post.slug
+                    )
+                  )}`}
                   target="_blank"
                   rel="noreferrer"
                   aria-label="Сподели в LinkedIn"
                 >
-                  <strong>in</strong>
+                  <strong>
+                    in
+                  </strong>
                 </a>
+
                 <a
                   className="hlShareBrand hlShareBrand--facebook"
-                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(getPostUrl(post.slug))}`}
+                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                    getPostUrl(
+                      post.slug
+                    )
+                  )}`}
                   target="_blank"
                   rel="noreferrer"
                   aria-label="Сподели във Facebook"
                 >
-                  <strong>f</strong>
+                  <strong>
+                    f
+                  </strong>
                 </a>
               </div>
             </motion.article>
@@ -646,7 +1275,9 @@ export default function Cases({ pageMode = false, onBack, initialSlug = '' }) {
             comments={comments}
             loading={commentsLoading}
             onClose={closeReader}
-            onSubmitComment={submitComment}
+            onSubmitComment={
+              submitComment
+            }
           />
         )}
       </AnimatePresence>

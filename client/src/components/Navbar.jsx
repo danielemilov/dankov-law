@@ -16,18 +16,16 @@ const navLinks = [
   },
   {
     label: 'Контакт',
-    href: '/#contact',
+    href: '/kontakt',
   },
-];
-
-const mobileNavLinks = [
-  ...navLinks,
   {
     label: 'Чат',
     href: '#chat',
     action: 'chat',
   },
 ];
+
+const mobileNavLinks = navLinks;
 
 const easeOutSoft = [0.16, 1, 0.3, 1];
 const easeExitSoft = [0.4, 0, 0.2, 1];
@@ -38,6 +36,7 @@ const overlayVariants = {
     opacity: 0,
     backdropFilter: 'blur(0px) saturate(1)',
   },
+
   visible: {
     opacity: 1,
     backdropFilter: 'blur(20px) saturate(1.1)',
@@ -46,6 +45,7 @@ const overlayVariants = {
       ease: easeOutSoft,
     },
   },
+
   exit: {
     opacity: 0,
     backdropFilter: 'blur(0px) saturate(1)',
@@ -62,11 +62,13 @@ const glassClearVariants = {
     scale: 0.9,
     filter: 'blur(22px)',
   },
+
   visible: {
     opacity: 0,
     scale: 0.9,
     filter: 'blur(22px)',
   },
+
   exit: {
     opacity: [0, 0.42, 0.28, 0],
     scale: [0.9, 1.05, 1.28, 1.5],
@@ -84,10 +86,12 @@ const cinematicSweepVariants = {
     left: '-58%',
     opacity: 0,
   },
+
   visible: {
     left: '-58%',
     opacity: 0,
   },
+
   exit: {
     left: ['-58%', '118%'],
     opacity: [0, 0.78, 0],
@@ -104,11 +108,13 @@ const lensRingVariants = {
     scale: 0.82,
     filter: 'blur(8px)',
   },
+
   visible: {
     opacity: 0,
     scale: 0.82,
     filter: 'blur(8px)',
   },
+
   exit: {
     opacity: [0, 0.34, 0],
     scale: [0.82, 1.16, 1.68],
@@ -127,6 +133,7 @@ const panelVariants = {
     filter: 'blur(0px)',
     clipPath: 'inset(0% 0% 0% 0% round 42px)',
   },
+
   visible: {
     opacity: 1,
     y: 0,
@@ -137,6 +144,7 @@ const panelVariants = {
       ease: easeOutSoft,
     },
   },
+
   exit: {
     opacity: 0,
     y: -10,
@@ -154,10 +162,12 @@ const innerGlassVariants = {
     opacity: 0,
     left: '-45%',
   },
+
   visible: {
     opacity: 0,
     left: '-45%',
   },
+
   exit: {
     opacity: [0, 0.68, 0],
     left: ['-45%', '24%', '86%'],
@@ -174,6 +184,7 @@ const linkVariants = {
     y: 10,
     filter: 'blur(0px)',
   },
+
   visible: (index) => ({
     opacity: 1,
     y: 0,
@@ -184,6 +195,7 @@ const linkVariants = {
       ease: easeOutSoft,
     },
   }),
+
   exit: (index) => ({
     opacity: [1, 0.72, 0],
     y: [0, -4, -12],
@@ -202,6 +214,7 @@ const ctaVariants = {
     y: 10,
     filter: 'blur(0px)',
   },
+
   visible: {
     opacity: 1,
     y: 0,
@@ -212,6 +225,7 @@ const ctaVariants = {
       ease: easeOutSoft,
     },
   },
+
   exit: {
     opacity: [1, 0.88, 0.24, 0],
     y: [0, -4, -12, -18],
@@ -230,11 +244,19 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 18);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 18);
+    };
+
     onScroll();
 
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    window.addEventListener('scroll', onScroll, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -256,21 +278,45 @@ export default function Navbar() {
     };
   }, [menuOpen]);
 
-  const closeMenu = () => setMenuOpen(false);
-  const toggleMenu = () => setMenuOpen((value) => !value);
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
+
+  const toggleMenu = () => {
+    setMenuOpen((value) => !value);
+  };
+
   const openChat = (event) => {
     event?.preventDefault();
+
     closeMenu();
-    window.dispatchEvent(new CustomEvent('dankov:open-chat'));
+
+    window.dispatchEvent(
+      new CustomEvent('dankov:open-chat')
+    );
   };
 
   const resetHome = (event) => {
     event?.preventDefault();
+
     closeMenu();
-    window.dispatchEvent(new CustomEvent('dankov:reset-home'));
+
+    if (window.location.pathname !== '/') {
+      window.location.assign('/');
+      return;
+    }
+
+    window.dispatchEvent(
+      new CustomEvent('dankov:reset-home')
+    );
+
     window.history.pushState(null, '', '#home');
+
     window.requestAnimationFrame(() => {
-      document.querySelector('#home')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.querySelector('#home')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
     });
   };
 
@@ -278,29 +324,74 @@ export default function Navbar() {
     <>
       <motion.header
         ref={rootRef}
-        className={`navPrime ${scrolled ? 'navPrime--scrolled' : ''}`}
+        className={`navPrime ${
+          scrolled ? 'navPrime--scrolled' : ''
+        }`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.35, ease: easeOutSoft }}
+        transition={{
+          duration: 0.35,
+          ease: easeOutSoft,
+        }}
       >
         <div className="navPrime__stage">
           <div className="navPrime__bar">
-            <span className="navPrime__cursorGlow" aria-hidden="true" />
+            <span
+              className="navPrime__cursorGlow"
+              aria-hidden="true"
+            />
 
-            <span className="navPrime__halo navPrime__halo--left" aria-hidden="true" />
-            <span className="navPrime__halo navPrime__halo--center" aria-hidden="true" />
-            <span className="navPrime__halo navPrime__halo--right" aria-hidden="true" />
+            <span
+              className="navPrime__halo navPrime__halo--left"
+              aria-hidden="true"
+            />
 
-            <span className="navPrime__shine navPrime__shine--main" aria-hidden="true" />
-            <span className="navPrime__shine navPrime__shine--soft" aria-hidden="true" />
+            <span
+              className="navPrime__halo navPrime__halo--center"
+              aria-hidden="true"
+            />
 
-            <span className="navPrime__edge navPrime__edge--top" aria-hidden="true" />
-            <span className="navPrime__edge navPrime__edge--bottom" aria-hidden="true" />
+            <span
+              className="navPrime__halo navPrime__halo--right"
+              aria-hidden="true"
+            />
 
-            <a className="navPrime__brand" href="#home" onClick={resetHome} aria-label="Към началото">
+            <span
+              className="navPrime__shine navPrime__shine--main"
+              aria-hidden="true"
+            />
+
+            <span
+              className="navPrime__shine navPrime__shine--soft"
+              aria-hidden="true"
+            />
+
+            <span
+              className="navPrime__edge navPrime__edge--top"
+              aria-hidden="true"
+            />
+
+            <span
+              className="navPrime__edge navPrime__edge--bottom"
+              aria-hidden="true"
+            />
+
+            <a
+              className="navPrime__brand"
+              href="/"
+              onClick={resetHome}
+              aria-label="Към официалната начална страница"
+            >
               <span className="navPrime__photo">
-                <span className="navPrime__photoGlow" aria-hidden="true" />
-                <img src={LAWYER_PHOTO} alt="Адвокат Диян Данков" />
+                <span
+                  className="navPrime__photoGlow"
+                  aria-hidden="true"
+                />
+
+                <img
+                  src={LAWYER_PHOTO}
+                  alt="Адвокат Диян Данков"
+                />
               </span>
 
               <span className="navPrime__brandText">
@@ -308,36 +399,89 @@ export default function Navbar() {
                   <strong>Диян</strong>
                   <strong>Данков</strong>
                 </span>
-                <span className="navPrime__role">Адвокат</span>
+
+                <span className="navPrime__role">
+                  Адвокат
+                </span>
               </span>
             </a>
 
-            <nav className="navPrime__dock" aria-label="Основна навигация">
-              <span className="navPrime__dockSweep" aria-hidden="true" />
-              <span className="navPrime__dockGlow" aria-hidden="true" />
+            <nav
+              className="navPrime__dock"
+              aria-label="Основна навигация"
+            >
+              <span
+                className="navPrime__dockSweep"
+                aria-hidden="true"
+              />
+
+              <span
+                className="navPrime__dockGlow"
+                aria-hidden="true"
+              />
 
               {navLinks.map((link) => (
-                <a className="navPrime__link" key={link.href} href={link.href}>
-                  <span className="navPrime__linkFill" aria-hidden="true" />
-                  <span className="navPrime__linkText">{link.label}</span>
+                <a
+                  className="navPrime__link"
+                  key={`${link.label}-${link.href}`}
+                  href={link.href}
+                  onClick={
+                    link.action === 'chat'
+                      ? openChat
+                      : closeMenu
+                  }
+                >
+                  <span
+                    className="navPrime__linkFill"
+                    aria-hidden="true"
+                  />
+
+                  <span className="navPrime__linkText">
+                    {link.label}
+                  </span>
                 </a>
               ))}
             </nav>
 
             <div className="navPrime__actions">
-              <a className="navPrime__cta" href="/#booking">
-                <span className="navPrime__ctaShine" aria-hidden="true" />
-                <span className="navPrime__ctaText">Запази час</span>
+              <a
+                className="navPrime__cta"
+                href="/kontakt#booking"
+              >
+                <span
+                  className="navPrime__ctaShine"
+                  aria-hidden="true"
+                />
+
+                <span className="navPrime__ctaText">
+                  Запази час
+                </span>
               </a>
 
               <button
-                className={`navPrime__burger ${menuOpen ? 'is-open' : ''}`}
+                className={`navPrime__burger ${
+                  menuOpen ? 'is-open' : ''
+                }`}
                 type="button"
                 onClick={toggleMenu}
-                aria-label={menuOpen ? 'Затвори менюто' : 'Отвори менюто'}
+                aria-label={
+                  menuOpen
+                    ? 'Затвори менюто'
+                    : 'Отвори менюто'
+                }
                 aria-expanded={menuOpen}
               >
-                {menuOpen ? <X size={25} strokeWidth={2.4} /> : <Menu size={25} strokeWidth={2.4} />}
+                {menuOpen ? (
+                  <X
+                    size={25}
+                    strokeWidth={2.4}
+                  />
+                ) : (
+                  <Menu
+                    size={25}
+                    strokeWidth={2.4}
+                  />
+                )}
               </button>
             </div>
           </div>
@@ -392,9 +536,20 @@ export default function Navbar() {
               animate="visible"
               exit="exit"
             >
-              <span className="navPrimeMobile__shine" aria-hidden="true" />
-              <span className="navPrimeMobile__orb navPrimeMobile__orb--one" aria-hidden="true" />
-              <span className="navPrimeMobile__orb navPrimeMobile__orb--two" aria-hidden="true" />
+              <span
+                className="navPrimeMobile__shine"
+                aria-hidden="true"
+              />
+
+              <span
+                className="navPrimeMobile__orb navPrimeMobile__orb--one"
+                aria-hidden="true"
+              />
+
+              <span
+                className="navPrimeMobile__orb navPrimeMobile__orb--two"
+                aria-hidden="true"
+              />
 
               <motion.span
                 className="navPrimeMobile__innerGlass"
@@ -405,12 +560,19 @@ export default function Navbar() {
                 aria-hidden="true"
               />
 
-              <nav className="navPrimeMobile__links" aria-label="Мобилна навигация">
+              <nav
+                className="navPrimeMobile__links"
+                aria-label="Мобилна навигация"
+              >
                 {mobileNavLinks.map((link, index) => (
                   <motion.a
-                    key={link.href}
+                    key={`${link.label}-${link.href}`}
                     href={link.href}
-                    onClick={link.action === 'chat' ? openChat : closeMenu}
+                    onClick={
+                      link.action === 'chat'
+                        ? openChat
+                        : closeMenu
+                    }
                     custom={index}
                     variants={linkVariants}
                     initial="hidden"
@@ -426,7 +588,7 @@ export default function Navbar() {
 
               <motion.a
                 className="navPrimeMobile__cta"
-                href="/#booking"
+                href="/kontakt#booking"
                 onClick={closeMenu}
                 variants={ctaVariants}
                 initial="hidden"
@@ -434,7 +596,11 @@ export default function Navbar() {
                 exit="exit"
               >
                 <span>Запази консултация</span>
-                <ArrowUpRight size={18} strokeWidth={2.2} />
+
+                <ArrowUpRight
+                  size={18}
+                  strokeWidth={2.2}
+                />
               </motion.a>
             </motion.div>
           </motion.div>

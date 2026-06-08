@@ -14,7 +14,7 @@ export default function AboutMobilePage({ onBack }) {
       >
         <button type="button" onClick={onBack}>
           <ArrowLeft size={18} />
-          Назад
+          Към началото
         </button>
         <span>За адвоката</span>
       </motion.div>
@@ -58,13 +58,17 @@ export default function AboutMobilePage({ onBack }) {
           </article>
         </motion.div>
 
-        <motion.div className="aboutMobilePage__actions" variants={fadeUp}>
-          <a href="#booking">
-            Запази консултация
-            <ArrowUpRight size={18} />
-          </a>
-          <a href="#cases">Последни новини</a>
-        </motion.div>
+      <motion.div className="aboutMobilePage__actions" variants={fadeUp}>
+  <a href="/#booking">
+    Запази консултация
+    <ArrowUpRight size={18} />
+  </a>
+
+  <a href="/novini">
+    Всички новини
+    <ArrowUpRight size={18} />
+  </a>
+</motion.div>
       </motion.div>
     </section>
   );
