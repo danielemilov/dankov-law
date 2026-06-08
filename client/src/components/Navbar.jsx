@@ -8,19 +8,26 @@ const LAWYER_PHOTO = '/diyan-dankovv.jpg';
 const navLinks = [
   {
     label: 'За адвоката',
-    href: '#about',
+    href: '/za-advokata',
   },
   {
     label: 'Новини',
-    href: '#cases',
+    href: '/novini',
   },
   {
     label: 'Контакт',
-    href: '#contact',
+    href: '/#contact',
   },
 ];
 
-const mobileNavLinks = navLinks;
+const mobileNavLinks = [
+  ...navLinks,
+  {
+    label: 'Чат',
+    href: '#chat',
+    action: 'chat',
+  },
+];
 
 const easeOutSoft = [0.16, 1, 0.3, 1];
 const easeExitSoft = [0.4, 0, 0.2, 1];
@@ -251,6 +258,12 @@ export default function Navbar() {
 
   const closeMenu = () => setMenuOpen(false);
   const toggleMenu = () => setMenuOpen((value) => !value);
+  const openChat = (event) => {
+    event?.preventDefault();
+    closeMenu();
+    window.dispatchEvent(new CustomEvent('dankov:open-chat'));
+  };
+
   const resetHome = (event) => {
     event?.preventDefault();
     closeMenu();
@@ -312,7 +325,7 @@ export default function Navbar() {
             </nav>
 
             <div className="navPrime__actions">
-              <a className="navPrime__cta" href="#contact">
+              <a className="navPrime__cta" href="/#booking">
                 <span className="navPrime__ctaShine" aria-hidden="true" />
                 <span className="navPrime__ctaText">Запази час</span>
               </a>
@@ -397,7 +410,7 @@ export default function Navbar() {
                   <motion.a
                     key={link.href}
                     href={link.href}
-                    onClick={closeMenu}
+                    onClick={link.action === 'chat' ? openChat : closeMenu}
                     custom={index}
                     variants={linkVariants}
                     initial="hidden"
@@ -413,7 +426,7 @@ export default function Navbar() {
 
               <motion.a
                 className="navPrimeMobile__cta"
-                href="#booking"
+                href="/#booking"
                 onClick={closeMenu}
                 variants={ctaVariants}
                 initial="hidden"

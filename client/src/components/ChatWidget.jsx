@@ -7,6 +7,8 @@ import './ChatWidget.css';
 
 const LAWYER_PHOTO = '/diyan-dankovv.jpg';
 const MIN_REPLY_DELAY = 1650;
+const CHAT_POSITION_KEY = 'dankov_chat_launcher_position';
+const CHAT_HIDDEN_KEY = 'dankov_chat_hidden';
 
 const QUICK = [
   'Уволниха ме дисциплинарно',
@@ -72,6 +74,20 @@ function makeMessage(role, content, extra = {}) {
 function isMobileViewport() {
   if (typeof window === 'undefined') return false;
   return window.matchMedia('(max-width: 560px)').matches;
+}
+
+function readStoredLauncherPosition() {
+  if (typeof window === 'undefined') return { x: 0, y: 0 };
+
+  try {
+    const parsed = JSON.parse(localStorage.getItem(CHAT_POSITION_KEY) || '{}');
+    return {
+      x: Number.isFinite(parsed.x) ? parsed.x : 0,
+      y: Number.isFinite(parsed.y) ? parsed.y : 0,
+    };
+  } catch {
+    return { x: 0, y: 0 };
+  }
 }
 
 function LawyerAvatar({ large = false }) {
@@ -181,6 +197,11 @@ function QuickSuggestions({ onPick }) {
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
+  const [hidden, setHidden] = useState(() => {
+    return localStorage.getItem(CHAT_HIDDEN_KEY) === 'true';
+  });
+  const [launcherShift, setLauncherShift] = useState(readStoredLauncherPosition);
+  const [dragging, setDragging] = useState(false);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -216,9 +237,102 @@ export default function ChatWidget() {
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
   const consentRef = useRef(null);
+  const rootRef = useRef(null);
+  const dragRef = useRef(null);
+  const ignoreFabClickRef = useRef(false);
 
-  function closeChat() {
+  function closeChat({ hideWidget = false } = {}) {
     setOpen(false);
+
+    if (hideWidget) {
+      setHidden(true);
+      localStorage.setItem(CHAT_HIDDEN_KEY, 'true');
+    }
+  }
+
+  function restoreChat() {
+    setHidden(false);
+    localStorage.removeItem(CHAT_HIDDEN_KEY);
+    setOpen(true);
+  }
+
+  function persistLauncherPosition(nextPosition) {
+    localStorage.setItem(CHAT_POSITION_KEY, JSON.stringify(nextPosition));
+  }
+
+  function moveLauncher(event) {
+    const current = dragRef.current;
+    if (!current) return;
+
+    const dx = event.clientX - current.startX;
+    const dy = event.clientY - current.startY;
+    const moved = Math.abs(dx) > 4 || Math.abs(dy) > 4;
+    if (!current.moved && !moved) return;
+
+    let nextX = current.startShift.x + dx;
+    let nextY = current.startShift.y + dy;
+    const margin = 10;
+    const nextLeft = current.rect.left + dx;
+    const nextRight = current.rect.right + dx;
+    const nextTop = current.rect.top + dy;
+    const nextBottom = current.rect.bottom + dy;
+
+    if (nextLeft < margin) nextX += margin - nextLeft;
+    if (nextRight > window.innerWidth - margin) nextX -= nextRight - (window.innerWidth - margin);
+    if (nextTop < margin) nextY += margin - nextTop;
+    if (nextBottom > window.innerHeight - margin) nextY -= nextBottom - (window.innerHeight - margin);
+
+    const nextPosition = { x: Math.round(nextX), y: Math.round(nextY) };
+
+    current.moved = current.moved || moved;
+    current.nextPosition = nextPosition;
+    setDragging(current.moved);
+    setLauncherShift(nextPosition);
+  }
+
+  function startLauncherDrag(event) {
+    if (open || (event.button !== 0 && event.button !== undefined)) return;
+
+    const rect = rootRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    dragRef.current = {
+      pointerId: event.pointerId,
+      rect,
+      startX: event.clientX,
+      startY: event.clientY,
+      startShift: launcherShift,
+      moved: false,
+    };
+
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+  }
+
+  function endLauncherDrag(event) {
+    const current = dragRef.current;
+    if (!current) return;
+
+    event.currentTarget.releasePointerCapture?.(current.pointerId);
+
+    if (current.moved) {
+      ignoreFabClickRef.current = true;
+      persistLauncherPosition(current.nextPosition || launcherShift);
+      window.setTimeout(() => {
+        ignoreFabClickRef.current = false;
+        setDragging(false);
+      }, 0);
+    }
+
+    dragRef.current = null;
+  }
+
+  function toggleFromLauncher(event) {
+    if (ignoreFabClickRef.current) {
+      event.preventDefault();
+      return;
+    }
+
+    setOpen((value) => !value);
   }
 
   function focusInput(delay = 220) {
@@ -237,6 +351,14 @@ export default function ChatWidget() {
       document.body.classList.remove('chat-open');
     };
   }, [open]);
+
+  useEffect(() => {
+    window.addEventListener('dankov:open-chat', restoreChat);
+
+    return () => {
+      window.removeEventListener('dankov:open-chat', restoreChat);
+    };
+  }, []);
 
   useEffect(() => {
     const isFreshIntro = messages.length === 1 && messages[0]?.id === 'welcome';
@@ -297,6 +419,7 @@ export default function ChatWidget() {
 
     setTimeout(() => {
       const contactSection =
+        document.querySelector('#booking') ||
         document.querySelector('#contact') ||
         document.querySelector('[data-section="contact"]') ||
         document.querySelector('.contact');
@@ -304,7 +427,7 @@ export default function ChatWidget() {
       if (contactSection) {
         contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
       } else {
-        window.location.hash = '#contact';
+        window.location.href = '/#booking';
       }
     }, 180);
   }
@@ -491,13 +614,22 @@ export default function ChatWidget() {
     }
   }
 
+  if (hidden && !open) return null;
+
   return (
-    <div className={`chat ${open ? 'chat--open' : ''}`}>
+    <div
+      ref={rootRef}
+      className={`chat ${open ? 'chat--open' : ''} ${dragging ? 'chat--dragging' : ''}`}
+      style={{
+        '--chat-shift-x': `${launcherShift.x}px`,
+        '--chat-shift-y': `${launcherShift.y}px`,
+      }}
+    >
       <AnimatePresence>
         {open && (
           <motion.div
             className="chat__scrim"
-            onClick={closeChat}
+            onClick={() => closeChat()}
             initial={{ opacity: 0, backdropFilter: 'blur(0px) saturate(1)' }}
             animate={{ opacity: 1, backdropFilter: 'blur(14px) saturate(1.12)' }}
             exit={{
@@ -613,7 +745,7 @@ export default function ChatWidget() {
                 </span>
               </div>
 
-              <button onClick={closeChat} aria-label="Затвори">
+              <button onClick={() => closeChat({ hideWidget: true })} aria-label="Скрий чат">
                 <X size={19} strokeWidth={2.3} />
               </button>
             </header>
@@ -842,7 +974,11 @@ export default function ChatWidget() {
 
       <motion.button
         className="chat__fab"
-        onClick={() => setOpen((value) => !value)}
+        onClick={toggleFromLauncher}
+        onPointerDown={startLauncherDrag}
+        onPointerMove={moveLauncher}
+        onPointerUp={endLauncherDrag}
+        onPointerCancel={endLauncherDrag}
         whileTap={{ scale: 0.97 }}
         aria-label={open ? 'Затвори чат' : 'Отвори чат'}
       >

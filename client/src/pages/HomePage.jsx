@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import AboutMobilePage from '../components/home/AboutMobilePage/AboutMobilePage.jsx';
+import AttorneyCinematic from '../components/home/AttorneyCinematic/AttorneyCinematic.jsx';
 import Cases from '../components/home/Cases/Cases.jsx';
 import Contact from '../components/home/Contact/Contact.jsx';
 import Footer from '../components/home/Footer/Footer.jsx';
@@ -59,7 +60,12 @@ export default function HomePage() {
       if (shouldScroll) {
         window.requestAnimationFrame(() => {
           window.requestAnimationFrame(() => {
-            document.querySelector('#contact')?.scrollIntoView({
+            const target =
+              window.location.hash === '#booking'
+                ? document.querySelector('#booking')
+                : document.querySelector('#contact');
+
+            target?.scrollIntoView({
               behavior: 'smooth',
               block: 'start',
             });
@@ -223,6 +229,19 @@ export default function HomePage() {
     };
   }, [mobileAboutVisible, mobileCasesVisible, showMobileContactPage]);
 
+  useEffect(() => {
+    if (!showMobileContactPage || window.location.hash !== '#booking') return;
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        document.querySelector('#booking')?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      });
+    });
+  }, [showMobileContactPage]);
+
   function closeMobileAbout() {
     setMobileAboutVisible(false);
     setMobileCasesVisible(false);
@@ -237,6 +256,7 @@ export default function HomePage() {
     return (
       <main className="hlHome">
         <AboutMobilePage onBack={closeMobileAbout} />
+        <Footer />
       </main>
     );
   }
@@ -245,6 +265,7 @@ export default function HomePage() {
     return (
       <main className="hlHome">
         <Cases pageMode onBack={closeMobileCases} />
+        <Footer />
       </main>
     );
   }
@@ -253,6 +274,7 @@ export default function HomePage() {
     return (
       <main className="hlHome">
         <Contact pageMode onBack={closeMobileContact} />
+        <Footer />
       </main>
     );
   }
@@ -260,6 +282,7 @@ export default function HomePage() {
   return (
     <main className="hlHome">
       <Hero />
+      <AttorneyCinematic />
       <Cases />
 
       {mobileContactVisible && <Contact />}

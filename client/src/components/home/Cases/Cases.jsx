@@ -14,6 +14,30 @@ import { cases as fallbackCases, videos } from '../_shared/homeData.js';
 import { fadeUp, pageStagger } from '../_shared/homeMotion.js';
 import './Cases.css';
 
+const FALLBACK_VIDEO_SLUGS = [
+  'video-malki-istorii-prava',
+  'video-pravoto-ima-choveshko-litse',
+];
+
+const FALLBACK_CASE_SLUGS = [
+  'nezakonno-uvolnenie-vratsa',
+  'kontrol-varhu-administrativni-aktove',
+  'omrazna-rech-diskriminatsiya',
+];
+
+const LEGACY_SLUGS = {
+  'fallback-video-1': FALLBACK_VIDEO_SLUGS[0],
+  'fallback-video-2': FALLBACK_VIDEO_SLUGS[1],
+  'fallback-case-1': FALLBACK_CASE_SLUGS[0],
+  'fallback-case-2': FALLBACK_CASE_SLUGS[1],
+  'fallback-case-3': FALLBACK_CASE_SLUGS[2],
+};
+
+function resolvePostSlug(slug = '') {
+  const clean = String(slug).trim();
+  return LEGACY_SLUGS[clean] || clean;
+}
+
 function getCaseSessionId() {
   const key = 'dankov_case_session_id';
   const existing = localStorage.getItem(key);
@@ -27,7 +51,7 @@ function getCaseSessionId() {
 function fallbackPosts() {
   const videoPosts = videos.map((item, index) => ({
     id: `fallback-video-${index + 1}`,
-    slug: `fallback-video-${index + 1}`,
+    slug: FALLBACK_VIDEO_SLUGS[index],
     type: 'video',
     title: item.headline.join(' '),
     excerpt: item.lead,
@@ -46,7 +70,7 @@ function fallbackPosts() {
 
   const casePosts = fallbackCases.map((item, index) => ({
     id: `fallback-case-${index + 1}`,
-    slug: `fallback-case-${index + 1}`,
+    slug: FALLBACK_CASE_SLUGS[index],
     type: 'article',
     title: item.title,
     excerpt: item.text,
@@ -78,7 +102,7 @@ function formatDate(value) {
 
 function getPostUrl(slug) {
   const origin = typeof window === 'undefined' ? '' : window.location.origin;
-  return `${origin}/?case=${encodeURIComponent(slug)}#cases`;
+  return `${origin}/novini/${encodeURIComponent(resolvePostSlug(slug))}`;
 }
 
 function MediaVisual({ post, compact = false, reader = false }) {
@@ -194,12 +218,12 @@ function CaseDetail({ post, comments, loading, onClose, onSubmitComment }) {
         transition={{ duration: 0.36, ease: [0.16, 1, 0.3, 1] }}
       >
         <header className="hlCaseReader__bar">
-          <button type="button" onClick={onClose}>
+          <button type="button" onClick={() => onClose()}>
             <ArrowLeft size={18} />
             Назад
           </button>
           <span>{post.type === 'video' ? 'Видео' : 'Новина'}</span>
-          <button type="button" onClick={onClose} aria-label="Затвори">
+          <button type="button" onClick={() => onClose()} aria-label="Затвори">
             <X size={20} />
           </button>
         </header>
@@ -277,10 +301,12 @@ function CaseDetail({ post, comments, loading, onClose, onSubmitComment }) {
   );
 }
 
-export default function Cases({ pageMode = false, onBack }) {
+export default function Cases({ pageMode = false, onBack, initialSlug = '' }) {
   const [posts, setPosts] = useState(() => fallbackPosts());
   const [selected, setSelected] = useState(null);
   const [returnScrollY, setReturnScrollY] = useState(0);
+  const [returnTargetUrl, setReturnTargetUrl] = useState('');
+  const [dismissedInitialSlug, setDismissedInitialSlug] = useState('');
   const [comments, setComments] = useState([]);
   const [commentsLoading, setCommentsLoading] = useState(false);
   const [copiedSlug, setCopiedSlug] = useState('');
@@ -303,6 +329,7 @@ export default function Cases({ pageMode = false, onBack }) {
 
   function openPost(post) {
     setReturnScrollY(window.scrollY);
+    setReturnTargetUrl(pageMode || window.location.pathname.startsWith('/novini') ? '/novini' : '/#cases');
     setSelected(post);
   }
 
@@ -331,11 +358,21 @@ export default function Cases({ pageMode = false, onBack }) {
 
   useEffect(() => {
     if (!posts.length) return;
-    const slug = new URLSearchParams(window.location.search).get('case');
-    if (!slug || selected) return;
+    const pathMatch = window.location.pathname.match(/^\/novini\/([^/?#]+)/);
+    const routeSlug = initialSlug || (pathMatch ? decodeURIComponent(pathMatch[1]) : '');
+    const legacySlug = new URLSearchParams(window.location.search).get('case');
+    const slug = resolvePostSlug(routeSlug || legacySlug || '');
+    if (!slug || selected || slug === dismissedInitialSlug) return;
     const found = posts.find((post) => post.slug === slug);
-    if (found) setSelected(found);
-  }, [posts, selected]);
+    if (found) {
+      setReturnTargetUrl('/novini');
+      setSelected(found);
+    }
+  }, [dismissedInitialSlug, initialSlug, posts, selected]);
+
+  useEffect(() => {
+    setDismissedInitialSlug('');
+  }, [initialSlug]);
 
   useEffect(() => {
     document.body.classList.toggle('case-reader-open', Boolean(selected));
@@ -366,9 +403,10 @@ export default function Cases({ pageMode = false, onBack }) {
       }
     }
 
-    const params = new URLSearchParams(window.location.search);
-    params.set('case', selected.slug);
-    window.history.replaceState(null, '', `?${params.toString()}#cases`);
+    const nextPath = `/novini/${encodeURIComponent(selected.slug)}`;
+    if (window.location.pathname !== nextPath || window.location.search || window.location.hash) {
+      window.history.replaceState(null, '', nextPath);
+    }
     loadCase();
 
     return () => {
@@ -377,12 +415,27 @@ export default function Cases({ pageMode = false, onBack }) {
   }, [selected?.slug, sessionId]);
 
   function closeReader({ target = 'return' } = {}) {
+    const closedSlug = selected?.slug || '';
+
     setSelected(null);
     setComments([]);
 
     if (target === 'return') {
-      window.history.replaceState(null, '', `${window.location.pathname}#cases`);
+      const targetUrl =
+        returnTargetUrl ||
+        (pageMode || window.location.pathname.startsWith('/novini') ? '/novini' : '/#cases');
+
+      if (targetUrl === '/novini' && closedSlug) {
+        setDismissedInitialSlug(closedSlug);
+      }
+
+      window.history.replaceState(null, '', targetUrl);
       window.requestAnimationFrame(() => {
+        if (targetUrl === '/novini') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          return;
+        }
+
         window.scrollTo({ top: returnScrollY, behavior: 'smooth' });
       });
       return;
@@ -560,7 +613,7 @@ export default function Cases({ pageMode = false, onBack }) {
                   onClick={() => copyPostLink(post)}
                 >
                   <Share2 size={15} />
-                  {copiedSlug === post.slug ? 'Копирано' : 'Share'}
+                  {copiedSlug === post.slug ? 'Копирано' : 'Сподели'}
                 </button>
                 <a
                   className="hlShareBrand hlShareBrand--linkedin"

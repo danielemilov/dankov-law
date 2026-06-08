@@ -411,11 +411,14 @@ body.case-reader-open {
 .hlCaseReader {
   position: fixed;
   inset: 0;
-  z-index: 2400;
+  z-index: 5000;
   overflow: auto;
-  background: rgba(244, 248, 235, 0.96);
-  -webkit-backdrop-filter: blur(14px) saturate(1.08);
-  backdrop-filter: blur(14px) saturate(1.08);
+  background:
+    radial-gradient(circle at 14% 0%, rgba(255, 255, 255, 0.96), transparent 34%),
+    radial-gradient(circle at 86% 12%, rgba(216, 238, 132, 0.13), transparent 30%),
+    linear-gradient(180deg, #f7faef 0%, #eef4e2 100%);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 .hlCaseReader__panel {
@@ -431,16 +434,17 @@ body.case-reader-open {
 .hlCaseReader__bar {
   position: sticky;
   top: 0;
-  z-index: 4;
+  z-index: 20;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   padding: 14px;
-  background: rgba(248, 251, 241, 0.82);
-  -webkit-backdrop-filter: blur(18px) saturate(1.08);
-  backdrop-filter: blur(18px) saturate(1.08);
+  background: rgba(248, 251, 241, 0.98);
+  -webkit-backdrop-filter: blur(14px) saturate(1.04);
+  backdrop-filter: blur(14px) saturate(1.04);
   border-bottom: 1px solid rgba(17, 22, 17, 0.08);
+  box-shadow: 0 14px 34px rgba(12, 18, 13, 0.08);
 }
 
 .hlCaseReader__bar button {
@@ -959,5 +963,68 @@ body.case-reader-open {
     width: 22px;
     height: 22px;
     font-size: 12px;
+  }
+}
+
+/* Final news-card action alignment. Keeps card buttons on one consistent row. */
+body.case-reader-open .chat {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+body.case-reader-open .navPrime {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+body.case-reader-open .hlCases {
+  z-index: 6000;
+}
+
+@media (min-width: 721px) {
+  .hlStoryCard {
+    min-height: 250px;
+  }
+
+  .hlStoryCard > button {
+    min-height: 100%;
+  }
+
+  .hlStoryCard__content {
+    padding-bottom: 82px;
+  }
+
+  .hlStoryCard .hlStoryActions {
+    position: absolute;
+    left: 214px;
+    right: 168px;
+    bottom: 22px;
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .hlStoryCard__share {
+    position: absolute;
+    right: 24px;
+    bottom: 22px;
+    padding: 0;
+  }
+}
+
+@media (min-width: 721px) and (max-width: 980px) {
+  .hlStoryCard__content {
+    padding-bottom: 76px;
+  }
+
+  .hlStoryCard .hlStoryActions {
+    left: 142px;
+    right: 150px;
+    bottom: 18px;
+  }
+
+  .hlStoryCard__share {
+    right: 18px;
+    bottom: 18px;
   }
 }

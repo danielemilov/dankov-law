@@ -5,6 +5,7 @@ import {
   Clock3,
   Mail,
   MapPin,
+  Phone,
 } from 'lucide-react';
 
 import BookingForm from '../../BookingForm.jsx';
@@ -84,6 +85,21 @@ export default function Contact({ pageMode = false, onBack }) {
                 </span>
               </a>
 
+              <a className="hlContact__detail" href="tel:+359899921629">
+                <span className="hlContact__detailIcon">
+                  <Phone size={18} aria-hidden="true" />
+                </span>
+
+                <span className="hlContact__detailText">
+                  <strong>Телефон</strong>
+                  <span>089 992 1629</span>
+                </span>
+
+                <span className="hlContact__detailArrow">
+                  <ArrowUpRight size={16} aria-hidden="true" />
+                </span>
+              </a>
+
               <a
                 className="hlContact__detail"
                 href="mailto:contact.dankov@gmail.com"
@@ -137,6 +153,7 @@ export default function Contact({ pageMode = false, onBack }) {
 
           <motion.div
             className="hlContact__formSlot"
+            id="booking"
             variants={fadeUp}
             initial="hidden"
             whileInView="show"

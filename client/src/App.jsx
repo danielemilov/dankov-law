@@ -6,6 +6,8 @@ import CookieBanner from './components/CookieBanner';
 
 import HomePage from './pages/HomePage';
 import PrivacyPage from './pages/PrivatePage';
+import AboutPage from './pages/AboutPage.jsx';
+import NewsPage from './pages/NewsPage.jsx';
 import BrandIntroLoader from './components/BrandIntroLoader.jsx';
 
 export default function App() {
@@ -16,6 +18,9 @@ export default function App() {
 
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/za-advokata" element={<AboutPage />} />
+        <Route path="/novini" element={<NewsPage />} />
+        <Route path="/novini/:slug" element={<NewsPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
       </Routes>
 
