@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
-import { MessageCircle, SendHorizontal, X } from 'lucide-react';
+import { MessageCircle,Minus, SendHorizontal, X } from 'lucide-react';
 import api from '../lib/api.js';
 import { submitChatLead } from '../lib/web3forms.js';
 import './ChatWidget.css';
@@ -9,6 +9,8 @@ const LAWYER_PHOTO = '/diyan-dankovv.jpg';
 const MIN_REPLY_DELAY = 1650;
 const CHAT_POSITION_KEY = 'dankov_chat_launcher_position';
 const CHAT_HIDDEN_KEY = 'dankov_chat_hidden';
+const CHAT_MESSAGES_KEY = 'dankov_chat_messages';
+
 
 const QUICK = [
   'Уволниха ме дисциплинарно',
@@ -87,6 +89,30 @@ function readStoredLauncherPosition() {
     };
   } catch {
     return { x: 0, y: 0 };
+  }
+}
+function readStoredMessages() {
+  if (typeof window === 'undefined') return [welcome];
+
+  try {
+    const parsed = JSON.parse(
+      localStorage.getItem(CHAT_MESSAGES_KEY) || '[]'
+    );
+
+    if (!Array.isArray(parsed)) return [welcome];
+
+    const validMessages = parsed.filter((message) => {
+      return (
+        message &&
+        typeof message.id === 'string' &&
+        typeof message.content === 'string' &&
+        (message.role === 'user' || message.role === 'assistant')
+      );
+    });
+
+    return validMessages.length > 0 ? validMessages : [welcome];
+  } catch {
+    return [welcome];
   }
 }
 
@@ -209,7 +235,7 @@ export default function ChatWidget() {
     return localStorage.getItem('dankov_session_id') || null;
   });
 
-  const [messages, setMessages] = useState([welcome]);
+  const [messages, setMessages] = useState(readStoredMessages);
   const [actionCard, setActionCard] = useState(null);
 
   const [contactOpen, setContactOpen] = useState(false);
@@ -359,6 +385,19 @@ export default function ChatWidget() {
       window.removeEventListener('dankov:open-chat', restoreChat);
     };
   }, []);
+  useEffect(() => {
+  if (typeof window === 'undefined') return;
+
+  try {
+    const messagesToStore = messages.slice(-100);
+
+    localStorage.setItem(
+      CHAT_MESSAGES_KEY,
+      JSON.stringify(messagesToStore)
+    );
+  } catch {
+  }
+}, [messages]);
 
   useEffect(() => {
     const isFreshIntro = messages.length === 1 && messages[0]?.id === 'welcome';
@@ -736,19 +775,36 @@ export default function ChatWidget() {
             />
 
             <header className="chat__header">
-              <LawyerAvatar />
+  <LawyerAvatar />
 
-              <div className="chat__header-copy">
-                <strong>Адвокат Диян Данков</strong>
-                <span>
-                  <i /> Онлайн запитване · обща информация
-                </span>
-              </div>
+  <div className="chat__header-copy">
+    <strong>Адвокат Диян Данков</strong>
 
-              <button onClick={() => closeChat({ hideWidget: true })} aria-label="Скрий чат">
-                <X size={19} strokeWidth={2.3} />
-              </button>
-            </header>
+    <span>
+      <i /> Онлайн запитване · обща информация
+    </span>
+  </div>
+
+  <div className="chat__header-actions">
+    <button
+      type="button"
+      onClick={() => closeChat()}
+      aria-label="Минимизирай чат"
+      title="Минимизирай"
+    >
+      <Minus size={20} strokeWidth={2.4} />
+    </button>
+
+    <button
+      type="button"
+      onClick={() => closeChat({ hideWidget: true })}
+      aria-label="Затвори чат"
+      title="Затвори"
+    >
+      <X size={19} strokeWidth={2.3} />
+    </button>
+  </div>
+</header>
 
             <div className="chat__scroll-clip">
               <div className="chat__messages">

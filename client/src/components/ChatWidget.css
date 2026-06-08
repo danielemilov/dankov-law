@@ -440,6 +440,13 @@ body.nav-menu-open .chat {
 .chat__header-copy {
   min-width: 0;
 }
+.chat__header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  gap: 8px;
+}
 
 .chat__header-copy strong {
   display: block;
@@ -2930,10 +2937,13 @@ body.chat-open .hlHero + * {
   }
 
   .chat__header {
-    grid-template-columns: 50px minmax(0, 1fr) 50px !important;
+    grid-template-columns: 50px minmax(0, 1fr) auto !important;
     padding-left: 14px !important;
     padding-right: 14px !important;
   }
+  .chat__header-actions {
+  gap: 6px;
+}
 
   .chat__header .chat__avatar {
     width: 46px !important;
