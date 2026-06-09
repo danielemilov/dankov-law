@@ -6,6 +6,10 @@
   "outputDirectory": "client/dist",
   "rewrites": [
     {
+      "source": "/api/:path*",
+      "destination": "https://dankov-law.onrender.com/api/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
