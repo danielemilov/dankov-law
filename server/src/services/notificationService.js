@@ -92,6 +92,30 @@ ${lastUser?.content || '—'}`;
   return { email, whatsapp };
 }
 
+export async function notifyDirectChatMessage({ session, message, messages = [] }) {
+  const visitor = session.visitor || {};
+
+  const text = `Ново съобщение в директния чат
+
+Име: ${visitor.name || '—'}
+Телефон: ${visitor.phone || '—'}
+Имейл: ${visitor.email || '—'}
+Приоритет: ${formatPriority(session.priority)}
+
+Съобщение:
+${message?.content || '—'}`;
+
+  const [email, whatsapp] = await Promise.allSettled([
+    sendChatLeadNotification({ session, messages }),
+    notifyLawyerOnWhatsApp(text),
+  ]);
+
+  logNotificationResult('Direct chat email', email);
+  logNotificationResult('Direct chat WhatsApp', whatsapp);
+
+  return { email, whatsapp };
+}
+
 export async function notifyChatContactConfirmation({ session }) {
   await sendChatContactConfirmation({ session });
 }

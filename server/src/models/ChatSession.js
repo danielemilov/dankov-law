@@ -29,6 +29,17 @@ const metaSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const directChatSchema = new mongoose.Schema(
+  {
+    requested: { type: Boolean, default: false },
+    requestedAt: { type: Date, default: null },
+    lastAdminReplyAt: { type: Date, default: null },
+    lastVisitorMessageAt: { type: Date, default: null },
+    lastVisitorNotificationAt: { type: Date, default: null },
+  },
+  { _id: false }
+);
+
 const chatSessionSchema = new mongoose.Schema(
   {
     sessionId: {
@@ -75,7 +86,7 @@ const chatSessionSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ['open', 'lead', 'closed'],
+      enum: ['open', 'lead', 'waiting_for_lawyer', 'lawyer_joined', 'closed'],
       default: 'open',
       index: true,
     },
@@ -95,6 +106,11 @@ const chatSessionSchema = new mongoose.Schema(
 
     legalState: {
       type: mongoose.Schema.Types.Mixed,
+      default: () => ({}),
+    },
+
+    directChat: {
+      type: directChatSchema,
       default: () => ({}),
     },
 

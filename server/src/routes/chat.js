@@ -10,6 +10,7 @@ import { detectIntent, getAssistantReply } from '../services/aiService.js';
 import {
   notifyChatLead,
   notifyChatContactConfirmation,
+  notifyDirectChatMessage,
 } from '../services/notificationService.js';
 import { extractContact, shouldEscalate } from '../utils/contact.js';
 
@@ -38,6 +39,29 @@ const contactCaptureInput = z.object({
   emailDelivery: z.enum(['server', 'client_web3forms']).optional().default('server'),
   website: z.string().max(200).optional().default(''),
 });
+
+const directRequestInput = z.object({
+  sessionId: z.string().uuid().optional().nullable(),
+  visitorInfo: visitorInfoSchema,
+  consent: z.boolean().refine((value) => value === true, {
+    message: 'Необходимо е съгласие за директен чат и обработка на данните за връзка.',
+  }),
+  website: z.string().max(200).optional().default(''),
+});
+
+function isDirectChatStatus(status = '') {
+  return ['waiting_for_lawyer', 'lawyer_joined'].includes(status);
+}
+
+function serializePublicMessage(message) {
+  return {
+    id: String(message._id),
+    role: message.role,
+    content: message.content,
+    createdAt: message.createdAt,
+    meta: message.meta || {},
+  };
+}
 
 function cleanVisitorInfo(visitorInfo = {}, extracted = {}) {
   return {
@@ -276,6 +300,73 @@ router.post('/message', validateBody(chatInput), asyncHandler(async (req, res) =
     },
   });
 
+  if (isDirectChatStatus(session.status)) {
+    const now = new Date();
+    const lastVisitorNotificationAt = session.directChat?.lastVisitorNotificationAt
+      ? new Date(session.directChat.lastVisitorNotificationAt)
+      : null;
+    const notificationThrottleMs = Number(
+      process.env.DIRECT_CHAT_NOTIFICATION_THROTTLE_MS || 2 * 60 * 1000
+    );
+    const shouldNotifyLawyer =
+      !lastVisitorNotificationAt ||
+      now.getTime() - lastVisitorNotificationAt.getTime() > notificationThrottleMs ||
+      session.priority === 'high';
+
+    session.lastMessageAt = now;
+    session.directChat = {
+      ...(session.directChat || {}),
+      requested: true,
+      lastVisitorMessageAt: now,
+    };
+
+    if (shouldNotifyLawyer) {
+      try {
+        const recentMessages = await ChatMessage.find({ sessionId })
+          .sort({ createdAt: -1 })
+          .limit(10)
+          .lean();
+
+        const notification = await notifyDirectChatMessage({
+          session,
+          message: userMessage,
+          messages: recentMessages.reverse(),
+        });
+
+        if (
+          notification.email.status === 'fulfilled' ||
+          notification.whatsapp.status === 'fulfilled'
+        ) {
+          session.directChat = {
+            ...(session.directChat || {}),
+            lastVisitorMessageAt: now,
+            lastVisitorNotificationAt: now,
+          };
+        }
+      } catch (err) {
+        console.error('Direct chat update notification failed:', err.message);
+      }
+    }
+
+    await session.save();
+
+    return res.json({
+      success: true,
+      sessionId,
+      reply:
+        'Съобщението е изпратено към адв. Данков. Ако е онлайн, ще може да ви отговори тук в чата.',
+      detectedIntent: session.detectedIntent || preDetectedIntent,
+      directChat: true,
+      shouldShowContactForm: false,
+      meta: {
+        model: 'direct-chat',
+        leadCaptured: hasReachableContact(session.visitor || {}),
+        priority: session.priority || 'normal',
+        messageId: String(userMessage._id),
+      },
+    });
+  }
+
   if (nonsenseLike) {
     session.unknownCount = Number(session.unknownCount || 0) + 1;
     session.detectedIntent = 'unknown';
@@ -419,6 +510,127 @@ router.post('/message', validateBody(chatInput), asyncHandler(async (req, res) =
       unknownCount: session.unknownCount,
       forcedContactAfterUnclear,
     },
+  });
+}));
+
+router.post('/direct-request', validateBody(directRequestInput), asyncHandler(async (req, res) => {
+  const { sessionId: existingSessionId, visitorInfo, website } = req.body;
+
+  if (website && website.trim()) {
+    return res.status(400).json({
+      success: false,
+      message: 'Заявката беше отказана.',
+    });
+  }
+
+  const incomingVisitor = {
+    name: visitorInfo.name || '',
+    email: visitorInfo.email || '',
+    phone: visitorInfo.phone || '',
+  };
+
+  if (!hasAnyVisitorValue(incomingVisitor)) {
+    return res.status(400).json({
+      success: false,
+      message: 'Оставете поне име, имейл или телефон.',
+    });
+  }
+
+  if (!hasReachableContact(incomingVisitor)) {
+    return res.status(400).json({
+      success: false,
+      message: 'Оставете имейл или телефон, за да може кантората да се свърже с вас.',
+    });
+  }
+
+  if (looksLikeSuspiciousName(incomingVisitor.name)) {
+    return res.status(400).json({
+      success: false,
+      message: 'Моля, въведете реално име или оставете полето празно.',
+    });
+  }
+
+  if (incomingVisitor.phone && looksLikeFakePhone(incomingVisitor.phone)) {
+    return res.status(400).json({
+      success: false,
+      message: 'Моля, въведете реален телефонен номер или използвайте имейл.',
+    });
+  }
+
+  const sessionId = existingSessionId || randomUUID();
+  const existingSession = await ChatSession.findOne({ sessionId });
+  const cleanVisitor = mergeVisitor(existingSession?.visitor || {}, incomingVisitor);
+  const now = new Date();
+
+  const session = await ChatSession.findOneAndUpdate(
+    { sessionId },
+    {
+      $setOnInsert: {
+        sessionId,
+        meta: {
+          ip: req.ip,
+          userAgent: req.get('user-agent') || '',
+        },
+      },
+      $set: {
+        visitor: cleanVisitor,
+        status: 'waiting_for_lawyer',
+        lastMessageAt: now,
+        consent: {
+          accepted: true,
+          acceptedAt: now,
+          source: 'direct_chat',
+          textVersion: CONSENT_TEXT_VERSION,
+          ip: req.ip,
+          userAgent: req.get('user-agent') || '',
+        },
+        directChat: {
+          requested: true,
+          requestedAt: existingSession?.directChat?.requestedAt || now,
+          lastAdminReplyAt: existingSession?.directChat?.lastAdminReplyAt || null,
+        },
+      },
+    },
+    {
+      upsert: true,
+      returnDocument: 'after',
+    }
+  );
+
+  await ChatMessage.create({
+    sessionId,
+    role: 'system',
+    content: 'Посетителят поиска директен чат с адв. Данков.',
+    visitorSnapshot: cleanVisitor,
+    meta: {
+      source: 'direct_chat_request',
+    },
+  });
+
+  const messages = await ChatMessage.find({ sessionId })
+    .sort({ createdAt: 1 })
+    .lean();
+
+  let leadNotified = false;
+  try {
+    const notification = await notifyChatLead({ session, messages });
+    leadNotified = notification.email.status === 'fulfilled' || notification.whatsapp.status === 'fulfilled';
+
+    if (leadNotified && !session.leadNotifiedAt) {
+      session.leadNotifiedAt = new Date();
+      await session.save();
+    }
+  } catch (err) {
+    console.error('Direct chat notification failed:', err.message);
+  }
+
+  res.json({
+    success: true,
+    sessionId,
+    directChat: true,
+    leadNotified,
+    message:
+      'Заявката за директен чат е изпратена. Напишете кратко какво искате да обсъдите, а отговорът от адв. Данков ще се появи тук.',
   });
 }));
 
@@ -574,12 +786,30 @@ router.get('/history/:sessionId', asyncHandler(async (req, res) => {
 
   const messages = await ChatMessage.find({ sessionId })
     .sort({ createdAt: 1 })
-    .select('role content createdAt')
+    .select('role content createdAt meta')
     .lean();
 
   res.json({
     success: true,
-    messages,
+    messages: messages.map((message) => serializePublicMessage(message)),
+  });
+}));
+
+router.get('/lawyer-replies/:sessionId', asyncHandler(async (req, res) => {
+  const sessionId = req.params.sessionId;
+
+  const messages = await ChatMessage.find({
+    sessionId,
+    role: 'assistant',
+    'meta.source': 'admin',
+  })
+    .sort({ createdAt: 1 })
+    .select('role content createdAt meta')
+    .lean();
+
+  res.json({
+    success: true,
+    messages: messages.map((message) => serializePublicMessage(message)),
   });
 }));
 

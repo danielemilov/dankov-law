@@ -5,8 +5,10 @@ import rateLimit from 'express-rate-limit';
 import morgan from 'morgan';
 
 import bookingsRouter from './routes/bookings.js';
+import adminRouter from './routes/admin.js';
 import casesRouter from './routes/cases.js';
 import chatRouter from './routes/chat.js';
+import siteSettingsRouter from './routes/siteSettings.js';
 import whatsappWebhookRouter from './routes/whatsappWebhook.js';
 import { notFound, errorHandler } from './middleware/errorHandler.js';
 
@@ -89,6 +91,14 @@ const casesLimiter = rateLimit({
   message: { success: false, message: 'Твърде много действия. Опитайте след малко.' },
 });
 
+const adminLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 80,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: { success: false, message: 'Твърде много админ действия. Опитайте след малко.' },
+});
+
 app.get('/', (req, res) => {
   res.json({
     success: true,
@@ -122,8 +132,10 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/api/bookings', bookingLimiter, bookingsRouter);
+app.use('/api/admin', adminLimiter, adminRouter);
 app.use('/api/cases', casesLimiter, casesRouter);
 app.use('/api/chat', chatLimiter, chatRouter);
+app.use('/api/site-settings', siteSettingsRouter);
 app.use('/api/webhooks/whatsapp', whatsappWebhookRouter);
 
 app.use(notFound);

@@ -4,6 +4,7 @@ import Booking from '../models/Booking.js';
 import { validateBody } from '../middleware/validate.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { notifyNewBooking } from '../services/notificationService.js';
+import { requireAdmin } from '../middleware/adminAuth.js';
 
 const router = Router();
 
@@ -68,12 +69,12 @@ router.post('/', validateBody(bookingInput), asyncHandler(async (req, res) => {
   });
 }));
 
-router.get('/', asyncHandler(async (req, res) => {
+router.get('/', requireAdmin, asyncHandler(async (req, res) => {
   const bookings = await Booking.find().sort({ createdAt: -1 }).limit(100).lean();
   res.json({ success: true, bookings });
 }));
 
-router.patch('/:id/status', asyncHandler(async (req, res) => {
+router.patch('/:id/status', requireAdmin, asyncHandler(async (req, res) => {
   const statusSchema = z.object({
     status: z.enum(['new', 'reviewed', 'confirmed', 'completed', 'cancelled']),
   });

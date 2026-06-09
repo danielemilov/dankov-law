@@ -82,7 +82,7 @@ router.get('/', asyncHandler(async (req, res) => {
   await ensureDefaultPosts();
 
   const posts = await CasePost.find({ status: 'published' })
-    .sort({ featured: -1, publishedAt: -1 })
+    .sort({ publishedAt: -1, createdAt: -1, featured: -1 })
     .limit(12)
     .lean();
 
