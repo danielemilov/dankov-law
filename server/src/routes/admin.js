@@ -378,6 +378,7 @@ router.post('/login', validateBody(loginInput), asyncHandler(async (req, res) =>
   }
 
   const { username, password } = req.body;
+
   if (!verifyAdminCredentials(username, password)) {
     return res.status(401).json({
       success: false,
@@ -386,10 +387,14 @@ router.post('/login', validateBody(loginInput), asyncHandler(async (req, res) =>
   }
 
   const token = createAdminSession(username);
+
+  // Оставяме cookie-то за браузъри, които го приемат.
   setAdminCookie(res, token);
 
-  res.json({
+  // Връщаме token-а и към frontend-а за надеждна Bearer автентикация.
+  return res.json({
     success: true,
+    token,
     admin: {
       username,
     },
