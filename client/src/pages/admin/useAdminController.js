@@ -6,8 +6,10 @@ import {
   useState,
 } from 'react';
 
-import api from '../../lib/api.js';
-
+import api, {
+  setAdminToken,
+  clearAdminToken,
+} from '../../lib/api.js';
 import {
   defaultSiteSettings,
   mergeSiteSettings,
@@ -473,10 +475,14 @@ export default function useAdminController(route) {
     setError('');
 
     try {
-      const response = await api.post(
-        '/api/admin/login',
-        loginForm
-      );
+
+const response = await api.post('/api/admin/login', loginForm);
+
+setAdminToken(response.data.token);
+setAdminToken(response.data.token);
+
+setAdmin(response.data.admin);
+await loadAdminData();
 
       setAdmin(
         response.data?.admin || {
@@ -508,7 +514,9 @@ export default function useAdminController(route) {
         'Изходът не беше завършен коректно.'
       );
     } finally {
+        clearAdminToken();
       setAdmin(null);
+
       setSelectedChatId('');
       setSelectedChat(null);
       setChatMessages([]);
