@@ -1,4 +1,10 @@
 import {
+  lazy,
+  Suspense,
+} from 'react';
+
+import {
+  useLocation,
   Route,
   Routes,
 } from 'react-router-dom';
@@ -16,15 +22,24 @@ import PrivacyPage from './pages/PrivatePage';
 import AboutPage from './pages/AboutPage.jsx';
 import NewsPage from './pages/NewsPage.jsx';
 import ContactPage from './pages/ContactPage.jsx';
+import useSiteSettings from './hooks/useSiteSettings.js';
+
+const AdminPage = lazy(() => import('./pages/admin/AdminPage.jsx'));
 
 export default function App() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
+  const settings = useSiteSettings();
+
   return (
     <>
       <ScrollRestoration />
 
-      <BrandIntroLoader oncePerSession />
+      {!isAdminRoute && settings.components?.brandIntroEnabled !== false && (
+        <BrandIntroLoader oncePerSession />
+      )}
 
-      <Navbar />
+      {!isAdminRoute && <Navbar />}
 
       <Routes>
         <Route
@@ -56,11 +71,22 @@ export default function App() {
           path="/privacy"
           element={<PrivacyPage />}
         />
+
+        <Route
+          path="/admin/*"
+          element={
+            <Suspense fallback={<main className="adminRouteFallback">Зареждане...</main>}>
+              <AdminPage />
+            </Suspense>
+          }
+        />
       </Routes>
 
-      <ChatWidget />
+      {!isAdminRoute && settings.chat?.enabled !== false && (
+        <ChatWidget settings={settings.chat} />
+      )}
 
-      <CookieBanner />
+      {!isAdminRoute && settings.components?.cookieBannerEnabled !== false && <CookieBanner />}
 
       <Toaster
         position="bottom-left"

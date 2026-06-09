@@ -1,0 +1,132 @@
+import {
+  CalendarDays,
+  Contact,
+  Home,
+  LayoutDashboard,
+  MessageSquareText,
+  MessagesSquare,
+  Navigation,
+  Newspaper,
+  PanelLeft,
+  Settings,
+  SlidersHorizontal,
+  Blocks,
+} from 'lucide-react';
+
+export const ADMIN_SECTIONS = [
+  {
+    id: 'overview',
+    label: 'Работно табло',
+    shortLabel: 'Табло',
+    description: 'Най-важното на едно място',
+    icon: LayoutDashboard,
+    group: 'main',
+  },
+  {
+    id: 'chats',
+    label: 'Клиентски чатове',
+    shortLabel: 'Чатове',
+    description: 'Разговори и директни отговори',
+    icon: MessageSquareText,
+    group: 'primary',
+  },
+  {
+    id: 'posts',
+    label: 'Новини и публикации',
+    shortLabel: 'Новини',
+    description: 'Създаване и редактиране',
+    icon: Newspaper,
+    group: 'primary',
+  },
+  {
+    id: 'bookings',
+    label: 'Заявки за консултация',
+    shortLabel: 'Заявки',
+    description: 'Клиенти, казуси и бележки',
+    icon: CalendarDays,
+    group: 'management',
+  },
+  {
+    id: 'comments',
+    label: 'Коментари',
+    shortLabel: 'Коментари',
+    description: 'Преглед и модерация',
+    icon: PanelLeft,
+    group: 'management',
+  },
+  {
+    id: 'settings',
+    label: 'Настройки на сайта',
+    shortLabel: 'Настройки',
+    description: 'Текстове, секции и функции',
+    icon: Settings,
+    group: 'management',
+  },
+];
+
+export const SETTINGS_PANELS = [
+  {
+    id: 'general',
+    label: 'Основна информация',
+    description: 'Име, телефон, адрес, работно време и footer',
+    icon: Contact,
+  },
+  {
+    id: 'navigation',
+    label: 'Навигация',
+    description: 'Менюта, етикети и основен CTA бутон',
+    icon: Navigation,
+  },
+  {
+    id: 'homepage',
+    label: 'Начална страница',
+    description: 'Hero съдържание, CTA бутони и видими секции',
+    icon: Home,
+  },
+  {
+    id: 'contact',
+    label: 'Контакт и форма',
+    description: 'Текстове в контактната секция и заявката',
+    icon: SlidersHorizontal,
+  },
+  {
+    id: 'chat',
+    label: 'Директен чат',
+    description: 'Съобщения, известия и бързи въпроси',
+    icon: MessagesSquare,
+  },
+  {
+    id: 'components',
+    label: 'Глобални компоненти',
+    description: 'Intro loader, cookie banner и други елементи',
+    icon: Blocks,
+  },
+];
+
+export const EMPTY_POST = {
+  id: '',
+  title: '',
+  slug: '',
+  excerpt: '',
+  body: '',
+  type: 'article',
+  category: '',
+  location: 'България',
+  publishedAt: '',
+  status: 'published',
+  featured: false,
+  editorialNote: '',
+  heroImage: {
+    url: '',
+    alt: '',
+    provider: '',
+    publicId: '',
+  },
+  video: {
+    src: '',
+    youtubeUrl: '',
+    startAt: 0,
+    endAt: 0,
+    objectPosition: 'center center',
+  },
+};

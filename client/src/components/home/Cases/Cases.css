@@ -147,13 +147,13 @@
   color: var(--news-ink);
   font-size:
     clamp(
-      44px,
-      5vw,
-      72px
+      38px,
+      4.4vw,
+      60px
     );
   font-weight: 850;
-  line-height: 0.98;
-  letter-spacing: -0.05em;
+  line-height: 1.04;
+  letter-spacing: 0;
 }
 .hlHomeNews__title em {
   color: #66753f;
@@ -665,7 +665,7 @@
     );
   font-weight: 850;
   line-height: 1.02;
-  letter-spacing: -0.045em;
+  letter-spacing: 0;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
@@ -764,7 +764,7 @@
     );
   font-weight: 820;
   line-height: 1.12;
-  letter-spacing: -0.025em;
+  letter-spacing: 0;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
@@ -968,13 +968,13 @@
   color: #fff;
   font-size:
     clamp(
-      48px,
-      6vw,
-      82px
+      42px,
+      5vw,
+      68px
     );
   font-weight: 820;
-  line-height: 0.94;
-  letter-spacing: -0.055em;
+  line-height: 1.02;
+  letter-spacing: 0;
 }
 .hlNewsArchive__introCopy h1 span {
   display: block;
@@ -1094,7 +1094,7 @@
     );
   font-weight: 820;
   line-height: 1.1;
-  letter-spacing: -0.035em;
+  letter-spacing: 0;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
@@ -1456,13 +1456,13 @@
   color: var(--news-ink);
   font-size:
     clamp(
-      42px,
-      5.2vw,
-      70px
+      36px,
+      4.5vw,
+      58px
     );
   font-weight: 830;
-  line-height: 0.99;
-  letter-spacing: -0.052em;
+  line-height: 1.05;
+  letter-spacing: 0;
 }
 
 .hlCaseReader__lead {
@@ -1537,7 +1537,7 @@
   color: var(--news-ink);
   font-size: 28px;
   font-weight: 820;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
 }
 .hlCaseComments__head small {
   max-width: 680px;

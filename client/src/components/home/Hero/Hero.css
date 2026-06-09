@@ -96,7 +96,7 @@
   margin: 0;
   color: #071008;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 92px;
+  font-size: 82px;
   font-weight: 950;
   line-height: 0.94;
   letter-spacing: 0;
@@ -571,7 +571,7 @@
   }
 
   .hlHero__title {
-    font-size: 78px;
+    font-size: 70px;
   }
 
   .hlHero__portraitStage img {
@@ -592,7 +592,7 @@
   }
 
   .hlHero__title {
-    font-size: 78px;
+    font-size: 70px;
   }
 
 

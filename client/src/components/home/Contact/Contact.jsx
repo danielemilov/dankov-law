@@ -9,6 +9,7 @@ import {
 
 import BookingForm from '../../BookingForm.jsx';
 import PageBackButton from '../../PageBackButton.jsx';
+import useSiteSettings from '../../../hooks/useSiteSettings.js';
 
 import {
   fadeUp,
@@ -21,8 +22,10 @@ export default function Contact({
   pageMode = false,
   onBack,
 }) {
+  const settings = useSiteSettings();
+  const contactSettings = settings.contactPage || {};
   const mapQuery = encodeURIComponent(
-    'ул. Осъм 4, ет. 3, офис 321, Разград 7200, България'
+    settings.addressFull
   );
 
   const mapSrc =
@@ -81,19 +84,19 @@ export default function Contact({
                 )}
 
                 <p className="hlKicker hlContact__kicker">
-                  Свържете се
+                  {contactSettings.kicker || 'Свържете се'}
                 </p>
               </div>
 
               <div className="hlContactIntroPanel__copy">
                 <h2 className="hlSectionTitle hlContact__title">
-                  Запазете{' '}
-                  <em>консултация.</em>
+                  {contactSettings.titleStart || 'Запазете'}{' '}
+                  <em>{contactSettings.titleEmphasis || 'консултация.'}</em>
                 </h2>
 
                 <p className="hlContactIntroPanel__summary">
-                  Опишете накратко казуса си. Ще получите обратна връзка за
-                  подходящ час, нужните документи и следващите стъпки.
+                  {contactSettings.summary ||
+                    'Опишете накратко казуса си. Ще получите обратна връзка за подходящ час, нужните документи и следващите стъпки.'}
                 </p>
               </div>
             </motion.div>
@@ -116,7 +119,7 @@ export default function Contact({
                   <span className="hlContact__detailText">
                     <strong>Локация</strong>
                     <span>
-                      ул. „Осъм“ 4, ет. 3, офис 321, гр. Разград
+                      {settings.addressShort}
                     </span>
                   </span>
 
@@ -127,7 +130,7 @@ export default function Contact({
 
                 <a
                   className="hlContact__detail"
-                  href="tel:+359899921629"
+                  href={`tel:${settings.phoneHref}`}
                 >
                   <span className="hlContact__detailIcon">
                     <Phone size={18} aria-hidden="true" />
@@ -135,7 +138,7 @@ export default function Contact({
 
                   <span className="hlContact__detailText">
                     <strong>Телефон</strong>
-                    <span>089 992 1629</span>
+                    <span>{settings.phoneDisplay}</span>
                   </span>
 
                   <span className="hlContact__detailArrow">
@@ -145,7 +148,7 @@ export default function Contact({
 
                 <a
                   className="hlContact__detail"
-                  href="mailto:contact.dankov@gmail.com"
+                  href={`mailto:${settings.email}`}
                 >
                   <span className="hlContact__detailIcon">
                     <Mail size={18} aria-hidden="true" />
@@ -153,7 +156,7 @@ export default function Contact({
 
                   <span className="hlContact__detailText">
                     <strong>Email</strong>
-                    <span>contact.dankov@gmail.com</span>
+                    <span>{settings.email}</span>
                   </span>
 
                   <span className="hlContact__detailArrow">
@@ -168,7 +171,7 @@ export default function Contact({
 
                   <span className="hlContact__detailText">
                     <strong>Работно време</strong>
-                    <span>Понеделник – Петък · 09:00–18:00</span>
+                    <span>{settings.workingHours}</span>
                   </span>
                 </div>
               </div>
@@ -209,7 +212,10 @@ export default function Contact({
               amount: 0.16,
             }}
           >
-            <BookingForm />
+            <BookingForm
+              title={contactSettings.bookingTitle}
+              lead={contactSettings.bookingLead}
+            />
           </motion.div>
         </div>
       </div>

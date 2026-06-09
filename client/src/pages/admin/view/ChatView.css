@@ -1,0 +1,1437 @@
+/* =========================================================
+   DANKOV ADMIN — PREMIUM CHAT SYSTEM
+   Главният работен екран на административния панел
+   ========================================================= */
+
+
+/* =========================================================
+   ОБЩА СТРУКТУРА
+   ========================================================= */
+
+.dAdminChatListView,
+.dAdminChatDetailView {
+  width: 100%;
+  max-width: 1680px;
+  margin: 0 auto;
+}
+
+.dAdminChatListView {
+  gap: 22px;
+}
+
+.dAdminChatDetailView {
+  gap: 16px;
+}
+
+
+/* =========================================================
+   CHAT LIST — PAGE INTRO
+   ========================================================= */
+
+.dAdminChatListView .dAdminPageIntro {
+  position: relative;
+  overflow: hidden;
+  min-height: 210px;
+  align-items: flex-end;
+  padding: clamp(25px, 4vw, 44px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: var(--d-admin-radius-lg);
+  color: #f7f9ef;
+  background:
+    radial-gradient(
+      circle at 91% 5%,
+      rgba(214, 239, 103, 0.22),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 64% 120%,
+      rgba(214, 239, 103, 0.08),
+      transparent 38%
+    ),
+    linear-gradient(
+      135deg,
+      #10140e 0%,
+      #182016 48%,
+      #252f20 100%
+    );
+  box-shadow:
+    0 28px 72px rgba(17, 21, 15, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.dAdminChatListView .dAdminPageIntro::before {
+  position: absolute;
+  top: -130px;
+  right: -90px;
+  width: 350px;
+  height: 350px;
+  border: 1px solid rgba(214, 239, 103, 0.14);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.dAdminChatListView .dAdminPageIntro::after {
+  position: absolute;
+  right: 150px;
+  bottom: -250px;
+  width: 420px;
+  height: 420px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.dAdminChatListView .dAdminPageIntro > div:first-child {
+  position: relative;
+  z-index: 1;
+}
+
+.dAdminChatListView .dAdminBackLink {
+  margin-bottom: 5px;
+  color: rgba(247, 249, 239, 0.68);
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(16px);
+}
+
+.dAdminChatListView .dAdminBackLink:hover {
+  color: #ffffff;
+  border-color: rgba(214, 239, 103, 0.3);
+  background: rgba(214, 239, 103, 0.1);
+}
+
+.dAdminChatListView .dAdminEyebrow {
+  color: rgba(247, 249, 239, 0.52);
+}
+
+.dAdminChatListView .dAdminEyebrow::before {
+  background: var(--d-admin-accent);
+  box-shadow: 0 0 0 5px rgba(214, 239, 103, 0.1);
+}
+
+.dAdminChatListView .dAdminPageIntro h2 {
+  max-width: 740px;
+  color: #ffffff;
+  font-size: clamp(40px, 5.3vw, 72px);
+  line-height: 0.93;
+  letter-spacing: -0.05em;
+}
+
+.dAdminChatListView .dAdminPageIntro p {
+  max-width: 660px;
+  color: rgba(247, 249, 239, 0.61);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+
+/* =========================================================
+   ATTENTION SUMMARY
+   ========================================================= */
+
+.dAdminChatListView .dAdminPageIntro__summary {
+  position: relative;
+  z-index: 1;
+  min-width: 190px;
+  min-height: 118px;
+  display: grid;
+  align-content: space-between;
+  justify-items: end;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.11),
+      rgba(255, 255, 255, 0.055)
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 15px 38px rgba(0, 0, 0, 0.13);
+  backdrop-filter: blur(18px);
+}
+
+.dAdminChatListView .dAdminPageIntro__summary > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: rgba(247, 249, 239, 0.6);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.dAdminChatListView .dAdminPageIntro__summary > span svg {
+  color: var(--d-admin-accent);
+}
+
+.dAdminChatListView .dAdminPageIntro__summary strong {
+  color: #ffffff;
+  font-family: var(--serif, Georgia, serif);
+  font-size: 54px;
+  font-weight: 400;
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+}
+
+
+/* =========================================================
+   CHAT LIST PANEL
+   ========================================================= */
+
+.dAdminChatListView > .dAdminPanel {
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.dAdminChatListView > .dAdminPanel > .dAdminToolbar {
+  position: sticky;
+  top: calc(var(--d-admin-header-height) + 14px);
+  z-index: 8;
+  padding: 10px;
+  border: 1px solid var(--d-admin-line);
+  border-radius: 17px;
+  background: rgba(247, 247, 241, 0.88);
+  box-shadow:
+    0 14px 38px rgba(17, 21, 15, 0.075),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(20px);
+}
+
+
+/* =========================================================
+   CHAT CARD GRID
+   ========================================================= */
+
+.dAdminChatCards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 12px;
+  padding-top: 14px;
+}
+
+.dAdminChatCards > .dAdminEmptyState {
+  grid-column: 1 / -1;
+  border: 1px solid var(--d-admin-line);
+  border-radius: var(--d-admin-radius-md);
+  background: rgba(255, 255, 255, 0.76);
+}
+
+
+/* =========================================================
+   CHAT CARD
+   ========================================================= */
+
+.dAdminChatCard {
+  min-width: 0;
+  min-height: 172px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 15px;
+  width: 100%;
+  padding: 17px;
+  border: 1px solid var(--d-admin-line);
+  border-radius: var(--d-admin-radius-md);
+  color: var(--d-admin-text);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.95),
+      rgba(249, 250, 245, 0.86)
+    );
+  text-align: left;
+  box-shadow:
+    0 10px 28px rgba(17, 21, 15, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    background 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.dAdminChatCard::before {
+  position: absolute;
+  z-index: -1;
+  top: -95px;
+  right: -95px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(214, 239, 103, 0);
+  content: "";
+  transition: background 240ms ease;
+}
+
+.dAdminChatCard:hover {
+  z-index: 2;
+  transform: translateY(-4px);
+  border-color: rgba(137, 156, 54, 0.24);
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff,
+      rgba(246, 249, 235, 0.97)
+    );
+  box-shadow:
+    0 22px 54px rgba(17, 21, 15, 0.11),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.dAdminChatCard:hover::before {
+  background: rgba(214, 239, 103, 0.12);
+}
+
+
+/* =========================================================
+   ATTENTION CHAT CARD
+   ========================================================= */
+
+.dAdminChatCard.is-attention {
+  border-color: rgba(214, 239, 103, 0.5);
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(214, 239, 103, 0.16),
+      transparent 35%
+    ),
+    linear-gradient(
+      145deg,
+      #ffffff,
+      rgba(248, 251, 236, 0.96)
+    );
+  box-shadow:
+    0 16px 42px rgba(122, 145, 35, 0.1),
+    0 0 0 1px rgba(214, 239, 103, 0.09);
+}
+
+.dAdminChatCard.is-attention::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  border-radius: 18px 0 0 18px;
+  background: var(--d-admin-accent-strong);
+  content: "";
+}
+
+.dAdminChatCard.is-attention:hover {
+  border-color: rgba(191, 214, 78, 0.72);
+  box-shadow:
+    0 24px 58px rgba(100, 123, 23, 0.15),
+    0 0 0 1px rgba(214, 239, 103, 0.15);
+}
+
+
+/* =========================================================
+   CHAT CARD AVATAR
+   ========================================================= */
+
+.dAdminChatCard__avatar {
+  width: 48px;
+  height: 48px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid var(--d-admin-line);
+  border-radius: 15px;
+  color: #f7f9ef;
+  background:
+    linear-gradient(
+      145deg,
+      var(--d-admin-ink-soft),
+      var(--d-admin-ink)
+    );
+  box-shadow:
+    0 8px 18px rgba(17, 21, 15, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.dAdminChatCard__avatar::after {
+  width: 11px;
+  height: 11px;
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  background: var(--d-admin-success);
+  content: "";
+}
+
+.dAdminChatCard.is-attention .dAdminChatCard__avatar {
+  color: var(--d-admin-ink);
+  border-color: rgba(191, 214, 78, 0.35);
+  background:
+    linear-gradient(
+      145deg,
+      var(--d-admin-accent),
+      var(--d-admin-accent-strong)
+    );
+}
+
+.dAdminChatCard.is-attention .dAdminChatCard__avatar::after {
+  background: var(--d-admin-warning);
+}
+
+
+/* =========================================================
+   CHAT CARD CONTENT
+   ========================================================= */
+
+.dAdminChatCard__body {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 9px;
+}
+
+.dAdminChatCard__topline {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dAdminChatCard__topline strong {
+  overflow: hidden;
+  color: var(--d-admin-ink);
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.015em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dAdminChatCard__topline small {
+  flex: 0 0 auto;
+  color: var(--d-admin-text-faint);
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.dAdminChatCard__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.dAdminChatCard__meta .dAdminStatus {
+  min-height: 23px;
+  padding: 0 7px;
+  font-size: 8px;
+}
+
+.dAdminChatCard__meta .dAdminStatus::before {
+  width: 5px;
+  height: 5px;
+}
+
+.dAdminChatCard__attention {
+  min-height: 23px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 8px;
+  border: 1px solid rgba(150, 106, 33, 0.15);
+  border-radius: 999px;
+  color: var(--d-admin-warning);
+  background: var(--d-admin-warning-soft);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.dAdminChatCard__message {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--d-admin-text-soft);
+  font-size: 12px;
+  line-height: 1.55;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.dAdminChatCard__reason {
+  display: -webkit-box;
+  overflow: hidden;
+  padding-top: 8px;
+  border-top: 1px solid rgba(150, 106, 33, 0.11);
+  color: var(--d-admin-warning);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.dAdminChatCard__arrow {
+  align-self: center;
+  color: var(--d-admin-text-faint);
+  transition:
+    color 200ms ease,
+    transform 200ms ease;
+}
+
+.dAdminChatCard:hover .dAdminChatCard__arrow {
+  color: var(--d-admin-ink);
+  transform: translateX(4px);
+}
+
+
+/* =========================================================
+   CHAT DETAIL HEADER
+   ========================================================= */
+
+.dAdminChatDetailView .dAdminDetailHeader {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 154px;
+  align-items: flex-end;
+  padding: 23px 25px;
+  color: #f7f9ef;
+  border-color: rgba(255, 255, 255, 0.07);
+  background:
+    radial-gradient(
+      circle at 92% 0%,
+      rgba(214, 239, 103, 0.2),
+      transparent 31%
+    ),
+    linear-gradient(
+      135deg,
+      #10140e,
+      #20291c
+    );
+  box-shadow:
+    0 22px 58px rgba(17, 21, 15, 0.17),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.dAdminChatDetailView .dAdminDetailHeader::after {
+  position: absolute;
+  z-index: -1;
+  top: -130px;
+  right: -80px;
+  width: 320px;
+  height: 320px;
+  border: 1px solid rgba(214, 239, 103, 0.14);
+  border-radius: 50%;
+  content: "";
+}
+
+.dAdminChatDetailView .dAdminDetailHeader .dAdminBackLink {
+  margin-bottom: 3px;
+  color: rgba(247, 249, 239, 0.66);
+  border-color: rgba(255, 255, 255, 0.11);
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(14px);
+}
+
+.dAdminChatDetailView .dAdminDetailHeader .dAdminBackLink:hover {
+  color: #ffffff;
+  border-color: rgba(214, 239, 103, 0.28);
+  background: rgba(214, 239, 103, 0.1);
+}
+
+.dAdminChatDetailView .dAdminDetailHeader .dAdminEyebrow {
+  color: rgba(247, 249, 239, 0.48);
+}
+
+.dAdminChatDetailView .dAdminDetailHeader .dAdminEyebrow::before {
+  background: var(--d-admin-accent);
+}
+
+.dAdminChatDetailView .dAdminDetailHeader h2 {
+  color: #ffffff;
+  font-size: clamp(31px, 4vw, 49px);
+}
+
+.dAdminChatDetailView .dAdminDetailHeader p {
+  color: rgba(247, 249, 239, 0.54);
+}
+
+.dAdminChatDetailView .dAdminDetailHeader__status {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* =========================================================
+   ATTENTION BANNER
+   ========================================================= */
+
+.dAdminAttentionBanner {
+  min-height: 60px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 12px 15px;
+  border: 1px solid rgba(150, 106, 33, 0.18);
+  border-radius: 15px;
+  color: var(--d-admin-warning);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(247, 237, 213, 0.92),
+      rgba(255, 250, 237, 0.94)
+    );
+  box-shadow: 0 8px 22px rgba(150, 106, 33, 0.06);
+}
+
+.dAdminAttentionBanner::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  background: var(--d-admin-warning);
+  content: "";
+}
+
+.dAdminAttentionBanner > svg {
+  flex: 0 0 auto;
+}
+
+.dAdminAttentionBanner > span {
+  display: grid;
+  gap: 2px;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.dAdminAttentionBanner strong {
+  color: #72501b;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+
+/* =========================================================
+   CHAT WORKSPACE
+   ========================================================= */
+
+.dAdminChatWorkspace {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(270px, 320px) minmax(0, 1fr);
+  align-items: start;
+  gap: 14px;
+}
+
+.dAdminChatProfile {
+  min-width: 0;
+  position: sticky;
+  top: calc(var(--d-admin-header-height) + 14px);
+  display: grid;
+  gap: 12px;
+}
+
+.dAdminChatProfile .dAdminPanel {
+  border-radius: 17px;
+  background: rgba(255, 255, 255, 0.84);
+}
+
+.dAdminChatProfile .dAdminPanel__head {
+  min-height: 64px;
+  padding: 13px 14px;
+}
+
+.dAdminChatProfile .dAdminPanel__head > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dAdminChatProfile .dAdminPanel__head small {
+  display: block;
+  margin: 0 0 3px;
+  color: var(--d-admin-text-faint);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.dAdminChatProfile .dAdminPanel__head h3 {
+  font-size: 13px;
+}
+
+.dAdminChatProfile .dAdminPanel__icon {
+  width: 37px;
+  height: 37px;
+  border-radius: 11px;
+}
+
+
+/* =========================================================
+   CONTACT INFORMATION
+   ========================================================= */
+
+.dAdminContactList {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+}
+
+.dAdminContactItem {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-height: 62px;
+  padding: 10px;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  color: var(--d-admin-text);
+  background: var(--d-admin-surface-soft);
+  transition:
+    transform var(--d-admin-transition),
+    border-color var(--d-admin-transition),
+    background var(--d-admin-transition),
+    box-shadow var(--d-admin-transition);
+}
+
+a.dAdminContactItem:hover {
+  transform: translateX(2px);
+  border-color: var(--d-admin-line);
+  background: var(--d-admin-surface);
+  box-shadow: 0 7px 18px rgba(17, 21, 15, 0.06);
+}
+
+.dAdminContactItem > span:first-child {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  color: var(--d-admin-ink);
+  background: var(--d-admin-accent-soft);
+}
+
+.dAdminContactItem > span:last-child {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.dAdminContactItem small {
+  color: var(--d-admin-text-faint);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.dAdminContactItem strong {
+  overflow: hidden;
+  color: var(--d-admin-text);
+  font-size: 11px;
+  font-weight: 850;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   TRIAGE FORM
+   ========================================================= */
+
+.dAdminChatTriageForm {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: end;
+  gap: 10px;
+  padding: 13px;
+}
+
+.dAdminChatTriageForm .dAdminField > span {
+  font-size: 8px;
+}
+
+.dAdminChatTriageForm .dAdminField input,
+.dAdminChatTriageForm .dAdminField select {
+  min-height: 39px;
+  border-radius: 10px;
+  font-size: 11px;
+}
+
+.dAdminChatTriageForm .dAdminField--full {
+  grid-column: 1 / -1;
+}
+
+.dAdminChatTriageForm .dAdminInlineSave {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: -3px;
+}
+
+
+/* =========================================================
+   CONVERSATION PANEL
+   ========================================================= */
+
+.dAdminConversationPanel {
+  min-width: 0;
+  height: clamp(660px, calc(100svh - 168px), 900px);
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  border: 1px solid rgba(17, 21, 15, 0.1);
+  border-radius: 22px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(251, 252, 247, 0.97),
+      rgba(243, 246, 237, 0.94)
+    );
+  box-shadow:
+    0 24px 64px rgba(17, 21, 15, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+
+/* =========================================================
+   CONVERSATION HEADER
+   ========================================================= */
+
+.dAdminConversationPanel__head {
+  min-height: 76px;
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--d-admin-line);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 6px 18px rgba(17, 21, 15, 0.035);
+  backdrop-filter: blur(18px);
+}
+
+.dAdminConversationPanel__head > div {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.dAdminConversationPanel__avatar {
+  width: 44px;
+  height: 44px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 14px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      145deg,
+      var(--d-admin-ink-soft),
+      var(--d-admin-ink)
+    );
+  box-shadow:
+    0 8px 18px rgba(17, 21, 15, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.dAdminConversationPanel__avatar::after {
+  width: 11px;
+  height: 11px;
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  background: var(--d-admin-success);
+  content: "";
+}
+
+.dAdminConversationPanel__head > div > span:last-child {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.dAdminConversationPanel__head strong {
+  overflow: hidden;
+  color: var(--d-admin-ink);
+  font-size: 13px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dAdminConversationPanel__head small {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--d-admin-text-faint);
+  font-size: 9px;
+}
+
+
+/* =========================================================
+   MESSAGE STREAM
+   ========================================================= */
+
+.dAdminMessageStream {
+  min-height: 0;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding: 22px;
+  scroll-behavior: smooth;
+  background:
+    radial-gradient(
+      circle at 15% 0%,
+      rgba(214, 239, 103, 0.055),
+      transparent 26%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(247, 249, 242, 0.5),
+      rgba(239, 243, 234, 0.72)
+    );
+}
+
+.dAdminMessageStream::before {
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  background-image:
+    linear-gradient(
+      rgba(17, 21, 15, 0.018) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(17, 21, 15, 0.018) 1px,
+      transparent 1px
+    );
+  background-size: 30px 30px;
+  content: "";
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   MESSAGE BUBBLES
+   ========================================================= */
+
+.dAdminMessage {
+  width: fit-content;
+  max-width: min(76%, 720px);
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 7px;
+  align-self: flex-start;
+  padding: 11px 13px;
+  border: 1px solid rgba(17, 21, 15, 0.08);
+  border-radius: 5px 17px 17px 17px;
+  color: var(--d-admin-text);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow:
+    0 7px 20px rgba(17, 21, 15, 0.055),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.dAdminMessage__author {
+  color: var(--d-admin-text-faint);
+  font-size: 8px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.dAdminMessage p {
+  color: var(--d-admin-text);
+  font-size: 12px;
+  line-height: 1.58;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.dAdminMessage > small {
+  justify-self: end;
+  color: var(--d-admin-text-faint);
+  font-size: 8px;
+}
+
+
+/* Visitor */
+
+.dAdminMessage.is-visitor {
+  align-self: flex-start;
+  border-color: rgba(66, 103, 125, 0.11);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.98),
+      rgba(234, 241, 245, 0.95)
+    );
+}
+
+.dAdminMessage.is-visitor .dAdminMessage__author {
+  color: var(--d-admin-info);
+}
+
+
+/* Admin */
+
+.dAdminMessage.is-admin {
+  align-self: flex-end;
+  border-radius: 17px 5px 17px 17px;
+  border-color: rgba(151, 174, 48, 0.21);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(222, 244, 126, 0.98),
+      rgba(199, 223, 91, 0.96)
+    );
+  box-shadow:
+    0 9px 24px rgba(123, 148, 24, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.46);
+}
+
+.dAdminMessage.is-admin .dAdminMessage__author {
+  color: rgba(17, 21, 15, 0.57);
+}
+
+.dAdminMessage.is-admin p {
+  color: var(--d-admin-ink);
+}
+
+.dAdminMessage.is-admin > small {
+  color: rgba(17, 21, 15, 0.52);
+}
+
+
+/* =========================================================
+   COMPOSER
+   ========================================================= */
+
+.dAdminComposer {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid var(--d-admin-line);
+  background: rgba(255, 255, 255, 0.91);
+  box-shadow: 0 -10px 28px rgba(17, 21, 15, 0.05);
+  backdrop-filter: blur(20px);
+}
+
+.dAdminComposer textarea {
+  width: 100%;
+  min-height: 86px;
+  max-height: 220px;
+  padding: 13px 14px;
+  border: 1px solid var(--d-admin-line);
+  border-radius: 15px;
+  outline: 0;
+  color: var(--d-admin-text);
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff,
+      rgba(249, 250, 246, 0.96)
+    );
+  box-shadow:
+    inset 0 1px 2px rgba(17, 21, 15, 0.025),
+    0 3px 10px rgba(17, 21, 15, 0.025);
+  font-size: 12px;
+  line-height: 1.55;
+  transition:
+    border-color var(--d-admin-transition),
+    box-shadow var(--d-admin-transition),
+    background var(--d-admin-transition);
+}
+
+.dAdminComposer textarea::placeholder {
+  color: var(--d-admin-text-faint);
+}
+
+.dAdminComposer textarea:hover {
+  border-color: var(--d-admin-line-strong);
+}
+
+.dAdminComposer textarea:focus {
+  border-color: rgba(157, 181, 50, 0.7);
+  background: #ffffff;
+  box-shadow:
+    0 0 0 4px rgba(214, 239, 103, 0.2),
+    0 7px 18px rgba(17, 21, 15, 0.045);
+}
+
+.dAdminComposer__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dAdminComposer__footer > small {
+  padding-left: 4px;
+  color: var(--d-admin-text-faint);
+  font-size: 9px;
+}
+
+.dAdminComposer__footer .dAdminButton {
+  min-height: 43px;
+  padding-inline: 17px;
+  border-radius: 12px;
+}
+
+
+/* =========================================================
+   LOADING STATE
+   ========================================================= */
+
+.dAdminChatDetailView > .dAdminPanel {
+  min-height: 400px;
+}
+
+
+/* =========================================================
+   LARGE SCREENS
+   ========================================================= */
+
+@media (min-width: 1500px) {
+  .dAdminChatCards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .dAdminChatCard {
+    min-height: 185px;
+  }
+
+  .dAdminChatWorkspace {
+    grid-template-columns: 330px minmax(0, 1fr);
+  }
+}
+
+
+/* =========================================================
+   LAPTOP
+   ========================================================= */
+
+@media (max-width: 1180px) {
+  .dAdminChatCards {
+    grid-template-columns: 1fr;
+  }
+
+  .dAdminChatWorkspace {
+    grid-template-columns: 270px minmax(0, 1fr);
+  }
+
+  .dAdminChatTriageForm {
+    grid-template-columns: 1fr;
+  }
+
+  .dAdminChatTriageForm .dAdminField--full,
+  .dAdminChatTriageForm .dAdminInlineSave {
+    grid-column: auto;
+  }
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 920px) {
+  .dAdminChatListView .dAdminPageIntro {
+    display: grid;
+    align-items: start;
+  }
+
+  .dAdminChatListView .dAdminPageIntro__summary {
+    min-width: 0;
+    width: 100%;
+    min-height: 82px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    justify-items: initial;
+  }
+
+  .dAdminChatListView .dAdminPageIntro__summary strong {
+    font-size: 44px;
+  }
+
+  .dAdminChatWorkspace {
+    grid-template-columns: 1fr;
+  }
+
+  .dAdminConversationPanel {
+    grid-row: 1;
+    height: min(760px, calc(100svh - 120px));
+  }
+
+  .dAdminChatProfile {
+    grid-row: 2;
+    position: static;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dAdminChatTriageForm {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dAdminChatTriageForm .dAdminField--full,
+  .dAdminChatTriageForm .dAdminInlineSave {
+    grid-column: 1 / -1;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+  .dAdminChatListView,
+  .dAdminChatDetailView {
+    gap: 13px;
+  }
+
+  .dAdminChatListView .dAdminPageIntro {
+    min-height: 0;
+    padding: 23px 18px;
+    border-radius: 19px;
+  }
+
+  .dAdminChatListView .dAdminPageIntro h2 {
+    font-size: clamp(39px, 13vw, 53px);
+  }
+
+  .dAdminChatListView .dAdminPageIntro p {
+    font-size: 12px;
+  }
+
+  .dAdminChatListView > .dAdminPanel > .dAdminToolbar {
+    position: static;
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 8px;
+    border-radius: 15px;
+  }
+
+  .dAdminChatCards {
+    gap: 9px;
+    padding-top: 10px;
+  }
+
+  .dAdminChatCard {
+    min-height: 157px;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 12px;
+    padding: 14px;
+    border-radius: 17px;
+  }
+
+  .dAdminChatCard__avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+  }
+
+  .dAdminChatCard__arrow {
+    display: none;
+  }
+
+  .dAdminChatCard__topline {
+    align-items: flex-start;
+  }
+
+  .dAdminChatCard__topline small {
+    font-size: 8px;
+  }
+
+  .dAdminChatCard__message {
+    font-size: 11px;
+  }
+
+  .dAdminChatCard__reason {
+    font-size: 9px;
+  }
+
+  .dAdminChatDetailView .dAdminDetailHeader {
+    min-height: 0;
+    padding: 19px 17px;
+    border-radius: 18px;
+  }
+
+  .dAdminChatDetailView .dAdminDetailHeader h2 {
+    font-size: 34px;
+  }
+
+  .dAdminChatDetailView .dAdminDetailHeader__status {
+    justify-content: flex-start;
+  }
+
+  .dAdminAttentionBanner {
+    border-radius: 13px;
+  }
+
+  .dAdminConversationPanel {
+    height: calc(100svh - 118px);
+    min-height: 620px;
+    border-radius: 18px;
+  }
+
+  .dAdminConversationPanel__head {
+    min-height: 67px;
+    padding: 11px 12px;
+  }
+
+  .dAdminConversationPanel__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+  }
+
+  .dAdminConversationPanel__head .dAdminStatus {
+    display: none;
+  }
+
+  .dAdminMessageStream {
+    gap: 9px;
+    padding: 15px 12px;
+  }
+
+  .dAdminMessage {
+    max-width: 88%;
+    padding: 10px 11px;
+  }
+
+  .dAdminMessage p {
+    font-size: 11px;
+  }
+
+  .dAdminComposer {
+    padding: 9px;
+  }
+
+  .dAdminComposer textarea {
+    min-height: 76px;
+    border-radius: 13px;
+  }
+
+  .dAdminComposer__footer {
+    align-items: stretch;
+  }
+
+  .dAdminComposer__footer > small {
+    display: none;
+  }
+
+  .dAdminComposer__footer .dAdminButton {
+    width: 100%;
+  }
+
+  .dAdminChatProfile {
+    grid-template-columns: 1fr;
+  }
+
+  .dAdminChatTriageForm {
+    grid-template-columns: 1fr;
+  }
+
+  .dAdminChatTriageForm .dAdminField--full,
+  .dAdminChatTriageForm .dAdminInlineSave {
+    grid-column: auto;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 460px) {
+  .dAdminChatListView .dAdminPageIntro {
+    padding: 20px 15px;
+  }
+
+  .dAdminChatListView .dAdminPageIntro h2 {
+    max-width: 320px;
+    font-size: 40px;
+  }
+
+  .dAdminChatListView .dAdminPageIntro__summary {
+    min-height: 72px;
+    padding: 14px;
+  }
+
+  .dAdminChatListView .dAdminPageIntro__summary strong {
+    font-size: 39px;
+  }
+
+  .dAdminChatCard {
+    grid-template-columns: 39px minmax(0, 1fr);
+    padding: 13px 11px;
+  }
+
+  .dAdminChatCard__avatar {
+    width: 39px;
+    height: 39px;
+    font-size: 13px;
+  }
+
+  .dAdminChatCard__meta .dAdminStatus {
+    display: none;
+  }
+
+  .dAdminChatCard__attention {
+    display: inline-flex;
+  }
+
+  .dAdminConversationPanel {
+    min-height: 580px;
+  }
+
+  .dAdminConversationPanel__head {
+    padding: 10px;
+  }
+
+  .dAdminMessage {
+    max-width: 92%;
+  }
+}

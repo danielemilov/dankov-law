@@ -1,32 +1,39 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import useSiteSettings from '../hooks/useSiteSettings.js';
 import './Navbar.css';
 
 const LAWYER_PHOTO = '/diyan-dankovv.jpg';
 
-const navLinks = [
+const defaultNavLinks = [
   {
     label: 'За адвоката',
     href: '/za-advokata',
+    setting: 'showAbout',
+    labelField: 'aboutLabel',
   },
   {
     label: 'Новини',
     href: '/novini',
+    setting: 'showNews',
+    labelField: 'newsLabel',
   },
   {
     label: 'Контакт',
     href: '/kontakt',
+    setting: 'showContact',
+    labelField: 'contactLabel',
   },
   {
     label: 'Чат',
     href: '#chat',
     action: 'chat',
+    setting: 'showChat',
+    labelField: 'chatLabel',
   },
 ];
-
-const mobileNavLinks = navLinks;
 
 const easeOutSoft = [0.16, 1, 0.3, 1];
 const easeExitSoft = [0.4, 0, 0.2, 1];
@@ -240,10 +247,21 @@ const ctaVariants = {
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const settings = useSiteSettings();
+  const navigationSettings = settings.navigation || {};
   const rootRef = useRef(null);
 
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const navLinks = useMemo(() => {
+    return defaultNavLinks
+      .filter((link) => navigationSettings[link.setting] !== false)
+      .map((link) => ({
+        ...link,
+        label: navigationSettings[link.labelField] || link.label,
+      }));
+  }, [navigationSettings]);
+  const mobileNavLinks = navLinks;
 
   useEffect(() => {
     const onScroll = () => {
@@ -445,9 +463,9 @@ export default function Navbar() {
             <div className="navPrime__actions">
               <a
                 className="navPrime__cta"
-                href="/kontakt#booking"
+                href={navigationSettings.ctaHref || '/kontakt#booking'}
                 onClick={(event) =>
-                  navigateFromNavbar(event, '/kontakt#booking')
+                  navigateFromNavbar(event, navigationSettings.ctaHref || '/kontakt#booking')
                 }
                 data-navigation-source="navbar"
               >
@@ -457,7 +475,7 @@ export default function Navbar() {
                 />
 
                 <span className="navPrime__ctaText">
-                  Запази час
+                  {navigationSettings.ctaLabel || 'Запази час'}
                 </span>
               </a>
 
@@ -592,9 +610,9 @@ export default function Navbar() {
 
               <motion.a
                 className="navPrimeMobile__cta"
-                href="/kontakt#booking"
+                href={navigationSettings.ctaHref || '/kontakt#booking'}
                 onClick={(event) =>
-                  navigateFromNavbar(event, '/kontakt#booking')
+                  navigateFromNavbar(event, navigationSettings.ctaHref || '/kontakt#booking')
                 }
                 data-navigation-source="navbar"
                 variants={ctaVariants}
@@ -602,7 +620,7 @@ export default function Navbar() {
                 animate="visible"
                 exit="exit"
               >
-                <span>Запази консултация</span>
+                <span>{navigationSettings.ctaLabel || 'Запази консултация'}</span>
 
                 <ArrowUpRight
                   size={18}

@@ -96,8 +96,8 @@
 .attorneyCinematic__copy h2 {
   margin: 0;
   color: #0d140f;
-  font-size: clamp(56px, 8vw, 126px);
-  line-height: 0.88;
+  font-size: clamp(46px, 6.8vw, 96px);
+  line-height: 0.94;
   letter-spacing: 0;
   font-weight: 950;
 }

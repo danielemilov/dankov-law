@@ -4,6 +4,7 @@ import Cases from '../components/home/Cases/Cases.jsx';
 import Contact from '../components/home/Contact/Contact.jsx';
 import Footer from '../components/home/Footer/Footer.jsx';
 import Hero from '../components/home/Hero/Hero.jsx';
+import useSiteSettings from '../hooks/useSiteSettings.js';
 import './HomePage.css';
 
 function isMobileContactViewport() {
@@ -12,6 +13,8 @@ function isMobileContactViewport() {
 }
 
 export default function HomePage() {
+  const settings = useSiteSettings();
+  const homeSettings = settings.homePage || {};
   const [mobileAboutVisible, setMobileAboutVisible] = useState(() => {
     if (typeof window === 'undefined') return false;
     return isMobileContactViewport() && window.location.hash === '#about';
@@ -271,7 +274,7 @@ export default function HomePage() {
     return (
       <main className="hlHome">
         <AboutMobilePage onBack={closeMobileAbout} />
-        <Footer />
+        {homeSettings.footerEnabled !== false && <Footer />}
       </main>
     );
   }
@@ -280,7 +283,7 @@ export default function HomePage() {
     return (
       <main className="hlHome">
         <Cases pageMode onBack={closeMobileCases} />
-        <Footer />
+        {homeSettings.footerEnabled !== false && <Footer />}
       </main>
     );
   }
@@ -289,18 +292,18 @@ export default function HomePage() {
     return (
       <main className="hlHome">
         <Contact pageMode onBack={closeMobileContact} />
-        <Footer />
+        {homeSettings.footerEnabled !== false && <Footer />}
       </main>
     );
   }
 
   return (
     <main className="hlHome">
-      <Hero />
-      <Cases />
+      {homeSettings.heroEnabled !== false && <Hero settings={homeSettings} />}
+      {homeSettings.casesEnabled !== false && <Cases />}
 
-      {mobileContactVisible && <Contact />}
-      <Footer />
+      {homeSettings.contactEnabled !== false && mobileContactVisible && <Contact />}
+      {homeSettings.footerEnabled !== false && <Footer />}
     </main>
   );
 }

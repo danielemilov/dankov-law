@@ -16,7 +16,9 @@
       },
     ];
 
-    export default function Hero() {
+    export default function Hero({
+      settings = {},
+    }) {
       const [ready, setReady] = useState(false);
 
       useEffect(() => {
@@ -50,18 +52,18 @@
           
 
                 <motion.h1 className="hlHero__title" variants={fadeUp}>
-                  Доверието започва{' '}
-                  <span>преди делото.</span>
+                  {settings.heroTitleLine || 'Доверието започва'}{' '}
+                  <span>{settings.heroTitleAccent || 'преди делото.'}</span>
                 </motion.h1>
 
 
                 <motion.div className="hlHero__actions" variants={fadeUp}>
-                  <a className="hlHero__primary" href="#contact">
-                    Запази консултация ↗
+                  <a className="hlHero__primary" href={settings.primaryCtaHref || '#contact'}>
+                    {settings.primaryCtaLabel || 'Запази консултация'} ↗
                   </a>
 
-                  <a className="hlHero__link" href="#cases">
-                    Последни новини ↗
+                  <a className="hlHero__link" href={settings.secondaryCtaHref || '#cases'}>
+                    {settings.secondaryCtaLabel || 'Последни новини'} ↗
                   </a>
                 </motion.div>
 
@@ -95,8 +97,12 @@
 
             <div className="hlHeroMobile__copy">
               <motion.h1 className="hlHeroMobile__title" variants={fadeUp}>
-                <span className="hlHeroMobile__titleMain">Защитата започва</span>
-                <span className="hlHeroMobile__titleMuted">преди делото.</span>
+                <span className="hlHeroMobile__titleMain">
+                  {settings.mobileTitleLine || 'Защитата започва'}
+                </span>
+                <span className="hlHeroMobile__titleMuted">
+                  {settings.mobileTitleAccent || 'преди делото.'}
+                </span>
               </motion.h1>
 
         
@@ -117,12 +123,12 @@
   />
 
   <div className="hlHeroMobile__actions">
-    <a className="hlHeroMobile__cta" href="#contact">
-      <span>Запази консултация</span>
+    <a className="hlHeroMobile__cta" href={settings.primaryCtaHref || '#contact'}>
+      <span>{settings.primaryCtaLabel || 'Запази консултация'}</span>
     </a>
 
-    <a className="hlHeroMobile__caseLink" href="#cases">
-      <span>Последни новини</span>
+    <a className="hlHeroMobile__caseLink" href={settings.secondaryCtaHref || '#cases'}>
+      <span>{settings.secondaryCtaLabel || 'Последни новини'}</span>
       <ArrowRight size={18} strokeWidth={2} />
     </a>
   </div>

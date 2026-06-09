@@ -1,0 +1,200 @@
+/*
+ * Global foundation for the Dankov administration area.
+ * Component-specific styles live beside their JSX components.
+ */
+
+:root {
+  --d-admin-ink: #11150f;
+  --d-admin-ink-soft: #252b22;
+  --d-admin-paper: #f7f7f1;
+  --d-admin-surface: #ffffff;
+  --d-admin-surface-soft: #f0f2ea;
+  --d-admin-surface-muted: #e8ece3;
+  --d-admin-line: rgba(17, 21, 15, 0.1);
+  --d-admin-line-strong: rgba(17, 21, 15, 0.18);
+  --d-admin-text: #171b15;
+  --d-admin-text-soft: #667062;
+  --d-admin-text-faint: #8a9286;
+  --d-admin-accent: #d6ef67;
+  --d-admin-accent-strong: #bfd64e;
+  --d-admin-accent-soft: rgba(214, 239, 103, 0.22);
+  --d-admin-success: #39764a;
+  --d-admin-success-soft: #e4f2e7;
+  --d-admin-warning: #966a21;
+  --d-admin-warning-soft: #f7edd5;
+  --d-admin-danger: #9f4036;
+  --d-admin-danger-soft: #f8e5e1;
+  --d-admin-info: #42677d;
+  --d-admin-info-soft: #e5edf2;
+  --d-admin-sidebar-width: 286px;
+  --d-admin-header-height: 82px;
+  --d-admin-radius-xs: 8px;
+  --d-admin-radius-sm: 12px;
+  --d-admin-radius-md: 18px;
+  --d-admin-radius-lg: 24px;
+  --d-admin-shadow-sm: 0 10px 28px rgba(17, 21, 15, 0.06);
+  --d-admin-shadow-md: 0 20px 56px rgba(17, 21, 15, 0.1);
+  --d-admin-transition: 180ms ease;
+}
+
+.dAdminShell,
+.dAdminLoginShell {
+  min-height: 100vh;
+  color: var(--d-admin-text);
+  background: var(--d-admin-paper);
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.dAdminShell *,
+.dAdminShell *::before,
+.dAdminShell *::after,
+.dAdminLoginShell *,
+.dAdminLoginShell *::before,
+.dAdminLoginShell *::after {
+  box-sizing: border-box;
+}
+
+.dAdminShell button,
+.dAdminShell input,
+.dAdminShell textarea,
+.dAdminShell select,
+.dAdminLoginShell button,
+.dAdminLoginShell input,
+.dAdminLoginShell textarea,
+.dAdminLoginShell select {
+  font: inherit;
+}
+
+.dAdminShell button,
+.dAdminLoginShell button {
+  cursor: pointer;
+}
+
+.dAdminShell button:disabled,
+.dAdminLoginShell button:disabled {
+  cursor: not-allowed;
+}
+
+.dAdminShell a,
+.dAdminLoginShell a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.dAdminShell h1,
+.dAdminShell h2,
+.dAdminShell h3,
+.dAdminShell h4,
+.dAdminShell p,
+.dAdminShell ul,
+.dAdminShell ol,
+.dAdminLoginShell h1,
+.dAdminLoginShell h2,
+.dAdminLoginShell h3,
+.dAdminLoginShell p {
+  margin: 0;
+}
+
+.dAdminShell img,
+.dAdminLoginShell img {
+  display: block;
+  max-width: 100%;
+}
+
+.dAdminShell input,
+.dAdminShell textarea,
+.dAdminShell select,
+.dAdminLoginShell input,
+.dAdminLoginShell textarea,
+.dAdminLoginShell select {
+  min-width: 0;
+  color: var(--d-admin-text);
+  caret-color: var(--d-admin-ink);
+}
+
+.dAdminShell textarea,
+.dAdminLoginShell textarea {
+  resize: vertical;
+}
+
+.dAdminShell :focus-visible,
+.dAdminLoginShell :focus-visible {
+  outline: 3px solid rgba(191, 214, 78, 0.42);
+  outline-offset: 2px;
+}
+
+.dAdminShell ::selection,
+.dAdminLoginShell ::selection {
+  color: var(--d-admin-ink);
+  background: var(--d-admin-accent);
+}
+
+.dAdminShell ::-webkit-scrollbar,
+.dAdminLoginShell ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.dAdminShell ::-webkit-scrollbar-track,
+.dAdminLoginShell ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dAdminShell ::-webkit-scrollbar-thumb,
+.dAdminLoginShell ::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: rgba(17, 21, 15, 0.24);
+  background-clip: padding-box;
+}
+
+.dAdminShell ::-webkit-scrollbar-thumb:hover,
+.dAdminLoginShell ::-webkit-scrollbar-thumb:hover {
+  background: rgba(17, 21, 15, 0.36);
+  background-clip: padding-box;
+}
+
+.dAdminVisuallyHidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.is-spinning {
+  animation: dAdminSpin 720ms linear infinite;
+}
+
+@keyframes dAdminSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dAdminShell *,
+  .dAdminShell *::before,
+  .dAdminShell *::after,
+  .dAdminLoginShell *,
+  .dAdminLoginShell *::before,
+  .dAdminLoginShell *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
-import { MessageCircle,Minus, SendHorizontal, X } from 'lucide-react';
+import { Bell, MessageCircle, Minus, SendHorizontal, UserRoundCheck, X } from 'lucide-react';
 import api from '../lib/api.js';
 import { submitChatLead } from '../lib/web3forms.js';
 import './ChatWidget.css';
@@ -10,6 +10,10 @@ const MIN_REPLY_DELAY = 1650;
 const CHAT_POSITION_KEY = 'dankov_chat_launcher_position';
 const CHAT_HIDDEN_KEY = 'dankov_chat_hidden';
 const CHAT_MESSAGES_KEY = 'dankov_chat_messages';
+const CHAT_DIRECT_KEY = 'dankov_chat_direct_mode';
+const CHAT_NOTIFICATION_KEY = 'dankov_chat_notifications_enabled';
+const CHAT_UNREAD_KEY = 'dankov_chat_unread_count';
+const CHAT_SEEN_REPLIES_KEY = 'dankov_chat_seen_lawyer_replies';
 
 
 const QUICK = [
@@ -27,6 +31,13 @@ const welcome = {
     'Здравейте. Опишете накратко казуса си и ще ви ориентирам общо към следваща стъпка.',
   time: 'Сега',
 };
+
+function getWelcomeMessage(settings = {}) {
+  return {
+    ...welcome,
+    content: settings.welcomeMessage || welcome.content,
+  };
+}
 
 const easeOutSoft = [0.16, 1, 0.3, 1];
 const easeExitGlass = [0.76, 0, 0.24, 1];
@@ -63,6 +74,19 @@ function timeNow() {
   });
 }
 
+function timeFromDate(value) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return timeNow();
+  }
+
+  return date.toLocaleTimeString('bg-BG', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
 function makeMessage(role, content, extra = {}) {
   return {
     id: crypto.randomUUID(),
@@ -91,15 +115,16 @@ function readStoredLauncherPosition() {
     return { x: 0, y: 0 };
   }
 }
-function readStoredMessages() {
-  if (typeof window === 'undefined') return [welcome];
+function readStoredMessages(settings = {}) {
+  const fallbackWelcome = getWelcomeMessage(settings);
+  if (typeof window === 'undefined') return [fallbackWelcome];
 
   try {
     const parsed = JSON.parse(
       localStorage.getItem(CHAT_MESSAGES_KEY) || '[]'
     );
 
-    if (!Array.isArray(parsed)) return [welcome];
+    if (!Array.isArray(parsed)) return [fallbackWelcome];
 
     const validMessages = parsed.filter((message) => {
       return (
@@ -110,9 +135,35 @@ function readStoredMessages() {
       );
     });
 
-    return validMessages.length > 0 ? validMessages : [welcome];
+    if (!validMessages.length) return [fallbackWelcome];
+
+    return validMessages.map((message) =>
+      message.id === 'welcome'
+        ? { ...message, content: fallbackWelcome.content }
+        : message
+    );
   } catch {
-    return [welcome];
+    return [fallbackWelcome];
+  }
+}
+
+function readSeenLawyerReplies() {
+  if (typeof window === 'undefined') return new Set();
+
+  try {
+    const parsed = JSON.parse(localStorage.getItem(CHAT_SEEN_REPLIES_KEY) || '[]');
+    return new Set(Array.isArray(parsed) ? parsed : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function storeSeenLawyerReplies(ids) {
+  if (typeof window === 'undefined') return;
+
+  try {
+    localStorage.setItem(CHAT_SEEN_REPLIES_KEY, JSON.stringify([...ids].slice(-120)));
+  } catch {
   }
 }
 
@@ -181,7 +232,7 @@ function WelcomeContent({ text }) {
   );
 }
 
-function QuickSuggestions({ onPick }) {
+function QuickSuggestions({ onPick, quickReplies = QUICK }) {
   return (
     <motion.div
       className="chat__suggestions"
@@ -200,7 +251,7 @@ function QuickSuggestions({ onPick }) {
       </motion.span>
 
       <div className="chat__suggestion-list">
-        {QUICK.map((q, index) => (
+        {quickReplies.map((q, index) => (
           <motion.button
             key={q}
             type="button"
@@ -221,7 +272,9 @@ function QuickSuggestions({ onPick }) {
   );
 }
 
-export default function ChatWidget() {
+export default function ChatWidget({
+  settings = {},
+}) {
   const [open, setOpen] = useState(false);
   const [hidden, setHidden] = useState(() => {
     return localStorage.getItem(CHAT_HIDDEN_KEY) === 'true';
@@ -235,10 +288,26 @@ export default function ChatWidget() {
     return localStorage.getItem('dankov_session_id') || null;
   });
 
-  const [messages, setMessages] = useState(readStoredMessages);
+  const [directMode, setDirectMode] = useState(() => {
+    return localStorage.getItem(CHAT_DIRECT_KEY) === 'true';
+  });
+
+  const [messages, setMessages] = useState(() => readStoredMessages(settings));
+  const [unreadCount, setUnreadCount] = useState(() => {
+    return Number(localStorage.getItem(CHAT_UNREAD_KEY) || 0);
+  });
+  const [notificationsEnabled, setNotificationsEnabled] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem(CHAT_NOTIFICATION_KEY) === 'true';
+  });
+  const [notificationPermission, setNotificationPermission] = useState(() => {
+    if (typeof window === 'undefined' || !('Notification' in window)) return 'unsupported';
+    return Notification.permission;
+  });
   const [actionCard, setActionCard] = useState(null);
 
   const [contactOpen, setContactOpen] = useState(false);
+  const [contactPurpose, setContactPurpose] = useState('lead');
   const [contactError, setContactError] = useState('');
   const [contactSaving, setContactSaving] = useState(false);
   const [contactShake, setContactShake] = useState(false);
@@ -266,6 +335,110 @@ export default function ChatWidget() {
   const rootRef = useRef(null);
   const dragRef = useRef(null);
   const ignoreFabClickRef = useRef(false);
+  const originalTitleRef = useRef(
+    typeof document === 'undefined' ? '' : document.title
+  );
+
+  const quickReplies =
+    Array.isArray(settings.quickReplies) && settings.quickReplies.length > 0
+      ? settings.quickReplies
+      : QUICK;
+  const directPollMs = Math.max(4000, Number(settings.directPollMs || 8000));
+  const passivePollMs = Math.max(8000, Number(settings.passivePollMs || 16000));
+  const maxStoredMessages = Math.min(200, Math.max(20, Number(settings.maxStoredMessages || 100)));
+
+  function playChatPing() {
+    if (typeof window === 'undefined') return;
+
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+
+      const context = new AudioContext();
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+
+      oscillator.type = 'triangle';
+      oscillator.frequency.setValueAtTime(740, context.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(1180, context.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.0001, context.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.12, context.currentTime + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.26);
+
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+      oscillator.start();
+      oscillator.stop(context.currentTime + 0.28);
+
+      window.setTimeout(() => context.close?.(), 420);
+    } catch {
+    }
+  }
+
+  async function enableNotifications() {
+    if (typeof window === 'undefined' || !('Notification' in window)) {
+      setNotificationPermission('unsupported');
+      return false;
+    }
+
+    try {
+      const permission =
+        Notification.permission === 'default'
+          ? await Notification.requestPermission()
+          : Notification.permission;
+
+      setNotificationPermission(permission);
+      const enabled = permission === 'granted';
+      setNotificationsEnabled(enabled);
+      localStorage.setItem(CHAT_NOTIFICATION_KEY, String(enabled));
+
+      if (enabled) {
+        playChatPing();
+      }
+
+      return enabled;
+    } catch {
+      return false;
+    }
+  }
+
+  function notifyLawyerReply(message) {
+    setUnreadCount((current) => {
+      const nextUnread = open ? 0 : current + 1;
+      localStorage.setItem(CHAT_UNREAD_KEY, String(nextUnread));
+      return nextUnread;
+    });
+    playChatPing();
+
+    if (
+      settings.browserNotificationsEnabled === false ||
+      !notificationsEnabled ||
+      notificationPermission !== 'granted' ||
+      typeof window === 'undefined' ||
+      !('Notification' in window)
+    ) {
+      return;
+    }
+
+    try {
+      const notification = new Notification(
+        settings.notificationTitle || 'Нов отговор от адв. Данков',
+        {
+          body: settings.notificationBody || message.content || 'Имате нов отговор в директния чат.',
+          icon: '/favicon-32x32.png',
+          tag: `dankov-chat-${sessionId || 'reply'}`,
+          renotify: true,
+        }
+      );
+
+      notification.onclick = () => {
+        window.focus();
+        restoreChat();
+        notification.close();
+      };
+    } catch {
+    }
+  }
 
   function closeChat({ hideWidget = false } = {}) {
     setOpen(false);
@@ -369,6 +542,8 @@ export default function ChatWidget() {
   useEffect(() => {
     if (open) {
       focusInput(360);
+      setUnreadCount(0);
+      localStorage.setItem(CHAT_UNREAD_KEY, '0');
     }
 
     document.body.classList.toggle('chat-open', open);
@@ -379,17 +554,39 @@ export default function ChatWidget() {
   }, [open]);
 
   useEffect(() => {
+    if (typeof document === 'undefined') return undefined;
+
+    if (!unreadCount || open) {
+      document.title = originalTitleRef.current;
+      return undefined;
+    }
+
+    document.title = `(${unreadCount}) Нов отговор - ${originalTitleRef.current}`;
+
+    return () => {
+      document.title = originalTitleRef.current;
+    };
+  }, [unreadCount, open]);
+
+  useEffect(() => {
     window.addEventListener('dankov:open-chat', restoreChat);
 
     return () => {
       window.removeEventListener('dankov:open-chat', restoreChat);
     };
   }, []);
+
+  useEffect(() => {
+    setMessages((current) => {
+      if (current.length !== 1 || current[0]?.id !== 'welcome') return current;
+      return [getWelcomeMessage(settings)];
+    });
+  }, [settings.welcomeMessage]);
   useEffect(() => {
   if (typeof window === 'undefined') return;
 
   try {
-    const messagesToStore = messages.slice(-100);
+    const messagesToStore = messages.slice(-maxStoredMessages);
 
     localStorage.setItem(
       CHAT_MESSAGES_KEY,
@@ -397,7 +594,7 @@ export default function ChatWidget() {
     );
   } catch {
   }
-}, [messages]);
+}, [messages, maxStoredMessages]);
 
   useEffect(() => {
     const isFreshIntro = messages.length === 1 && messages[0]?.id === 'welcome';
@@ -428,6 +625,70 @@ export default function ChatWidget() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, [messages, loading, actionCard, contactOpen, contactError, introReady, quickReady]);
+
+  useEffect(() => {
+    if (!sessionId) return undefined;
+
+    let cancelled = false;
+
+    async function loadLawyerReplies() {
+      try {
+        const response = await api.get(`/api/chat/lawyer-replies/${sessionId}`);
+        if (cancelled) return;
+
+        const replies = Array.isArray(response.data?.messages)
+          ? response.data.messages
+          : [];
+
+        if (replies.length > 0) {
+          setDirectMode(true);
+          localStorage.setItem(CHAT_DIRECT_KEY, 'true');
+        }
+
+        setMessages((prev) => {
+          const knownServerIds = new Set(
+            prev
+              .map((message) => message.serverId)
+              .filter(Boolean)
+          );
+          const seenServerIds = readSeenLawyerReplies();
+
+          const unseen = replies.filter((reply) => !knownServerIds.has(reply.id));
+          if (!unseen.length) return prev;
+
+          const freshForNotification = unseen.filter((reply) => !seenServerIds.has(reply.id));
+          const nextSeenServerIds = new Set(seenServerIds);
+          unseen.forEach((reply) => nextSeenServerIds.add(reply.id));
+          storeSeenLawyerReplies(nextSeenServerIds);
+
+          freshForNotification.forEach((reply) => {
+            notifyLawyerReply(reply);
+          });
+
+          return [
+            ...prev,
+            ...unseen.map((reply) =>
+              makeMessage('assistant', reply.content, {
+                id: `lawyer-${reply.id}`,
+                serverId: reply.id,
+                fromLawyer: true,
+                time: timeFromDate(reply.createdAt),
+              })
+            ),
+          ];
+        });
+      } catch {
+      }
+    }
+
+    loadLawyerReplies();
+    const interval = window.setInterval(loadLawyerReplies, directMode ? directPollMs : passivePollMs);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+    };
+  }, [sessionId, directMode, directPollMs, passivePollMs, notificationsEnabled, notificationPermission, open]);
 
   function updateContactField(field, value) {
     setContactForm((prev) => ({
@@ -486,13 +747,21 @@ export default function ChatWidget() {
     focusInput(250);
   }
 
-  function openContactForm() {
+  function openContactForm(purpose = 'lead') {
+    setContactPurpose(purpose);
     setActionCard(null);
     setContactError('');
 
     setTimeout(() => {
       setContactOpen(true);
     }, 180);
+  }
+
+  function openDirectChatRequest() {
+    if (settings.directChatEnabled === false) return;
+    if (directMode) return;
+
+    openContactForm('direct');
   }
 
   function buildActionCard(data) {
@@ -608,7 +877,9 @@ export default function ChatWidget() {
       return;
     }
 
-    if (!sessionId) {
+    const isDirectRequest = contactPurpose === 'direct';
+
+    if (!sessionId && !isDirectRequest) {
       triggerContactError('Първо напишете кратко съобщение за казуса, за да създадем разговор.');
       return;
     }
@@ -617,6 +888,46 @@ export default function ChatWidget() {
     setContactError('');
 
     try {
+      if (isDirectRequest) {
+        const [response] = await Promise.all([
+          api.post('/api/chat/direct-request', {
+            sessionId,
+            visitorInfo: clean,
+            consent: true,
+            website: contactForm.website,
+          }),
+          wait(700),
+        ]);
+
+        const data = response.data || {};
+
+        if (data.sessionId && data.sessionId !== sessionId) {
+          setSessionId(data.sessionId);
+          localStorage.setItem('dankov_session_id', data.sessionId);
+        }
+
+        setVisitorInfo(clean);
+        setDirectMode(true);
+        localStorage.setItem(CHAT_DIRECT_KEY, 'true');
+        if (settings.browserNotificationsEnabled !== false) {
+          enableNotifications();
+        }
+        setContactOpen(false);
+        setContactPurpose('lead');
+        setActionCard(null);
+
+        setMessages((prev) => [
+          ...prev,
+          makeMessage(
+            'assistant',
+            data.message ||
+              'Заявката за директен чат е изпратена. Отговорът от адв. Данков ще се появи тук.'
+          ),
+        ]);
+
+        return;
+      }
+
       await submitChatLead({ clean, messages, sessionId });
 
       await Promise.all([
@@ -632,6 +943,7 @@ export default function ChatWidget() {
 
       setVisitorInfo(clean);
       setContactOpen(false);
+      setContactPurpose('lead');
       setActionCard(null);
 
       setMessages((prev) => [
@@ -781,7 +1093,9 @@ export default function ChatWidget() {
     <strong>Адвокат Диян Данков</strong>
 
     <span>
-      <i /> Онлайн запитване · обща информация
+      <i /> {directMode
+        ? settings.lawyerOnlineLabel || 'Директен чат · очаква отговор'
+        : settings.generalOnlineLabel || 'Онлайн запитване · обща информация'}
     </span>
   </div>
 
@@ -847,7 +1161,7 @@ export default function ChatWidget() {
 
                 <AnimatePresence>
                   {quickReady && messages.length <= 1 && !loading && !actionCard && !contactOpen && (
-                    <QuickSuggestions onPick={send} />
+                    <QuickSuggestions onPick={send} quickReplies={quickReplies} />
                   )}
                 </AnimatePresence>
 
@@ -874,7 +1188,7 @@ export default function ChatWidget() {
                           </button>
                         )}
 
-                        <button type="button" onClick={openContactForm}>
+                        <button type="button" onClick={() => openContactForm('lead')}>
                           Оставям контакт
                         </button>
 
@@ -896,11 +1210,16 @@ export default function ChatWidget() {
                       transition={{ duration: 0.34, ease: easeOutSoft }}
                     >
                       <div className="chat__lead-head">
-                        <span>Контакт</span>
-                        <strong>Обратна връзка от кантората</strong>
+                        <span>{contactPurpose === 'direct' ? 'Директна връзка' : 'Контакт'}</span>
+                        <strong>
+                          {contactPurpose === 'direct'
+                            ? 'Директен чат с г-н Данков'
+                            : 'Обратна връзка от кантората'}
+                        </strong>
                         <p>
-                          Оставете имейл или телефон. Данните се използват само за
-                          връзка по конкретното запитване.
+                          {contactPurpose === 'direct'
+                            ? 'Оставете имейл или телефон. Разговорът ще се появи в админ панела, откъдето адв. Данков може да отговори директно.'
+                            : 'Оставете имейл или телефон. Данните се използват само за връзка по конкретното запитване.'}
                         </p>
                       </div>
 
@@ -976,7 +1295,11 @@ export default function ChatWidget() {
                           onClick={saveContact}
                           disabled={contactSaving}
                         >
-                          {contactSaving ? 'Записване...' : 'Запази контакт'}
+                          {contactSaving
+                            ? 'Записване...'
+                            : contactPurpose === 'direct'
+                              ? 'Заяви директен чат'
+                              : 'Запази контакт'}
                         </button>
 
                         <button
@@ -984,6 +1307,7 @@ export default function ChatWidget() {
                           className="chat__skip"
                           onClick={() => {
                             setContactOpen(false);
+                            setContactPurpose('lead');
                             setContactError('');
                             setActionCard({
                               type: 'normal',
@@ -1007,6 +1331,42 @@ export default function ChatWidget() {
             <div className="chat__legal-strip">
               Не изпращайте ЕГН, банкови данни или документи в чата. За конкретен съвет е нужна консултация.
             </div>
+
+            {settings.directChatEnabled !== false && (
+              <div className={`chat__direct-row ${directMode ? 'chat__direct-row--active' : ''}`}>
+                <button
+                  type="button"
+                  onClick={openDirectChatRequest}
+                  disabled={directMode || contactSaving}
+                >
+                  <UserRoundCheck size={16} strokeWidth={2.25} />
+                  <span>
+                    {directMode
+                      ? 'Директният чат е активен'
+                      : settings.directCtaLabel || 'Директен чат с г-н Данков'}
+                  </span>
+                </button>
+
+                {settings.browserNotificationsEnabled !== false && (
+                  <button
+                    className="chat__notify-button"
+                    type="button"
+                    onClick={enableNotifications}
+                    disabled={notificationPermission === 'granted'}
+                    title="Звук и browser известие при адвокатски отговор"
+                  >
+                    <Bell size={15} strokeWidth={2.25} />
+                    <span>
+                      {notificationPermission === 'granted'
+                        ? 'Известията са включени'
+                        : notificationPermission === 'denied'
+                          ? 'Известията са блокирани'
+                          : 'Включи известия + звук'}
+                    </span>
+                  </button>
+                )}
+              </div>
+            )}
 
             <div className="chat__input-row">
               <input
@@ -1044,6 +1404,11 @@ export default function ChatWidget() {
           <MessageCircle className="chat__fabSvg chat__fabSvg--chat" size={31} strokeWidth={2.15} />
         )}
         {!open && <i />}
+        {!open && unreadCount > 0 && (
+          <span className="chat__badge">
+            {unreadCount > 9 ? '9+' : unreadCount}
+          </span>
+        )}
       </motion.button>
     </div>
   );

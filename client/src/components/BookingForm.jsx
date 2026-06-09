@@ -25,7 +25,10 @@ const FORM_MOTION = {
   transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
 };
 
-export default function BookingForm() {
+export default function BookingForm({
+  title = 'Опишете казуса си',
+  lead = 'Опишете накратко казуса си. Ще получите обратна връзка за подходящ час, нужните документи и следващите стъпки.',
+}) {
   const [sent, setSent] = useState(false);
   const {
     register,
@@ -62,11 +65,10 @@ export default function BookingForm() {
         {!sent ? (
           <motion.div key="form" {...FORM_MOTION}>
 
-            <h3>Опишете казуса си</h3>
+            <h3>{title}</h3>
 
             <p className="booking-card__lead">
-              Опишете накратко казуса си. Ще получите обратна връзка за подходящ
-              час, нужните документи и следващите стъпки.
+              {lead}
             </p>
 
            {/* TOWA E ONAQ ZELENATA TOCHKA ...ne mi trqq  */}

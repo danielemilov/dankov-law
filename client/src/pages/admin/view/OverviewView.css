@@ -1,0 +1,923 @@
+/* =========================================================
+   DANKOV ADMIN — OVERVIEW
+   Начално табло и приоритетни действия
+   ========================================================= */
+
+.dAdminOverview {
+  width: 100%;
+  max-width: 1680px;
+  display: grid;
+  gap: 22px;
+  margin: 0 auto;
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.dAdminOverviewHero {
+  min-height: 230px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  padding: clamp(26px, 4vw, 48px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--d-admin-radius-lg);
+  color: #f7f9ef;
+  background:
+    radial-gradient(
+      circle at 88% 18%,
+      rgba(214, 239, 103, 0.2),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 68% 120%,
+      rgba(214, 239, 103, 0.1),
+      transparent 38%
+    ),
+    linear-gradient(
+      135deg,
+      #11150f 0%,
+      #192017 55%,
+      #252d20 100%
+    );
+  box-shadow:
+    0 26px 70px rgba(17, 21, 15, 0.17),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.dAdminOverviewHero::before {
+  position: absolute;
+  z-index: -1;
+  top: -100px;
+  right: -80px;
+  width: 310px;
+  height: 310px;
+  border: 1px solid rgba(214, 239, 103, 0.16);
+  border-radius: 50%;
+  content: "";
+}
+
+.dAdminOverviewHero::after {
+  position: absolute;
+  z-index: -1;
+  right: 78px;
+  bottom: -170px;
+  width: 340px;
+  height: 340px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 50%;
+  content: "";
+}
+
+.dAdminOverviewHero__copy {
+  min-width: 0;
+  display: grid;
+  gap: 13px;
+}
+
+.dAdminOverviewHero .dAdminEyebrow {
+  color: rgba(247, 249, 239, 0.62);
+}
+
+.dAdminOverviewHero .dAdminEyebrow::before {
+  display: none;
+}
+
+.dAdminOverviewHero .dAdminEyebrow svg {
+  color: var(--d-admin-accent);
+}
+
+.dAdminOverviewHero__copy h2 {
+  max-width: 720px;
+  color: #ffffff;
+  font-family: var(--serif, Georgia, serif);
+  font-size: clamp(38px, 5vw, 70px);
+  font-weight: 400;
+  line-height: 0.94;
+  letter-spacing: -0.045em;
+}
+
+.dAdminOverviewHero__copy p {
+  max-width: 650px;
+  color: rgba(247, 249, 239, 0.62);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.dAdminOverviewHero__actions {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.dAdminOverviewHero__actions .dAdminButton {
+  min-height: 48px;
+  padding-inline: 18px;
+}
+
+.dAdminOverviewHero__actions .dAdminButton--dark {
+  color: #f7f9ef;
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.dAdminOverviewHero__actions .dAdminButton--dark:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.13);
+}
+
+
+/* =========================================================
+   ОСНОВНИ ДЕЙСТВИЯ
+   ========================================================= */
+
+.dAdminOverview__focusGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.dAdminQuickAction {
+  min-width: 0;
+  min-height: 156px;
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 17px;
+  padding: 22px;
+  border: 1px solid var(--d-admin-line);
+  border-radius: var(--d-admin-radius-md);
+  text-align: left;
+  color: var(--d-admin-text);
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: var(--d-admin-shadow-sm);
+  transition:
+    transform var(--d-admin-transition),
+    border-color var(--d-admin-transition),
+    background var(--d-admin-transition),
+    box-shadow var(--d-admin-transition);
+}
+
+.dAdminQuickAction:hover {
+  transform: translateY(-3px);
+  border-color: var(--d-admin-line-strong);
+  box-shadow: var(--d-admin-shadow-md);
+}
+
+.dAdminQuickAction::after {
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: rgba(214, 239, 103, 0.08);
+  content: "";
+  pointer-events: none;
+}
+
+.dAdminQuickAction__icon {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 17px;
+  color: var(--d-admin-ink);
+  background: var(--d-admin-accent-soft);
+}
+
+.dAdminQuickAction__copy {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.dAdminQuickAction__copy small {
+  color: var(--d-admin-text-faint);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.dAdminQuickAction__copy strong {
+  color: var(--d-admin-ink);
+  font-family: var(--serif, Georgia, serif);
+  font-size: clamp(22px, 2.5vw, 31px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+}
+
+.dAdminQuickAction__copy > span {
+  max-width: 460px;
+  color: var(--d-admin-text-soft);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.dAdminQuickAction > b {
+  min-width: 32px;
+  height: 32px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0 9px;
+  border-radius: 999px;
+  color: var(--d-admin-ink);
+  background: var(--d-admin-accent);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.dAdminQuickAction__arrow {
+  color: var(--d-admin-text-faint);
+  transition:
+    color var(--d-admin-transition),
+    transform var(--d-admin-transition);
+}
+
+.dAdminQuickAction:hover .dAdminQuickAction__arrow {
+  color: var(--d-admin-ink);
+  transform: translateX(4px);
+}
+
+
+/* Чатът е визуално най-важен */
+
+.dAdminQuickAction--chat {
+  color: #f7f9ef;
+  border-color: rgba(255, 255, 255, 0.06);
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(214, 239, 103, 0.17),
+      transparent 38%
+    ),
+    linear-gradient(135deg, #171c15, #232b1f);
+  box-shadow:
+    0 18px 44px rgba(17, 21, 15, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.dAdminQuickAction--chat:hover {
+  border-color: rgba(214, 239, 103, 0.22);
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(214, 239, 103, 0.23),
+      transparent 40%
+    ),
+    linear-gradient(135deg, #171c15, #293224);
+}
+
+.dAdminQuickAction--chat .dAdminQuickAction__icon {
+  color: var(--d-admin-ink);
+  background: var(--d-admin-accent);
+}
+
+.dAdminQuickAction--chat .dAdminQuickAction__copy small {
+  color: rgba(247, 249, 239, 0.5);
+}
+
+.dAdminQuickAction--chat .dAdminQuickAction__copy strong {
+  color: #ffffff;
+}
+
+.dAdminQuickAction--chat .dAdminQuickAction__copy > span {
+  color: rgba(247, 249, 239, 0.62);
+}
+
+.dAdminQuickAction--chat .dAdminQuickAction__arrow {
+  color: rgba(247, 249, 239, 0.42);
+}
+
+.dAdminQuickAction--chat:hover .dAdminQuickAction__arrow {
+  color: var(--d-admin-accent);
+}
+
+
+/* Новини */
+
+.dAdminQuickAction--news {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.93),
+      rgba(239, 243, 229, 0.94)
+    );
+}
+
+.dAdminQuickAction--news .dAdminQuickAction__icon {
+  color: var(--d-admin-info);
+  background: var(--d-admin-info-soft);
+}
+
+
+/* =========================================================
+   METRICS
+   ========================================================= */
+
+.dAdminOverview__metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.dAdminMetric {
+  min-width: 0;
+  min-height: 126px;
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  align-content: space-between;
+  gap: 8px;
+  padding: 17px;
+  border: 1px solid var(--d-admin-line);
+  border-radius: var(--d-admin-radius-md);
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: var(--d-admin-shadow-sm);
+}
+
+.dAdminMetric::before {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--d-admin-text-faint);
+  content: "";
+}
+
+.dAdminMetric > span {
+  padding-right: 22px;
+  color: var(--d-admin-text-soft);
+  font-size: 11px;
+  font-weight: 850;
+  line-height: 1.3;
+}
+
+.dAdminMetric strong {
+  color: var(--d-admin-ink);
+  font-family: var(--serif, Georgia, serif);
+  font-size: clamp(35px, 4vw, 48px);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+
+.dAdminMetric small {
+  color: var(--d-admin-text-faint);
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.dAdminMetric--success {
+  border-color: rgba(57, 118, 74, 0.13);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.88),
+      rgba(228, 242, 231, 0.76)
+    );
+}
+
+.dAdminMetric--success::before {
+  background: var(--d-admin-success);
+  box-shadow: 0 0 0 5px rgba(57, 118, 74, 0.09);
+}
+
+.dAdminMetric--warning {
+  border-color: rgba(150, 106, 33, 0.14);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.88),
+      rgba(247, 237, 213, 0.8)
+    );
+}
+
+.dAdminMetric--warning::before {
+  background: var(--d-admin-warning);
+  box-shadow: 0 0 0 5px rgba(150, 106, 33, 0.09);
+}
+
+
+/* =========================================================
+   ДВЕ ОСНОВНИ КОЛОНИ
+   ========================================================= */
+
+.dAdminOverview__columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+
+.dAdminOverview .dAdminPanel__head > div:first-child {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dAdminOverview .dAdminPanel__head > div:first-child > div {
+  min-width: 0;
+}
+
+.dAdminOverview .dAdminPanel__head small {
+  display: block;
+  color: var(--d-admin-text-faint);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.dAdminOverview .dAdminPanel__head h3 {
+  margin-top: 3px;
+}
+
+.dAdminOverview .dAdminPanel__icon {
+  flex: 0 0 auto;
+}
+
+.dAdminOverviewList {
+  display: grid;
+  gap: 7px;
+  padding: 8px;
+}
+
+.dAdminOverviewRow {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 11px;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  color: var(--d-admin-text);
+  background: transparent;
+  text-align: left;
+  transition:
+    border-color var(--d-admin-transition),
+    background var(--d-admin-transition),
+    transform var(--d-admin-transition);
+}
+
+.dAdminOverviewRow:hover {
+  border-color: var(--d-admin-line);
+  background: var(--d-admin-surface-soft);
+  transform: translateX(2px);
+}
+
+.dAdminOverviewRow__avatar {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--d-admin-line);
+  border-radius: 13px;
+  color: var(--d-admin-ink);
+  background: var(--d-admin-surface);
+  font-size: 13px;
+  font-weight: 900;
+  box-shadow: 0 4px 12px rgba(17, 21, 15, 0.05);
+}
+
+.dAdminPanel--attention .dAdminOverviewRow__avatar {
+  border-color: rgba(150, 106, 33, 0.13);
+  background: var(--d-admin-warning-soft);
+}
+
+.dAdminOverviewRow__copy {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.dAdminOverviewRow__copy strong {
+  overflow: hidden;
+  color: var(--d-admin-text);
+  font-size: 12px;
+  font-weight: 850;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dAdminOverviewRow__copy > span {
+  overflow: hidden;
+  color: var(--d-admin-text-soft);
+  font-size: 11px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dAdminOverviewRow__copy small {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--d-admin-text-faint);
+  font-size: 9px;
+}
+
+.dAdminOverviewRow > svg:last-child {
+  color: var(--d-admin-text-faint);
+  transition:
+    color var(--d-admin-transition),
+    transform var(--d-admin-transition);
+}
+
+.dAdminOverviewRow:hover > svg:last-child {
+  color: var(--d-admin-ink);
+  transform: translateX(3px);
+}
+
+
+/* =========================================================
+   RECENT POSTS
+   ========================================================= */
+
+.dAdminRecentPosts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.dAdminRecentPost {
+  min-width: 0;
+  position: relative;
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  min-height: 106px;
+  padding: 11px;
+  padding-right: 38px;
+  border: 1px solid var(--d-admin-line);
+  border-radius: 14px;
+  text-align: left;
+  color: var(--d-admin-text);
+  background: var(--d-admin-surface-soft);
+  transition:
+    transform var(--d-admin-transition),
+    border-color var(--d-admin-transition),
+    background var(--d-admin-transition),
+    box-shadow var(--d-admin-transition);
+}
+
+.dAdminRecentPost:hover {
+  transform: translateY(-2px);
+  border-color: var(--d-admin-line-strong);
+  background: var(--d-admin-surface);
+  box-shadow: var(--d-admin-shadow-sm);
+}
+
+.dAdminRecentPost__media {
+  width: 62px;
+  height: 78px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 11px;
+  color: var(--d-admin-text-faint);
+  background: var(--d-admin-surface-muted);
+}
+
+.dAdminRecentPost__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dAdminRecentPost__copy {
+  min-width: 0;
+  display: grid;
+  align-content: center;
+  gap: 5px;
+}
+
+.dAdminRecentPost__copy small {
+  overflow: hidden;
+  color: var(--d-admin-text-faint);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.dAdminRecentPost__copy strong {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--d-admin-text);
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.dAdminRecentPost__copy > span {
+  color: var(--d-admin-text-faint);
+  font-size: 9px;
+}
+
+.dAdminRecentPost .dAdminStatus {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  min-height: 21px;
+  padding: 0 7px;
+  font-size: 8px;
+}
+
+.dAdminRecentPost > svg:last-child {
+  position: absolute;
+  right: 11px;
+  bottom: 12px;
+  color: var(--d-admin-text-faint);
+  transition:
+    color var(--d-admin-transition),
+    transform var(--d-admin-transition);
+}
+
+.dAdminRecentPost:hover > svg:last-child {
+  color: var(--d-admin-ink);
+  transform: translateX(3px);
+}
+
+
+/* =========================================================
+   FOOTER ACTIONS
+   ========================================================= */
+
+.dAdminOverview__footerActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.dAdminOverview__footerActions > button {
+  min-width: 0;
+  min-height: 86px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 1px solid var(--d-admin-line);
+  border-radius: var(--d-admin-radius-md);
+  color: var(--d-admin-text);
+  background: rgba(255, 255, 255, 0.7);
+  text-align: left;
+  transition:
+    transform var(--d-admin-transition),
+    border-color var(--d-admin-transition),
+    background var(--d-admin-transition),
+    box-shadow var(--d-admin-transition);
+}
+
+.dAdminOverview__footerActions > button:hover {
+  transform: translateY(-2px);
+  border-color: var(--d-admin-line-strong);
+  background: var(--d-admin-surface);
+  box-shadow: var(--d-admin-shadow-sm);
+}
+
+.dAdminOverview__footerActions > button > svg:first-child {
+  width: 41px;
+  height: 41px;
+  padding: 10px;
+  border-radius: 13px;
+  color: var(--d-admin-ink);
+  background: var(--d-admin-accent-soft);
+}
+
+.dAdminOverview__footerActions > button > span {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.dAdminOverview__footerActions strong {
+  color: var(--d-admin-text);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.dAdminOverview__footerActions small {
+  color: var(--d-admin-text-soft);
+  font-size: 10px;
+}
+
+.dAdminOverview__footerActions > button > svg:last-child {
+  color: var(--d-admin-text-faint);
+  transition:
+    color var(--d-admin-transition),
+    transform var(--d-admin-transition);
+}
+
+.dAdminOverview__footerActions > button:hover > svg:last-child {
+  color: var(--d-admin-ink);
+  transform: translateX(4px);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1280px) {
+  .dAdminRecentPosts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1050px) {
+  .dAdminOverviewHero {
+    min-height: 0;
+    display: grid;
+    align-items: start;
+  }
+
+  .dAdminOverviewHero__actions {
+    justify-content: flex-start;
+  }
+
+  .dAdminOverview__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dAdminOverview__columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 780px) {
+  .dAdminOverview {
+    gap: 16px;
+  }
+
+  .dAdminOverviewHero {
+    padding: 25px 21px;
+    border-radius: 19px;
+  }
+
+  .dAdminOverviewHero__copy h2 {
+    font-size: clamp(38px, 12vw, 54px);
+  }
+
+  .dAdminOverviewHero__copy p {
+    font-size: 13px;
+  }
+
+  .dAdminOverviewHero__actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .dAdminOverviewHero__actions .dAdminButton {
+    width: 100%;
+  }
+
+  .dAdminOverview__focusGrid,
+  .dAdminOverview__footerActions {
+    grid-template-columns: 1fr;
+  }
+
+  .dAdminQuickAction {
+    min-height: 136px;
+    padding: 18px;
+  }
+
+  .dAdminOverview .dAdminPanel__head {
+    align-items: center;
+  }
+}
+
+@media (max-width: 620px) {
+  .dAdminOverview__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .dAdminMetric {
+    min-height: 112px;
+    padding: 14px;
+    border-radius: 15px;
+  }
+
+  .dAdminMetric strong {
+    font-size: 36px;
+  }
+
+  .dAdminRecentPosts {
+    grid-template-columns: 1fr;
+  }
+
+  .dAdminOverviewRow {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .dAdminOverviewRow > .dAdminStatus {
+    display: none;
+  }
+
+  .dAdminOverviewRow > svg:last-child {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .dAdminOverviewHero {
+    padding: 22px 17px;
+  }
+
+  .dAdminOverviewHero__copy h2 {
+    max-width: 310px;
+    font-size: 41px;
+  }
+
+  .dAdminQuickAction {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .dAdminQuickAction__icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+  }
+
+  .dAdminQuickAction > b {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+  }
+
+  .dAdminQuickAction__arrow {
+    display: none;
+  }
+
+  .dAdminQuickAction__copy strong {
+    font-size: 23px;
+  }
+
+  .dAdminQuickAction__copy > span {
+    font-size: 11px;
+  }
+
+  .dAdminOverview__metrics {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dAdminMetric {
+    min-height: 104px;
+  }
+
+  .dAdminOverview .dAdminPanel__head {
+    display: flex;
+  }
+
+  .dAdminOverview .dAdminPanel__head .dAdminTextButton {
+    flex: 0 0 auto;
+  }
+
+  .dAdminOverviewList {
+    padding: 6px;
+  }
+
+  .dAdminOverviewRow {
+    gap: 9px;
+    padding: 9px;
+  }
+
+  .dAdminOverviewRow__avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+  }
+
+  .dAdminOverview__footerActions > button {
+    min-height: 78px;
+    padding: 14px;
+  }
+}
