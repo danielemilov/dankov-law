@@ -17,7 +17,7 @@ import {
   createPostForm,
   playAdminPing,
   postToForm,
-} from './adminUtils.js';
+} from './AdminUtils.js';
 
 export default function useAdminController(route) {
   const [booting, setBooting] = useState(true);

@@ -19,7 +19,7 @@ import {
   FilterTabs,
   SearchBox,
   StatusBadge,
-} from './AdminUI.jsx';
+} from './AdminUi.jsx';
 import {
   formatDate,
   includesSearch,
