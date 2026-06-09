@@ -19,7 +19,7 @@ import {
   SelectField,
   StatusBadge,
   TextField,
-} from './AdminUI.jsx';
+} from './AdminUi.jsx';
 import {
   formatDate,
   includesSearch,

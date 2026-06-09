@@ -1,4 +1,4 @@
-import { EMPTY_POST } from './adminConfig.js';
+import { EMPTY_POST } from './AdminConfig.js';
 
 export function toDateInput(value) {
   const date = new Date(value);
