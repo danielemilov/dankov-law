@@ -25,7 +25,7 @@ import {
   includesSearch,
   normalizeSearch,
   statusLabel,
-} from './adminUtils.js';
+} from './AdminUtils.js';
 
 const CHAT_FILTERS = [
   { value: 'all', label: 'Всички' },

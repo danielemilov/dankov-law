@@ -32,7 +32,7 @@ import {
   includesSearch,
   normalizeSearch,
   statusLabel,
-} from './adminUtils.js';
+} from './AdminUtils.js';
 
 const WEEK_DAYS = ['Пон', 'Вто', 'Сря', 'Чет', 'Пет', 'Съб', 'Нед'];
 const MONTH_FORMATTER = new Intl.DateTimeFormat('bg-BG', {

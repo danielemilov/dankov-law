@@ -30,7 +30,7 @@ import {
   includesSearch,
   normalizeSearch,
   toDateInput,
-} from './adminUtils.js';
+} from './AdminUtils.js';
 
 const POST_FILTERS = [
   { value: 'all', label: 'Всички' },
