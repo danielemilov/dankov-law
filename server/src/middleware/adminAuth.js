@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 
 export const ADMIN_COOKIE_NAME = 'dankov_admin_session';
+
 const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
 
 function getAdminUsername() {
@@ -32,8 +33,15 @@ function signPayload(payload) {
 }
 
 function safeEqual(left = '', right = '') {
-  const leftHash = crypto.createHash('sha256').update(String(left)).digest();
-  const rightHash = crypto.createHash('sha256').update(String(right)).digest();
+  const leftHash = crypto
+    .createHash('sha256')
+    .update(String(left))
+    .digest();
+
+  const rightHash = crypto
+    .createHash('sha256')
+    .update(String(right))
+    .digest();
 
   return crypto.timingSafeEqual(leftHash, rightHash);
 }
@@ -45,22 +53,54 @@ function parseCookies(header = '') {
     .filter(Boolean)
     .reduce((cookies, part) => {
       const separator = part.indexOf('=');
-      if (separator === -1) return cookies;
+
+      if (separator === -1) {
+        return cookies;
+      }
 
       const key = decodeURIComponent(part.slice(0, separator));
       const value = decodeURIComponent(part.slice(separator + 1));
+
       cookies[key] = value;
+
       return cookies;
     }, {});
 }
 
 function getTokenFromRequest(req) {
   const cookies = parseCookies(req.get('cookie') || '');
-  if (cookies[ADMIN_COOKIE_NAME]) return cookies[ADMIN_COOKIE_NAME];
+
+  if (cookies[ADMIN_COOKIE_NAME]) {
+    return cookies[ADMIN_COOKIE_NAME];
+  }
 
   const authorization = req.get('authorization') || '';
   const match = authorization.match(/^Bearer\s+(.+)$/i);
+
   return match?.[1] || '';
+}
+
+function getAdminCookieOptions() {
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  return {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
+    maxAge: SESSION_TTL_MS,
+    path: '/',
+  };
+}
+
+function getAdminClearCookieOptions() {
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  return {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
+    path: '/',
+  };
 }
 
 export function isAdminConfigured() {
@@ -69,13 +109,20 @@ export function isAdminConfigured() {
 
 export function verifyAdminCredentials(username = '', password = '') {
   const expectedPassword = getAdminPassword();
-  if (!expectedPassword) return false;
 
-  return safeEqual(username, getAdminUsername()) && safeEqual(password, expectedPassword);
+  if (!expectedPassword) {
+    return false;
+  }
+
+  return (
+    safeEqual(username, getAdminUsername()) &&
+    safeEqual(password, expectedPassword)
+  );
 }
 
 export function createAdminSession(username = getAdminUsername()) {
   const now = Date.now();
+
   const payload = base64Url(
     JSON.stringify({
       sub: username,
@@ -90,18 +137,35 @@ export function createAdminSession(username = getAdminUsername()) {
 
 export function readAdminSession(req) {
   const token = getTokenFromRequest(req);
-  if (!token || !isAdminConfigured()) return null;
+
+  if (!token || !isAdminConfigured()) {
+    return null;
+  }
 
   const [payload, signature] = token.split('.');
-  if (!payload || !signature) return null;
+
+  if (!payload || !signature) {
+    return null;
+  }
 
   const expectedSignature = signPayload(payload);
-  if (!safeEqual(signature, expectedSignature)) return null;
+
+  if (!safeEqual(signature, expectedSignature)) {
+    return null;
+  }
 
   try {
-    const data = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
-    if (!data?.sub || data.sub !== getAdminUsername()) return null;
-    if (!data.exp || Date.now() > data.exp) return null;
+    const data = JSON.parse(
+      Buffer.from(payload, 'base64url').toString('utf8')
+    );
+
+    if (!data?.sub || data.sub !== getAdminUsername()) {
+      return null;
+    }
+
+    if (!data.exp || Date.now() > data.exp) {
+      return null;
+    }
 
     return {
       username: data.sub,
@@ -113,22 +177,18 @@ export function readAdminSession(req) {
 }
 
 export function setAdminCookie(res, token) {
-  res.cookie(ADMIN_COOKIE_NAME, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: SESSION_TTL_MS,
-    path: '/',
-  });
+  res.cookie(
+    ADMIN_COOKIE_NAME,
+    token,
+    getAdminCookieOptions()
+  );
 }
 
 export function clearAdminCookie(res) {
-  res.clearCookie(ADMIN_COOKIE_NAME, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-  });
+  res.clearCookie(
+    ADMIN_COOKIE_NAME,
+    getAdminClearCookieOptions()
+  );
 }
 
 export function requireAdmin(req, res, next) {
