@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 
 import { EmptyState, StatusBadge } from './AdminUi.jsx';
-import { formatDate } from './adminUtils.js';
+import { formatDate } from './AdminUtils.js';
 import './view/OverviewView.css';
 function DashboardMetric({ label, value, helper, tone = 'neutral' }) {
   return (

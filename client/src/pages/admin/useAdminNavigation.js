@@ -6,7 +6,7 @@ import {
   useState,
 } from 'react';
 
-import { getBackTarget } from './adminUtils.js';
+import { getBackTarget } from './AdminUtils.js';
 
 const INITIAL_ROUTE = {
   section: 'overview',
