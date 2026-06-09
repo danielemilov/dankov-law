@@ -1,76 +1,495 @@
-*, *::before, *::after { box-sizing: border-box; }
-* { margin: 0; padding: 0; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
 :root {
+  /* =====================================================
+     Existing palette
+  ===================================================== */
+
   --ink: #11100e;
   --ink-2: #1c1915;
-  --ink-soft: rgba(17,16,14,.72);
-  --muted: rgba(17,16,14,.56);
-  --line: rgba(17,16,14,.12);
+  --ink-soft: rgba(17, 16, 14, 0.72);
+  --muted: rgba(17, 16, 14, 0.56);
+  --line: rgba(17, 16, 14, 0.12);
+
   --cream: #f7f1e8;
   --cream-2: #fffaf2;
   --warm: #e9ddcc;
+
   --gold: #b9862e;
   --gold-2: #d5a856;
-  --gold-soft: rgba(185,134,46,.12);
+  --gold-soft: rgba(185, 134, 46, 0.12);
+
   --green: #2f6e4d;
   --danger: #b6534a;
-  --serif: 'Cormorant Garamond', Georgia, serif;
-  --sans: 'DM Sans', system-ui, -apple-system, Segoe UI, sans-serif;
-  --shadow: 0 28px 90px rgba(17,16,14,.16);
+
+  /* =====================================================
+     Typography
+  ===================================================== */
+
+  --font-display:
+    'Prata',
+    Georgia,
+    'Times New Roman',
+    serif;
+
+  --font-sans:
+    'DM Sans',
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+
+  /*
+    Старите имена остават като aliases.
+    Така съществуващите компоненти няма да се счупят.
+  */
+  --serif: var(--font-display);
+  --sans: var(--font-sans);
+
+  /* Main headings */
+
+  --type-hero:
+    clamp(
+      58px,
+      5.2vw,
+      78px
+    );
+
+  --type-section:
+    clamp(
+      44px,
+      4.2vw,
+      62px
+    );
+
+  --type-article:
+    clamp(
+      40px,
+      4.6vw,
+      64px
+    );
+
+  --type-card-large:
+    clamp(
+      28px,
+      2.6vw,
+      42px
+    );
+
+  --type-card:
+    clamp(
+      20px,
+      1.65vw,
+      27px
+    );
+
+  /* Supporting text */
+
+  --type-lead:
+    clamp(
+      17px,
+      1.4vw,
+      20px
+    );
+
+  --type-body: 16px;
+  --type-small: 13px;
+
+  /* Line heights */
+
+  --leading-display: 1.04;
+  --leading-heading: 1.1;
+  --leading-body: 1.65;
+
+  /* Other existing global values */
+
+  --shadow:
+    0 28px 90px
+    rgba(17, 16, 14, 0.16);
+
   --radius: 28px;
 }
-html { scroll-behavior: smooth; }
-body {
-  font-family: var(--sans);
-  background:
-    radial-gradient(circle at 15% 10%, rgba(213,168,86,.18), transparent 28rem),
-    radial-gradient(circle at 90% 15%, rgba(17,16,14,.08), transparent 30rem),
-    var(--cream);
-  color: var(--ink);
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
+
+html {
+  scroll-behavior: smooth;
 }
-a { color: inherit; text-decoration: none; }
-button, input, select, textarea { font: inherit; }
-button { cursor: pointer; }
-img, svg { max-width: 100%; display: block; }
-::selection { background: var(--gold); color: var(--ink); }
-:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
-.site-section { padding: 118px max(24px, 6vw); }
+
+body {
+  font-family: var(--font-sans);
+
+  color: var(--ink);
+
+  background:
+    radial-gradient(
+      circle at 15% 10%,
+      rgba(213, 168, 86, 0.18),
+      transparent 28rem
+    ),
+    radial-gradient(
+      circle at 90% 15%,
+      rgba(17, 16, 14, 0.08),
+      transparent 30rem
+    ),
+    var(--cream);
+
+  font-size: var(--type-body);
+  line-height: var(--leading-body);
+
+  overflow-x: hidden;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+::selection {
+  color: var(--ink);
+  background: var(--gold);
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+
+/* =========================================================
+   Global layout
+========================================================= */
+
+.site-section {
+  padding:
+    118px
+    max(24px, 6vw);
+}
+
+/* =========================================================
+   Small labels
+========================================================= */
+
 .kicker {
   color: var(--gold);
-  font-size: 12px;
+
+  font-family: var(--font-sans);
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: .2em;
+  letter-spacing: 0.19em;
+
   text-transform: uppercase;
 }
+
+/* =========================================================
+   Display typography
+========================================================= */
+
 .display {
-  font-family: var(--serif);
-  font-weight: 300;
-  letter-spacing: 0;
-  line-height: .96;
+  font-family: var(--font-display);
+
+  font-weight: 400;
+  line-height: var(--leading-display);
+  letter-spacing: -0.025em;
+
+  text-wrap: balance;
 }
-.text-muted { color: var(--muted); }
+
+/*
+  Utility classes for the existing component styles.
+  We will gradually assign these values to Hero, Cases,
+  About and Contact without changing their layouts.
+*/
+
+.display--hero {
+  font-family: var(--font-display);
+  font-size: var(--type-hero);
+  font-weight: 400;
+  line-height: var(--leading-display);
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.display--section {
+  font-family: var(--font-display);
+  font-size: var(--type-section);
+  font-weight: 400;
+  line-height: var(--leading-display);
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.display--article {
+  font-family: var(--font-display);
+  font-size: var(--type-article);
+  font-weight: 400;
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.display--card-large {
+  font-family: var(--font-display);
+  font-size: var(--type-card-large);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.display--card {
+  font-family: var(--font-display);
+  font-size: var(--type-card);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.text-lead {
+  font-family: var(--font-sans);
+  font-size: var(--type-lead);
+  font-weight: 400;
+  line-height: 1.65;
+}
+
+.text-muted {
+  color: var(--muted);
+}
+
+/* =========================================================
+   Buttons
+========================================================= */
+
 .btn {
   display: inline-flex;
+
+  min-height: 48px;
+
   align-items: center;
   justify-content: center;
-  min-height: 48px;
-  padding: 0 24px;
+
+  padding:
+    0
+    24px;
+
+  border:
+    1px solid
+    transparent;
+
   border-radius: 999px;
-  border: 1px solid transparent;
-  font-size: 12px;
+
+  font-family: var(--font-sans);
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: .12em;
+  letter-spacing: 0.12em;
+
   text-transform: uppercase;
-  transition: transform .2s ease, background .2s ease, border-color .2s ease, color .2s ease;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
-.btn:hover { transform: translateY(-2px); }
-.btn-dark { background: var(--ink); color: var(--cream); }
-.btn-dark:hover { background: var(--gold); color: var(--ink); }
-.btn-light { border-color: var(--line); color: var(--ink); background: rgba(255,255,255,.35); }
-.btn-light:hover { border-color: rgba(17,16,14,.3); background: rgba(255,255,255,.65); }
+
+.btn:hover {
+  transform:
+    translateY(-2px);
+}
+
+.btn-dark {
+  color: var(--cream);
+  background: var(--ink);
+}
+
+.btn-dark:hover {
+  color: var(--ink);
+  background: var(--gold);
+}
+
+.btn-light {
+  border-color: var(--line);
+
+  color: var(--ink);
+
+  background:
+    rgba(255, 255, 255, 0.35);
+}
+
+.btn-light:hover {
+  border-color:
+    rgba(17, 16, 14, 0.3);
+
+  background:
+    rgba(255, 255, 255, 0.65);
+}
+
+/* =========================================================
+   Tablet
+========================================================= */
+
+@media (max-width: 960px) {
+  :root {
+    --type-hero:
+      clamp(
+        48px,
+        7vw,
+        62px
+      );
+
+    --type-section:
+      clamp(
+        40px,
+        6vw,
+        52px
+      );
+
+    --type-article:
+      clamp(
+        37px,
+        6vw,
+        50px
+      );
+
+    --type-card-large:
+      clamp(
+        27px,
+        4.5vw,
+        36px
+      );
+  }
+}
+
+/* =========================================================
+   Phone
+========================================================= */
+
 @media (max-width: 760px) {
-  .site-section { padding: 82px 20px; }
-  .btn { width: 100%; }
+  :root {
+    /*
+      Значително по-умерени размери от сегашните
+      11–13vw заглавия.
+    */
+
+    --type-hero:
+      clamp(
+        38px,
+        9.4vw,
+        47px
+      );
+
+    --type-section:
+      clamp(
+        33px,
+        8.2vw,
+        41px
+      );
+
+    --type-article:
+      clamp(
+        31px,
+        7.8vw,
+        39px
+      );
+
+    --type-card-large:
+      clamp(
+        26px,
+        6.8vw,
+        34px
+      );
+
+    --type-card:
+      clamp(
+        19px,
+        5.2vw,
+        24px
+      );
+
+    --type-lead:
+      clamp(
+        15px,
+        4vw,
+        17px
+      );
+
+    --type-body: 15px;
+  }
+
+  .site-section {
+    padding:
+      82px
+      20px;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   Small phones
+========================================================= */
+
+@media (max-width: 390px) {
+  :root {
+    --type-hero:
+      clamp(
+        36px,
+        9.5vw,
+        42px
+      );
+
+    --type-section:
+      clamp(
+        31px,
+        8vw,
+        37px
+      );
+
+    --type-article:
+      clamp(
+        29px,
+        7.7vw,
+        35px
+      );
+
+    --type-card-large:
+      clamp(
+        24px,
+        6.6vw,
+        31px
+      );
+  }
 }
