@@ -1187,3 +1187,478 @@
     min-height: 185px;
   }
 }
+
+/* =========================================================
+   HOMEPAGE PUBLICATION FLOW — CLARITY UPDATE
+   Ясно управление коя публикация излиза първа на сайта
+   ========================================================= */
+
+.dAdminHomepageSlot {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 20px;
+  padding: clamp(18px, 3vw, 27px);
+  border: 1px solid rgba(151, 174, 48, 0.2);
+  border-radius: 22px;
+  color: var(--d-admin-ink);
+  background:
+    radial-gradient(
+      circle at 96% 0%,
+      rgba(214, 239, 103, 0.22),
+      transparent 34%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.93),
+      rgba(246, 249, 238, 0.9)
+    );
+  box-shadow:
+    0 18px 48px rgba(17, 21, 15, 0.075),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+}
+
+.dAdminHomepageSlot::before {
+  position: absolute;
+  z-index: -1;
+  top: -110px;
+  right: -85px;
+  width: 260px;
+  height: 260px;
+  border: 1px solid rgba(151, 174, 48, 0.13);
+  border-radius: 50%;
+  content: "";
+}
+
+.dAdminHomepageSlot--empty {
+  border-color: rgba(150, 106, 33, 0.16);
+  background:
+    radial-gradient(
+      circle at 96% 0%,
+      rgba(247, 237, 213, 0.28),
+      transparent 34%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.94),
+      rgba(250, 247, 239, 0.9)
+    );
+}
+
+.dAdminHomepageSlot__content {
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.dAdminHomepageSlot__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  color: var(--d-admin-text-faint);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.dAdminHomepageSlot__eyebrow::before {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--d-admin-accent);
+  box-shadow: 0 0 0 6px rgba(214, 239, 103, 0.16);
+  content: "";
+}
+
+.dAdminHomepageSlot h3 {
+  margin: 0;
+  color: var(--d-admin-ink);
+  font-family: var(--serif, Georgia, serif);
+  font-size: clamp(28px, 3.2vw, 46px);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+
+.dAdminHomepageSlot p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--d-admin-text-soft);
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.dAdminHomepageSlot__selected {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+  width: min(100%, 760px);
+  margin-top: 4px;
+  padding: 13px 14px;
+  border: 1px solid rgba(151, 174, 48, 0.15);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.66);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.dAdminHomepageSlot__selected--empty {
+  border-color: rgba(150, 106, 33, 0.14);
+  background: rgba(255, 248, 226, 0.44);
+}
+
+.dAdminHomepageSlot__selected strong {
+  overflow: hidden;
+  color: var(--d-admin-ink);
+  font-family: var(--serif, Georgia, serif);
+  font-size: clamp(18px, 2vw, 25px);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dAdminHomepageSlot__selected small {
+  overflow: hidden;
+  color: var(--d-admin-text-faint);
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.dAdminHomepageSlot__badge {
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: fit-content;
+  padding: 0 9px;
+  border: 1px solid rgba(151, 174, 48, 0.22);
+  border-radius: 999px;
+  color: #566318;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(239, 246, 211, 0.96),
+      rgba(250, 252, 241, 0.96)
+    );
+  font-size: 8px;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.dAdminHomepageSlot__badge--auto {
+  border-color: rgba(150, 106, 33, 0.16);
+  color: var(--d-admin-warning);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(247, 237, 213, 0.95),
+      rgba(255, 248, 226, 0.95)
+    );
+}
+
+.dAdminHomepageSlot__warning {
+  width: fit-content;
+  padding: 8px 10px;
+  border: 1px solid rgba(150, 106, 33, 0.14);
+  border-radius: 12px;
+  color: var(--d-admin-warning);
+  background: rgba(255, 248, 226, 0.7);
+  font-size: 10px !important;
+  font-weight: 800;
+}
+
+.dAdminHomepageSlot__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dAdminHomepageSlot__actions .dAdminSecondaryAction,
+.dAdminHomepageSlot__actions .dAdminPrimaryAction {
+  min-height: 46px;
+  padding-inline: 17px;
+  border-radius: 13px;
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   POST ROW — HOMEPAGE STATE
+   ========================================================= */
+
+.dAdminPostRow--homepage,
+.dAdminPostRow--autoHomepage {
+  border-color: rgba(151, 174, 48, 0.28);
+  background:
+    radial-gradient(
+      circle at 98% 0%,
+      rgba(214, 239, 103, 0.2),
+      transparent 32%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.97),
+      rgba(245, 249, 232, 0.94)
+    );
+}
+
+.dAdminPostRow--homepage::after,
+.dAdminPostRow--autoHomepage::after {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: var(--d-admin-accent);
+  content: "";
+}
+
+.dAdminPostRow--autoHomepage {
+  border-color: rgba(150, 106, 33, 0.18);
+  background:
+    radial-gradient(
+      circle at 98% 0%,
+      rgba(247, 237, 213, 0.23),
+      transparent 32%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.97),
+      rgba(250, 247, 239, 0.94)
+    );
+}
+
+.dAdminPostRow--autoHomepage::after {
+  background: rgba(150, 106, 33, 0.75);
+}
+
+.dAdminFeaturedTag--home {
+  border-color: rgba(151, 174, 48, 0.22);
+  color: #566318;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(239, 246, 211, 0.98),
+      rgba(250, 252, 241, 0.98)
+    );
+}
+
+.dAdminFeaturedTag--auto {
+  border-color: rgba(150, 106, 33, 0.14);
+  color: var(--d-admin-warning);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(247, 237, 213, 0.95),
+      rgba(255, 248, 226, 0.95)
+    );
+}
+
+
+/* =========================================================
+   EDITOR — HOMEPAGE PLACEMENT BLOCK
+   ========================================================= */
+
+.dAdminHomepagePlacement {
+  display: grid;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid rgba(151, 174, 48, 0.18);
+  border-radius: 18px;
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(214, 239, 103, 0.2),
+      transparent 34%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(250, 252, 241, 0.96),
+      rgba(241, 247, 221, 0.78)
+    );
+  box-shadow:
+    0 10px 26px rgba(17, 21, 15, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.dAdminHomepagePlacement__head {
+  display: grid;
+  gap: 5px;
+}
+
+.dAdminHomepagePlacement__head span {
+  width: fit-content;
+  color: #66761e;
+  font-size: 8px;
+  font-weight: 950;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.dAdminHomepagePlacement__head h4 {
+  margin: 0;
+  color: var(--d-admin-ink);
+  font-family: var(--serif, Georgia, serif);
+  font-size: clamp(24px, 2.4vw, 34px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.dAdminHomepagePlacement__head p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--d-admin-text-soft);
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.dAdminHomepagePlacement .dAdminSettingToggle {
+  min-height: 0;
+  margin: 0;
+  border-color: rgba(151, 174, 48, 0.2);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.dAdminHomepagePlacement .dAdminSettingToggle strong {
+  font-size: 13px;
+}
+
+.dAdminHomepagePlacement .dAdminSettingToggle p,
+.dAdminHomepagePlacement .dAdminSettingToggle span {
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+
+/* =========================================================
+   PREVIEW — PUBLIC SITE FEEL
+   ========================================================= */
+
+.dAdminPostPreviewCard--homepage {
+  border: 1px solid rgba(151, 174, 48, 0.18);
+  box-shadow:
+    0 18px 42px rgba(17, 21, 15, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.dAdminPostPreviewCard--homepage .dAdminPostPreviewCard__media::before {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: 12px;
+  padding: 7px 9px;
+  border: 1px solid rgba(151, 174, 48, 0.2);
+  border-radius: 999px;
+  color: #566318;
+  background: rgba(250, 252, 241, 0.88);
+  box-shadow: 0 8px 22px rgba(17, 21, 15, 0.08);
+  font-size: 8px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  content: "Първа на сайта";
+  backdrop-filter: blur(14px);
+}
+
+.dAdminPostPreviewCard__homeTag {
+  width: fit-content;
+  padding: 6px 8px;
+  border: 1px solid rgba(151, 174, 48, 0.2);
+  border-radius: 999px;
+  color: #566318;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(239, 246, 211, 0.95),
+      rgba(250, 252, 241, 0.95)
+    );
+  font-size: 8px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   LABEL POLISH — MORE EDITORIAL, LESS TECHNICAL
+   ========================================================= */
+
+.dAdminPostEditorView .dAdminPanel__head h3,
+.dAdminPostPreview__sticky .dAdminPanel__head h3 {
+  color: var(--d-admin-ink);
+  font-family: var(--serif, Georgia, serif);
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.dAdminPostEditorView .dAdminPanel__head small,
+.dAdminPostPreview__sticky .dAdminPanel__head small {
+  color: var(--d-admin-text-faint);
+}
+
+.dAdminPostPreview__sticky .dAdminPanel__head {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.9),
+      rgba(246, 249, 238, 0.82)
+    );
+}
+
+
+/* =========================================================
+   RESPONSIVE — HOMEPAGE FLOW UPDATE
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .dAdminHomepageSlot {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .dAdminHomepageSlot__actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 650px) {
+  .dAdminHomepageSlot {
+    gap: 14px;
+    padding: 17px;
+    border-radius: 18px;
+  }
+
+  .dAdminHomepageSlot h3 {
+    font-size: 31px;
+  }
+
+  .dAdminHomepageSlot__selected strong {
+    white-space: normal;
+  }
+
+  .dAdminHomepageSlot__actions,
+  .dAdminHomepageSlot__actions .dAdminSecondaryAction,
+  .dAdminHomepageSlot__actions .dAdminPrimaryAction {
+    width: 100%;
+  }
+
+  .dAdminHomepagePlacement {
+    padding: 13px;
+    border-radius: 15px;
+  }
+
+  .dAdminHomepagePlacement__head h4 {
+    font-size: 27px;
+  }
+}

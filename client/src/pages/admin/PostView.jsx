@@ -34,20 +34,112 @@ import {
 
 const POST_FILTERS = [
   { value: 'all', label: 'Всички' },
-  { value: 'published', label: 'Публикувани' },
+  { value: 'published', label: 'Видими в сайта' },
   { value: 'draft', label: 'Чернови' },
-  { value: 'featured', label: 'Водещи' },
+  { value: 'featured', label: 'Първа на сайта' },
   { value: 'archived', label: 'Архивирани' },
 ];
 
 function getPostTypeLabel(type) {
-  return type === 'video' ? 'Видео' : 'Статия';
+  return type === 'video' ? 'Видео публикация' : 'Текстова публикация';
+}
+
+function getPostDateValue(post) {
+  return new Date(post?.publishedAt || post?.createdAt || 0).getTime();
+}
+
+function sortByDisplayDate(a, b) {
+  return getPostDateValue(b) - getPostDateValue(a);
+}
+
+function getHomepageLeadInfo(posts) {
+  const publishedPosts = posts
+    .filter((post) => post.status === 'published')
+    .sort(sortByDisplayDate);
+
+  const featuredPublishedPosts = publishedPosts
+    .filter((post) => post.featured)
+    .sort(sortByDisplayDate);
+
+  if (featuredPublishedPosts.length > 0) {
+    return {
+      post: featuredPublishedPosts[0],
+      mode: 'manual',
+      featuredCount: featuredPublishedPosts.length,
+    };
+  }
+
+  return {
+    post: publishedPosts[0] || null,
+    mode: publishedPosts[0] ? 'fallback' : 'empty',
+    featuredCount: featuredPublishedPosts.length,
+  };
+}
+
+function HomepageLeadCard({ leadInfo, onEdit, onCreate }) {
+  const { post, mode, featuredCount } = leadInfo;
+  const isManual = mode === 'manual';
+  const isFallback = mode === 'fallback';
+
+  return (
+    <section className={`dAdminHomepageSlot${!post ? ' dAdminHomepageSlot--empty' : ''}`}>
+      <div className="dAdminHomepageSlot__content">
+        <span className="dAdminHomepageSlot__eyebrow">Начална страница</span>
+        <h3>Първа голяма публикация</h3>
+        <p>
+          Това е публикацията, която ще стои в голямата първа карта на сайта.
+          Публичният layout остава същият — оттук само избирате кое съдържание влиза там.
+        </p>
+
+        {post ? (
+          <div className="dAdminHomepageSlot__selected">
+            <span className={`dAdminHomepageSlot__badge${isFallback ? ' dAdminHomepageSlot__badge--auto' : ''}`}>
+              <Sparkles size={13} />
+              {isManual ? 'Избрана ръчно' : 'Автоматично най-нова'}
+            </span>
+            <strong>{post.title || 'Публикация без заглавие'}</strong>
+            <small>
+              {post.category || 'Без тема'} · {formatDate(post.publishedAt || post.createdAt, false)}
+            </small>
+          </div>
+        ) : (
+          <div className="dAdminHomepageSlot__selected dAdminHomepageSlot__selected--empty">
+            <strong>Няма публикувана публикация за началната страница.</strong>
+            <small>Създайте публикация или публикувайте чернова, за да се появи в сайта.</small>
+          </div>
+        )}
+
+        {featuredCount > 1 && (
+          <p className="dAdminHomepageSlot__warning">
+            Има повече от една публикация отбелязана като първа. За най-ясен резултат оставете само една.
+          </p>
+        )}
+      </div>
+
+      <div className="dAdminHomepageSlot__actions">
+        {post ? (
+          <button className="dAdminSecondaryAction" type="button" onClick={() => onEdit(post)}>
+            <Eye size={17} />
+            Отвори публикацията
+          </button>
+        ) : (
+          <button className="dAdminPrimaryAction" type="button" onClick={onCreate}>
+            <Plus size={17} />
+            Създай публикация
+          </button>
+        )}
+      </div>
+    </section>
+  );
 }
 
 function PostsList({ navigate, controller }) {
   const { posts, resetPostForm, selectPost } = controller;
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState('all');
+
+  const homepageLeadInfo = useMemo(() => getHomepageLeadInfo(posts), [posts]);
+  const homepageLeadId = homepageLeadInfo.post?.id;
 
   const filterItems = useMemo(
     () => POST_FILTERS.map((item) => ({
@@ -79,7 +171,7 @@ function PostsList({ navigate, controller }) {
         post.type,
         post.status,
       ]))
-      .sort((a, b) => new Date(b.publishedAt || b.createdAt || 0) - new Date(a.publishedAt || a.createdAt || 0));
+      .sort(sortByDisplayDate);
   }, [filter, posts, query]);
 
   function createPost() {
@@ -101,11 +193,11 @@ function PostsList({ navigate, controller }) {
           >
             Към таблото
           </BackLink>
-          <span className="dAdminEyebrow">Съдържание на сайта</span>
-          <h2>Новини и публикации</h2>
+          <span className="dAdminEyebrow">Управление на сайта</span>
+          <h2>Публикации</h2>
           <p>
-            Създавайте, намирайте и редактирайте публикации в отделен, спокоен
-            редактор. Списъкът остава чист и лесен за преглед.
+            Управлявайте съдържанието така, както ще го виждат клиентите в сайта:
+            ясно заглавие, точен label и много видима първа публикация на началната страница.
           </p>
         </div>
 
@@ -115,13 +207,19 @@ function PostsList({ navigate, controller }) {
         </button>
       </section>
 
+      <HomepageLeadCard
+        leadInfo={homepageLeadInfo}
+        onEdit={editPost}
+        onCreate={createPost}
+      />
+
       <section className="dAdminPanel dAdminPanel--wide">
         <div className="dAdminToolbar">
           <SearchBox
             wide
             value={query}
             onChange={setQuery}
-            placeholder="Търсене по заглавие, категория или текст…"
+            placeholder="Търсене по заглавие, област или текст…"
           />
           <FilterTabs value={filter} onChange={setFilter} items={filterItems} />
         </div>
@@ -134,7 +232,7 @@ function PostsList({ navigate, controller }) {
               text={
                 query
                   ? 'Променете търсенето или изберете друг филтър.'
-                  : 'Създайте първата новина или статия за сайта.'
+                  : 'Създайте първата новина, казус или правен анализ за сайта.'
               }
               action={
                 !query ? (
@@ -146,49 +244,59 @@ function PostsList({ navigate, controller }) {
               }
             />
           ) : (
-            filteredPosts.map((post) => (
-              <button
-                className="dAdminPostRow"
-                key={post.id}
-                type="button"
-                onClick={() => editPost(post)}
-              >
-                <span className="dAdminPostRow__media">
-                  {post.heroImage?.url ? (
-                    <img src={post.heroImage.url} alt="" />
-                  ) : post.type === 'video' ? (
-                    <Video size={22} />
-                  ) : (
-                    <FileText size={22} />
-                  )}
-                </span>
+            filteredPosts.map((post) => {
+              const isHomepagePost = post.id === homepageLeadId;
+              const isAutoHomepagePost = isHomepagePost && !post.featured;
 
-                <span className="dAdminPostRow__content">
-                  <span className="dAdminPostRow__topline">
-                    <strong>{post.title || 'Публикация без заглавие'}</strong>
-                    <small>{formatDate(post.publishedAt || post.createdAt, false)}</small>
-                  </span>
-
-                  <span className="dAdminPostRow__meta">
-                    <StatusBadge status={post.status || 'draft'} />
-                    <span>{getPostTypeLabel(post.type)}</span>
-                    {post.category && <span>{post.category}</span>}
-                    {post.featured && (
-                      <span className="dAdminFeaturedTag">
-                        <Sparkles size={13} />
-                        Водеща
-                      </span>
+              return (
+                <button
+                  className={`dAdminPostRow${post.featured ? ' dAdminPostRow--homepage' : ''}${isAutoHomepagePost ? ' dAdminPostRow--autoHomepage' : ''}`}
+                  key={post.id}
+                  type="button"
+                  onClick={() => editPost(post)}
+                >
+                  <span className="dAdminPostRow__media">
+                    {post.heroImage?.url ? (
+                      <img src={post.heroImage.url} alt="" />
+                    ) : post.type === 'video' ? (
+                      <Video size={22} />
+                    ) : (
+                      <FileText size={22} />
                     )}
                   </span>
 
-                  <span className="dAdminPostRow__excerpt">
-                    {post.excerpt || 'Няма добавено кратко описание.'}
-                  </span>
-                </span>
+                  <span className="dAdminPostRow__content">
+                    <span className="dAdminPostRow__topline">
+                      <strong>{post.title || 'Публикация без заглавие'}</strong>
+                      <small>{formatDate(post.publishedAt || post.createdAt, false)}</small>
+                    </span>
 
-                <ArrowRight className="dAdminPostRow__arrow" size={19} />
-              </button>
-            ))
+                    <span className="dAdminPostRow__meta">
+                      <StatusBadge status={post.status || 'draft'} />
+                      <span>{getPostTypeLabel(post.type)}</span>
+                      {post.category && <span>{post.category}</span>}
+                      {post.featured && (
+                        <span className="dAdminFeaturedTag dAdminFeaturedTag--home">
+                          <Sparkles size={13} />
+                          Първа на сайта
+                        </span>
+                      )}
+                      {isAutoHomepagePost && (
+                        <span className="dAdminFeaturedTag dAdminFeaturedTag--auto">
+                          Автоматично първа
+                        </span>
+                      )}
+                    </span>
+
+                    <span className="dAdminPostRow__excerpt">
+                      {post.excerpt || 'Няма добавено кратко описание за картата в сайта.'}
+                    </span>
+                  </span>
+
+                  <ArrowRight className="dAdminPostRow__arrow" size={19} />
+                </button>
+              );
+            })
           )}
         </div>
       </section>
@@ -207,13 +315,13 @@ function PostPreview({ postForm }) {
             <div>
               <span className="dAdminPanel__icon"><Eye size={18} /></span>
               <div>
-                <small>Преглед</small>
-                <h3>Как ще изглежда</h3>
+                <small>Преглед в сайта</small>
+                <h3>Карта на публикацията</h3>
               </div>
             </div>
           </header>
 
-          <div className="dAdminPostPreviewCard">
+          <div className={`dAdminPostPreviewCard${postForm.featured ? ' dAdminPostPreviewCard--homepage' : ''}`}>
             <div className="dAdminPostPreviewCard__media">
               {postForm.heroImage?.url ? (
                 <img
@@ -229,8 +337,13 @@ function PostPreview({ postForm }) {
             </div>
 
             <div className="dAdminPostPreviewCard__body">
+              {postForm.featured && (
+                <span className="dAdminPostPreviewCard__homeTag">
+                  Първа голяма публикация
+                </span>
+              )}
               <span className="dAdminPostPreviewCard__meta">
-                {postForm.category || 'Категория'}
+                {postForm.category || 'Област / тема'}
                 {' · '}
                 {postForm.publishedAt
                   ? formatDate(postForm.publishedAt, false)
@@ -238,7 +351,7 @@ function PostPreview({ postForm }) {
               </span>
               <h4>{postForm.title || 'Заглавието ще се появи тук'}</h4>
               <p>
-                {postForm.excerpt || 'Краткото описание ще се появи тук.'}
+                {postForm.excerpt || 'Краткото описание за картата ще се появи тук.'}
               </p>
             </div>
           </div>
@@ -247,7 +360,7 @@ function PostPreview({ postForm }) {
         <div className="dAdminEditorHint">
           <Check size={16} />
           <span>
-            Промените се изпращат към същите API маршрути като в стария панел.
+            Прегледът помага да прецените съдържанието и label-ите. Публичният layout на сайта не се променя оттук.
           </span>
         </div>
       </div>
@@ -309,22 +422,22 @@ function PostEditor({ route, navigate, goBack, controller }) {
         <div>
           <BackLink onClick={goBack}>Всички публикации</BackLink>
           <span className="dAdminEyebrow">
-            {isNew ? 'Ново съдържание' : 'Редакция'}
+            {isNew ? 'Нова публикация' : 'Редакция на публикация'}
           </span>
-          <h2>{isNew ? 'Нова публикация' : postForm.title || 'Редакция на публикация'}</h2>
+          <h2>{isNew ? 'Подгответе публикация за сайта' : postForm.title || 'Редакция на публикация'}</h2>
           <p>
             {isNew
-              ? 'Попълнете основната информация и запазете, когато съдържанието е готово.'
-              : 'Редактирайте съдържанието и се върнете към списъка без презареждане.'}
+              ? 'Попълнете текста, изберете видимост и решете дали тази публикация трябва да бъде първата голяма карта на началната страница.'
+              : 'Редактирайте съдържанието, label-а и позицията на публикацията в сайта.'}
           </p>
         </div>
 
         <div className="dAdminDetailHeader__status">
           <StatusBadge status={postForm.status || 'draft'} />
           {postForm.featured && (
-            <span className="dAdminFeaturedTag">
+            <span className="dAdminFeaturedTag dAdminFeaturedTag--home">
               <Sparkles size={13} />
-              Водеща
+              Първа на сайта
             </span>
           )}
         </div>
@@ -337,30 +450,30 @@ function PostEditor({ route, navigate, goBack, controller }) {
               <div>
                 <span className="dAdminPanel__icon"><FileText size={18} /></span>
                 <div>
-                  <small>Основно съдържание</small>
-                  <h3>Заглавие и текст</h3>
+                  <small>Текст за сайта</small>
+                  <h3>Заглавие, тема и описание</h3>
                 </div>
               </div>
             </header>
 
             <div className="dAdminPanel__body dAdminEditorFields">
               <TextField
-                label="Заглавие"
+                label="Заглавие на публикацията"
                 value={postForm.title}
                 onChange={(value) => updatePostField('title', value)}
-                placeholder="Напишете ясно заглавие"
+                placeholder="Напишете ясно заглавие за сайта"
                 className="dAdminField--full"
               />
 
               <div className="dAdminFieldGrid">
                 <TextField
-                  label="Категория"
+                  label="Област / тема"
                   value={postForm.category}
                   onChange={(value) => updatePostField('category', value)}
                   placeholder="Напр. Наказателно право"
                 />
                 <TextField
-                  label="Местоположение"
+                  label="Град или обхват"
                   value={postForm.location}
                   onChange={(value) => updatePostField('location', value)}
                   placeholder="България"
@@ -368,16 +481,16 @@ function PostEditor({ route, navigate, goBack, controller }) {
               </div>
 
               <TextAreaField
-                label="Кратко описание"
+                label="Кратко описание за картата"
                 value={postForm.excerpt}
                 onChange={(value) => updatePostField('excerpt', value)}
                 rows={4}
-                placeholder="Кратък текст за картата на публикацията"
+                placeholder="Този текст излиза в картата на публикацията в сайта"
                 className="dAdminField--full"
               />
 
               <TextAreaField
-                label="Основен текст"
+                label="Пълен текст на публикацията"
                 value={postForm.body}
                 onChange={(value) => updatePostField('body', value)}
                 rows={14}
@@ -392,8 +505,8 @@ function PostEditor({ route, navigate, goBack, controller }) {
               <div>
                 <span className="dAdminPanel__icon"><ImageIcon size={18} /></span>
                 <div>
-                  <small>Медия</small>
-                  <h3>Снимка или видео</h3>
+                  <small>Визуално съдържание</small>
+                  <h3>Снимка или видео към публикацията</h3>
                 </div>
               </div>
             </header>
@@ -401,16 +514,16 @@ function PostEditor({ route, navigate, goBack, controller }) {
             <div className="dAdminPanel__body dAdminEditorFields">
               <div className="dAdminFieldGrid">
                 <SelectField
-                  label="Тип публикация"
+                  label="Формат"
                   value={postForm.type}
                   onChange={(value) => updatePostField('type', value)}
                 >
-                  <option value="article">Статия</option>
-                  <option value="video">Видео</option>
+                  <option value="article">Текстова публикация</option>
+                  <option value="video">Видео публикация</option>
                 </SelectField>
 
                 <TextField
-                  label="Снимка URL"
+                  label="Основна снимка URL"
                   value={postForm.heroImage?.url}
                   onChange={(value) => updatePostNested('heroImage', 'url', value)}
                   placeholder="https://…jpg"
@@ -418,17 +531,17 @@ function PostEditor({ route, navigate, goBack, controller }) {
               </div>
 
               <TextField
-                label="Alt текст на снимката"
+                label="Описание на снимката"
                 value={postForm.heroImage?.alt}
                 onChange={(value) => updatePostNested('heroImage', 'alt', value)}
-                placeholder="Кратко описание на изображението"
+                placeholder="Кратко описание за достъпност и SEO"
                 className="dAdminField--full"
               />
 
               {postForm.type === 'video' && (
                 <div className="dAdminFieldGrid">
                   <TextField
-                    label="Видео URL"
+                    label="Видео файл URL"
                     value={postForm.video?.src}
                     onChange={(value) => updatePostNested('video', 'src', value)}
                     placeholder="https://…mp4"
@@ -450,7 +563,7 @@ function PostEditor({ route, navigate, goBack, controller }) {
                 <span className="dAdminPanel__icon"><CalendarDays size={18} /></span>
                 <div>
                   <small>Публикуване</small>
-                  <h3>Статус и дата</h3>
+                  <h3>Видимост и позиция в сайта</h3>
                 </div>
               </div>
             </header>
@@ -458,42 +571,53 @@ function PostEditor({ route, navigate, goBack, controller }) {
             <div className="dAdminPanel__body dAdminEditorFields">
               <div className="dAdminFieldGrid dAdminFieldGrid--three">
                 <SelectField
-                  label="Статус"
+                  label="Видимост в сайта"
                   value={postForm.status}
                   onChange={(value) => updatePostField('status', value)}
                 >
-                  <option value="published">Публикувана</option>
-                  <option value="draft">Чернова</option>
-                  <option value="archived">Архивирана</option>
+                  <option value="published">Публикувана — вижда се в сайта</option>
+                  <option value="draft">Чернова — не се вижда</option>
+                  <option value="archived">Архивирана — скрита от сайта</option>
                 </SelectField>
 
                 <TextField
-                  label="Дата"
+                  label="Дата на публикуване"
                   type="date"
                   value={postForm.publishedAt}
                   onChange={(value) => updatePostField('publishedAt', value)}
                 />
 
                 <TextField
-                  label="Slug"
+                  label="Адрес на страницата"
                   value={postForm.slug}
                   onChange={(value) => updatePostField('slug', value)}
                   placeholder="автоматично-от-заглавието"
                 />
               </div>
 
-              <ToggleField
-                label="Водеща публикация"
-                description="Показва публикацията с по-висок приоритет в сайта."
-                checked={postForm.featured}
-                onChange={(value) => updatePostField('featured', value)}
-              />
+              <div className="dAdminHomepagePlacement">
+                <div className="dAdminHomepagePlacement__head">
+                  <span>Начална страница</span>
+                  <h4>Първа голяма публикация</h4>
+                  <p>
+                    Това контролира коя публикация влиза в голямата първа карта на началната страница.
+                    Layout-ът на сайта не се променя — сменя се само съдържанието в тази позиция.
+                  </p>
+                </div>
+
+                <ToggleField
+                  label="Покажи тази публикация като първа на началната"
+                  description="Използвайте това за най-важната новина, казус или правен анализ. Ако няма избрана такава, сайтът ще използва най-новата публикувана публикация."
+                  checked={postForm.featured}
+                  onChange={(value) => updatePostField('featured', value)}
+                />
+              </div>
 
               <TextField
                 label="Вътрешна редакторска бележка"
                 value={postForm.editorialNote}
                 onChange={(value) => updatePostField('editorialNote', value)}
-                placeholder="Тази бележка не е част от основния текст"
+                placeholder="Само за админа — не се вижда в сайта"
                 className="dAdminField--full"
               />
             </div>
