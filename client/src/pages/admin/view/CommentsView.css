@@ -1,35 +1,339 @@
 /* =========================================================
-   Dankov Admin — Full CSS replacement
-   Design only. No new features. No API changes.
-   Visual reference: public website / AboutPage / Chat / Booking.
-   Fonts: uses existing site variables var(--font-display), var(--serif),
-   var(--font-sans), var(--sans).
+   DANKOV ADMIN — COMMENTS / MODERATION
+   SITE-PERFECT FULL REPLACEMENT
+
+   Design only.
+   No JSX changes.
+   No API/backend changes.
+   No new features.
+
+   Goal:
+   - Make moderation feel premium, calm and obvious.
+   - Make pending comments easy to scan.
+   - Make approve / hide / delete decisions visually clear.
+   - Make the detail screen feel like a public-site quote preview.
+   - Keep the current JSX class structure fully covered.
+
+   Built for existing classes:
+   .dAdminCommentsView
+   .dAdminCommentDetail
+   .dAdminPageIntro--comments
+   .dAdminModerationMetrics
+   .dAdminModerationMetric
+   .dAdminCommentsPanel
+   .dAdminCommentsQueue
+   .dAdminCommentCard
+   .dAdminCommentActions
+   .dAdminCommentDetail__layout
+   .dAdminCommentPreview
+   .dAdminModerationDecision
+   .dAdminInfoPanel
+   .dAdminInfoList
    ========================================================= */
 
 
+/* =========================================================
+   LOCAL TOKENS
+   ========================================================= */
+
 .dAdminCommentsView,
 .dAdminCommentDetail {
+  --comments-font-sans:
+    "DM Sans",
+    var(--d-admin-font-sans, var(--sans, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif));
+
+  --comments-font-display:
+    "Prata",
+    var(--d-admin-font-display, var(--serif, Georgia, "Times New Roman", serif));
+
+  --comments-ink: #07110c;
+  --comments-ink-soft: #172014;
+
+  --comments-navy-980: #03041d;
+  --comments-navy-950: #05072a;
+  --comments-navy-925: #06082f;
+  --comments-navy-900: #070b36;
+  --comments-navy-850: #0b103f;
+  --comments-navy-800: #10164d;
+
+  --comments-cream: #f7faef;
+  --comments-cream-2: #eef4df;
+  --comments-ivory: #fffdf4;
+  --comments-white: #ffffff;
+
+  --comments-lime: #d8ee84;
+  --comments-lime-2: #b7d95a;
+  --comments-lime-hot: #e9ff8f;
+
+  --comments-gold: #eadb9e;
+  --comments-mint: #ddf7ca;
+
+  --comments-success: #39764a;
+  --comments-warning: #966a21;
+  --comments-danger: #9f4036;
+  --comments-info: #42677d;
+
+  --comments-text: rgba(7, 17, 12, 0.86);
+  --comments-text-strong: rgba(7, 17, 12, 0.94);
+  --comments-text-soft: rgba(7, 17, 12, 0.62);
+  --comments-text-faint: rgba(7, 17, 12, 0.42);
+  --comments-text-ghost: rgba(7, 17, 12, 0.3);
+
+  --comments-line: rgba(7, 17, 12, 0.1);
+  --comments-line-soft: rgba(7, 17, 12, 0.065);
+  --comments-line-strong: rgba(7, 17, 12, 0.18);
+  --comments-glass-line: rgba(255, 255, 255, 0.58);
+
+  --comments-radius-xs: 10px;
+  --comments-radius-sm: 16px;
+  --comments-radius-md: 24px;
+  --comments-radius-lg: 34px;
+  --comments-radius-xl: 44px;
+
+  --comments-shadow-soft:
+    0 16px 42px rgba(7, 17, 12, 0.07),
+    0 0 0 1px rgba(255, 255, 255, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82);
+
+  --comments-shadow-medium:
+    0 28px 76px rgba(7, 17, 12, 0.12),
+    0 10px 28px rgba(7, 17, 12, 0.07),
+    0 0 0 1px rgba(255, 255, 255, 0.52),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+  --comments-shadow-dark:
+    0 38px 104px rgba(5, 7, 42, 0.32),
+    0 14px 38px rgba(5, 11, 8, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+  --comments-transition: 210ms cubic-bezier(0.16, 1, 0.3, 1);
+
   width: 100%;
   max-width: 1680px;
+  display: grid;
+  gap: clamp(16px, 2vw, 22px);
   margin: 0 auto;
+  font-family: var(--comments-font-sans);
 }
 
+
+/* =========================================================
+   PAGE AMBIENCE
+   ========================================================= */
+
+.dAdminCommentsView::before,
+.dAdminCommentDetail::before {
+  position: fixed;
+  z-index: -2;
+  top: 82px;
+  right: -240px;
+  width: min(790px, 56vw);
+  height: min(790px, 56vw);
+  border-radius: 50%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 42% 42%, rgba(216, 238, 132, 0.16), transparent 52%),
+    radial-gradient(circle, rgba(5, 7, 42, 0.07), transparent 68%);
+  filter: blur(8px);
+  opacity: 0.86;
+  animation: dAdminCommentsAmbient 18s ease-in-out infinite alternate;
+  content: "";
+}
+
+@keyframes dAdminCommentsAmbient {
+  from {
+    opacity: 0.72;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(-34px, 26px, 0) scale(1.08);
+  }
+}
+
+
+/* =========================================================
+   MODERATION HERO
+   ========================================================= */
+
 .dAdminPageIntro--comments {
-  min-height: 224px;
+  min-height: 238px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   align-items: flex-end;
-  padding: clamp(26px, 4vw, 46px);
+  padding: clamp(28px, 4.2vw, 50px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--d-admin-radius-lg, var(--comments-radius-lg));
+  color: var(--comments-ivory);
+  background:
+    radial-gradient(circle at 91% 4%, rgba(216, 238, 132, 0.23), transparent 31%),
+    radial-gradient(circle at 18% 0%, rgba(16, 22, 77, 0.52), transparent 40%),
+    radial-gradient(circle at 65% 120%, rgba(216, 238, 132, 0.1), transparent 38%),
+    radial-gradient(circle at 108% 16%, rgba(255, 255, 255, 0.08), transparent 30%),
+    linear-gradient(135deg, var(--comments-navy-980) 0%, var(--comments-navy-950) 34%, var(--comments-navy-900) 58%, #172014 100%);
+  box-shadow:
+    0 42px 112px rgba(5, 7, 42, 0.3),
+    0 16px 44px rgba(7, 17, 12, 0.15),
+    0 0 80px rgba(216, 238, 132, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(216, 238, 132, 0.035);
+}
+
+.dAdminPageIntro--comments::before {
+  position: absolute;
+  z-index: -2;
+  top: -155px;
+  right: -98px;
+  width: 405px;
+  height: 405px;
+  border: 1px solid rgba(216, 238, 132, 0.16);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 56px rgba(216, 238, 132, 0.032),
+    0 0 0 114px rgba(255, 255, 255, 0.018);
+  content: "";
+  pointer-events: none;
+  animation: dAdminCommentsHeroOrb 14s ease-in-out infinite alternate;
+}
+
+.dAdminPageIntro--comments::after {
+  position: absolute;
+  z-index: -2;
+  right: 128px;
+  bottom: -296px;
+  width: 500px;
+  height: 500px;
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 76px rgba(255, 255, 255, 0.012),
+    0 0 0 146px rgba(216, 238, 132, 0.012);
+  content: "";
+  pointer-events: none;
+  animation: dAdminCommentsHeroOrbSoft 18s ease-in-out infinite alternate;
+}
+
+@keyframes dAdminCommentsHeroOrb {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  to {
+    transform: translate3d(-22px, 26px, 0) scale(1.08);
+  }
+}
+
+@keyframes dAdminCommentsHeroOrbSoft {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  to {
+    transform: translate3d(28px, -18px, 0) scale(1.06);
+  }
+}
+
+.dAdminPageIntro--comments > div {
+  min-width: 0;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 12px;
 }
 
 .dAdminPageIntro--comments .dAdminBackLink {
+  width: fit-content;
   margin-bottom: 5px;
   color: rgba(255, 253, 244, 0.68);
   border-color: rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.07);
+  background:
+    radial-gradient(circle at 18% 10%, rgba(255, 255, 255, 0.12), transparent 30%),
+    rgba(255, 255, 255, 0.07);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 12px 28px rgba(0, 0, 0, 0.12);
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
 }
 
+.dAdminPageIntro--comments .dAdminBackLink:hover {
+  color: #ffffff;
+  border-color: rgba(216, 238, 132, 0.3);
+  background: rgba(216, 238, 132, 0.1);
+}
+
+.dAdminPageIntro--comments .dAdminEyebrow {
+  width: fit-content;
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 13px 0 11px;
+  border: 1px solid rgba(216, 238, 132, 0.2);
+  border-radius: 999px;
+  color: rgba(255, 253, 244, 0.62);
+  background:
+    radial-gradient(circle at 22% 16%, rgba(255, 255, 255, 0.12), transparent 34%),
+    rgba(255, 255, 255, 0.07);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 12px 28px rgba(0, 0, 0, 0.1);
+  font-family: var(--comments-font-sans);
+  font-size: 9px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+.dAdminPageIntro--comments .dAdminEyebrow::before {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--comments-lime);
+  box-shadow:
+    0 0 0 5px rgba(216, 238, 132, 0.1),
+    0 0 20px rgba(216, 238, 132, 0.42);
+  content: "";
+}
+
+.dAdminPageIntro--comments h2 {
+  max-width: 800px;
+  color: #ffffff;
+  font-family: var(--comments-font-display);
+  font-size: clamp(46px, 5.7vw, 78px);
+  font-weight: 400;
+  line-height: 0.91;
+  letter-spacing: -0.054em;
+  text-shadow:
+    0 20px 48px rgba(0, 0, 0, 0.36),
+    0 0 44px rgba(216, 238, 132, 0.055);
+}
+
+.dAdminPageIntro--comments p {
+  max-width: 705px;
+  color: rgba(255, 253, 244, 0.63);
+  font-size: 14px;
+  line-height: 1.74;
+}
+
+
+/* =========================================================
+   HERO STATUS
+   ========================================================= */
+
+.dAdminPageIntro--comments .dAdminPageIntro__status {
+  position: relative;
+  z-index: 2;
+}
+
 .dAdminPageIntro--comments .dAdminPageIntro__status > span {
-  min-height: 54px;
+  min-height: 56px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -38,26 +342,46 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 17px;
   color: rgba(255, 253, 244, 0.78);
-  background: rgba(255, 255, 255, 0.075);
+  background:
+    radial-gradient(circle at 18% 10%, rgba(255, 255, 255, 0.12), transparent 30%),
+    rgba(255, 255, 255, 0.075);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.07),
     0 12px 30px rgba(0, 0, 0, 0.11);
   font-size: 11px;
   font-weight: 850;
+  -webkit-backdrop-filter: blur(18px);
   backdrop-filter: blur(18px);
 }
 
 .dAdminPageIntro--comments .dAdminPageIntro__status > span.is-warning {
   color: #ffedc7;
-  border-color: rgba(234, 188, 101, 0.26);
-  background: rgba(150, 106, 33, 0.18);
+  border-color: rgba(234, 188, 101, 0.28);
+  background:
+    radial-gradient(circle at 18% 10%, rgba(255, 255, 255, 0.12), transparent 30%),
+    rgba(150, 106, 33, 0.18);
+}
+
+.dAdminPageIntro--comments .dAdminPageIntro__status > span.is-warning svg {
+  color: #f2c977;
 }
 
 .dAdminPageIntro--comments .dAdminPageIntro__status > span.is-clear {
   color: #dff7e5;
-  border-color: rgba(104, 170, 120, 0.24);
-  background: rgba(57, 118, 74, 0.18);
+  border-color: rgba(104, 170, 120, 0.25);
+  background:
+    radial-gradient(circle at 18% 10%, rgba(255, 255, 255, 0.12), transparent 30%),
+    rgba(57, 118, 74, 0.18);
 }
+
+.dAdminPageIntro--comments .dAdminPageIntro__status > span.is-clear svg {
+  color: #8bce9b;
+}
+
+
+/* =========================================================
+   MODERATION METRICS
+   ========================================================= */
 
 .dAdminModerationMetrics {
   display: grid;
@@ -65,10 +389,9 @@
   gap: 11px;
 }
 
-.dAdminModerationMetric,
-.dAdminCommentCard {
+.dAdminModerationMetric {
   min-width: 0;
-  min-height: 112px;
+  min-height: 118px;
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -78,17 +401,23 @@
   gap: 13px;
   padding: 16px;
   border: 1px solid rgba(255, 255, 255, 0.58);
-  border-radius: var(--d-admin-radius-md);
+  border-radius: var(--d-admin-radius-md, var(--comments-radius-md));
+  color: var(--comments-text);
   background:
-    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.86), transparent 34%),
-    radial-gradient(circle at 94% 0%, rgba(216, 238, 132, 0.1), transparent 32%),
-    linear-gradient(145deg, rgba(255, 255, 252, 0.9), rgba(238, 244, 224, 0.74));
-  box-shadow: var(--d-admin-shadow-sm);
+    radial-gradient(circle at 14% 0%, rgba(255, 255, 255, 0.88), transparent 34%),
+    radial-gradient(circle at 96% 0%, rgba(216, 238, 132, 0.1), transparent 32%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.9), rgba(238, 244, 224, 0.76));
+  box-shadow: var(--comments-shadow-soft);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
+  backdrop-filter: blur(18px) saturate(1.1);
+  transition:
+    transform var(--comments-transition),
+    border-color var(--comments-transition),
+    background var(--comments-transition),
+    box-shadow var(--comments-transition);
 }
 
-.dAdminModerationMetric::after,
-.dAdminCommentCard::after {
-  content: "";
+.dAdminModerationMetric::after {
   position: absolute;
   z-index: -1;
   top: -70px;
@@ -97,21 +426,32 @@
   height: 155px;
   border-radius: 50%;
   background: rgba(216, 238, 132, 0.075);
+  content: "";
+}
+
+.dAdminModerationMetric:hover {
+  transform: translateY(-3px);
+  border-color: rgba(183, 217, 90, 0.22);
+  background:
+    radial-gradient(circle at 14% 0%, rgba(255, 255, 255, 0.94), transparent 34%),
+    radial-gradient(circle at 96% 0%, rgba(216, 238, 132, 0.14), transparent 32%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.96), rgba(238, 244, 224, 0.82));
+  box-shadow: var(--comments-shadow-medium);
 }
 
 .dAdminModerationMetric__icon {
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   display: grid;
   place-items: center;
   border-radius: 15px;
-  color: #07110c;
+  color: var(--comments-ink);
   background:
     radial-gradient(circle at 30% 16%, rgba(255, 255, 255, 0.78), transparent 30%),
-    linear-gradient(145deg, #e9ff8f, #b7d95a);
+    linear-gradient(145deg, var(--comments-lime-hot), var(--comments-lime-2));
   box-shadow:
     0 14px 30px rgba(183, 217, 90, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.64);
+    inset 0 1px 0 rgba(255, 255, 255, 0.62);
 }
 
 .dAdminModerationMetric__copy {
@@ -124,10 +464,10 @@
 
 .dAdminModerationMetric__copy small {
   grid-column: 1;
-  color: rgba(7, 17, 12, 0.46);
+  color: var(--comments-text-soft);
   font-size: 9px;
-  font-weight: 950;
-  letter-spacing: 0.08em;
+  font-weight: 900;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
@@ -135,9 +475,9 @@
   grid-column: 2;
   grid-row: 1 / span 2;
   align-self: center;
-  color: #07110c;
-  font-family: var(--font-display, var(--serif, Georgia)), Georgia, serif;
-  font-size: 42px;
+  color: var(--comments-ink);
+  font-family: var(--comments-font-display);
+  font-size: 41px;
   font-weight: 400;
   line-height: 0.9;
   letter-spacing: -0.045em;
@@ -145,78 +485,4734 @@
 
 .dAdminModerationMetric__copy > span {
   grid-column: 1;
-  color: rgba(7, 17, 12, 0.62);
-  font-size: 12px;
+  color: var(--comments-text-faint);
+  font-size: 9px;
+  line-height: 1.35;
 }
 
-.dAdminCommentsQueue,
-.dAdminCommentsList {
+.dAdminModerationMetric--warning {
+  border-color: rgba(150, 106, 33, 0.16);
+  background:
+    radial-gradient(circle at 14% 0%, rgba(255, 255, 255, 0.9), transparent 34%),
+    radial-gradient(circle at 96% 0%, rgba(234, 219, 158, 0.28), transparent 32%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.92), rgba(247, 237, 213, 0.78));
+}
+
+.dAdminModerationMetric--warning .dAdminModerationMetric__icon {
+  color: var(--comments-warning);
+  background:
+    radial-gradient(circle at 28% 16%, rgba(255, 255, 255, 0.74), transparent 30%),
+    linear-gradient(145deg, rgba(255, 244, 211, 0.95), rgba(234, 219, 158, 0.62));
+}
+
+.dAdminModerationMetric--success {
+  border-color: rgba(57, 118, 74, 0.14);
+  background:
+    radial-gradient(circle at 14% 0%, rgba(255, 255, 255, 0.9), transparent 34%),
+    radial-gradient(circle at 96% 0%, rgba(221, 247, 202, 0.28), transparent 32%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.92), rgba(228, 242, 231, 0.78));
+}
+
+.dAdminModerationMetric--success .dAdminModerationMetric__icon {
+  color: var(--comments-success);
+  background:
+    radial-gradient(circle at 28% 16%, rgba(255, 255, 255, 0.74), transparent 30%),
+    linear-gradient(145deg, rgba(221, 247, 202, 0.96), rgba(181, 224, 186, 0.7));
+}
+
+
+/* =========================================================
+   MODERATION PANEL
+   ========================================================= */
+
+.dAdminCommentsPanel {
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.dAdminCommentsPanel > .dAdminToolbar {
+  position: sticky;
+  top: calc(var(--d-admin-header-height, 82px) + 14px);
+  z-index: 10;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.86), transparent 34%),
+    radial-gradient(circle at 94% 0%, rgba(216, 238, 132, 0.1), transparent 32%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.9), rgba(238, 244, 224, 0.76));
+  box-shadow:
+    0 14px 38px rgba(7, 17, 12, 0.075),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78);
+  -webkit-backdrop-filter: blur(20px) saturate(1.12);
+  backdrop-filter: blur(20px) saturate(1.12);
+}
+
+
+/* =========================================================
+   COMMENTS QUEUE
+   ========================================================= */
+
+.dAdminCommentsQueue {
   display: grid;
   gap: 10px;
+  padding-top: 14px;
 }
 
-.dAdminCommentRow {
+.dAdminCommentsQueue > .dAdminEmptyState {
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: var(--d-admin-radius-md, var(--comments-radius-md));
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.84), transparent 34%),
+    radial-gradient(circle at 86% 0%, rgba(216, 238, 132, 0.14), transparent 32%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.9), rgba(238, 244, 224, 0.72));
+  box-shadow: var(--comments-shadow-soft);
+}
+
+
+/* =========================================================
+   COMMENT CARD
+   ========================================================= */
+
+.dAdminCommentCard {
+  min-width: 0;
+  min-height: 132px;
   position: relative;
   isolation: isolate;
   overflow: hidden;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 14px;
   align-items: center;
-  width: 100%;
-  min-height: 118px;
-  padding: 16px;
+  gap: 12px;
+  padding: 10px;
   border: 1px solid rgba(255, 255, 255, 0.58);
-  border-radius: 26px;
-  color: var(--d-admin-text);
+  border-radius: var(--d-admin-radius-md, var(--comments-radius-md));
+  color: var(--comments-text);
   background:
-    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.86), transparent 34%),
-    radial-gradient(circle at 94% 0%, rgba(216, 238, 132, 0.1), transparent 32%),
+    radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.86), transparent 36%),
+    radial-gradient(circle at 100% 100%, rgba(216, 238, 132, 0.11), transparent 40%),
     linear-gradient(145deg, rgba(255, 255, 252, 0.92), rgba(238, 244, 224, 0.76));
-  box-shadow: var(--d-admin-shadow-sm);
-  text-align: left;
+  box-shadow:
+    0 16px 42px rgba(7, 17, 12, 0.07),
+    0 0 0 1px rgba(255, 255, 255, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
+  backdrop-filter: blur(18px) saturate(1.1);
   transition:
-    transform var(--d-admin-transition),
-    border-color var(--d-admin-transition),
-    box-shadow var(--d-admin-transition);
+    transform var(--comments-transition),
+    border-color var(--comments-transition),
+    background var(--comments-transition),
+    box-shadow var(--comments-transition),
+    filter var(--comments-transition);
 }
 
-.dAdminCommentRow:hover {
-  transform: translateY(-2px);
-  border-color: rgba(183, 217, 90, 0.24);
-  box-shadow: var(--d-admin-shadow-md);
+.dAdminCommentCard::before {
+  position: absolute;
+  z-index: -2;
+  top: -115px;
+  right: -98px;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: rgba(216, 238, 132, 0);
+  content: "";
+  pointer-events: none;
+  transition:
+    background var(--comments-transition),
+    transform var(--comments-transition);
 }
 
-.dAdminCommentRow strong,
-.dAdminCommentCard strong {
-  color: #07110c;
-  font-family: var(--font-display, var(--serif, Georgia)), Georgia, serif;
-  font-size: 25px;
+.dAdminCommentCard::after {
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(132deg, rgba(255, 255, 255, 0.48), transparent 38%, transparent 72%, rgba(216, 238, 132, 0.09));
+  opacity: 0.72;
+  content: "";
+}
+
+.dAdminCommentCard:hover {
+  z-index: 2;
+  transform: translateY(-4px);
+  border-color: rgba(183, 217, 90, 0.26);
+  filter: saturate(1.035);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.92), transparent 36%),
+    radial-gradient(circle at 100% 100%, rgba(216, 238, 132, 0.16), transparent 40%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.97), rgba(239, 249, 219, 0.82));
+  box-shadow:
+    0 30px 78px rgba(7, 17, 12, 0.13),
+    0 10px 28px rgba(7, 17, 12, 0.07),
+    0 0 0 6px rgba(183, 217, 90, 0.055),
+    0 0 0 1px rgba(255, 255, 255, 0.52),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.dAdminCommentCard:hover::before {
+  background: rgba(216, 238, 132, 0.16);
+  transform: translate3d(-10px, 12px, 0) scale(1.08);
+}
+
+
+/* Pending comment */
+
+.dAdminCommentCard--pending {
+  border-color: rgba(150, 106, 33, 0.2);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(247, 237, 213, 0.35), transparent 34%),
+    radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.88), transparent 36%),
+    linear-gradient(145deg, #ffffff, rgba(255, 250, 237, 0.94));
+}
+
+.dAdminCommentCard--pending::after {
+  position: absolute;
+  top: 9px;
+  bottom: 9px;
+  left: 0;
+  width: 4px;
+  border-radius: 0 4px 4px 0;
+  background: var(--comments-warning);
+  content: "";
+}
+
+
+/* Hidden comment */
+
+.dAdminCommentCard--hidden {
+  opacity: 0.88;
+  filter: saturate(0.9);
+}
+
+
+/* Deleted comment */
+
+.dAdminCommentCard--deleted {
+  opacity: 0.68;
+  border-color: rgba(159, 64, 54, 0.13);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(248, 229, 225, 0.38), transparent 34%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(248, 229, 225, 0.5));
+}
+
+
+/* =========================================================
+   COMMENT CARD MAIN BUTTON
+   ========================================================= */
+
+.dAdminCommentCard__main {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 6px;
+  border: 0;
+  color: var(--comments-text);
+  background: transparent;
+  text-align: left;
+}
+
+.dAdminCommentCard__avatar {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid rgba(7, 17, 12, 0.08);
+  border-radius: 16px;
+  color: var(--comments-ivory);
+  background:
+    radial-gradient(circle at 30% 16%, rgba(255, 255, 255, 0.14), transparent 30%),
+    linear-gradient(145deg, var(--comments-navy-900), var(--comments-navy-950));
+  box-shadow:
+    0 12px 26px rgba(5, 7, 42, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.dAdminCommentCard--pending .dAdminCommentCard__avatar {
+  color: var(--comments-ink);
+  border-color: rgba(150, 106, 33, 0.16);
+  background:
+    radial-gradient(circle at 28% 16%, rgba(255, 255, 255, 0.68), transparent 30%),
+    linear-gradient(145deg, #f1cf8a, #d9a948);
+}
+
+.dAdminCommentCard__content {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.dAdminCommentCard__topline {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.dAdminCommentCard__topline strong {
+  overflow: hidden;
+  color: var(--comments-ink);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: -0.012em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dAdminCommentCard__topline small {
+  flex: 0 0 auto;
+  color: var(--comments-text-faint);
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.dAdminCommentCard__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.dAdminCommentCard__meta .dAdminStatus {
+  min-height: 23px;
+  padding-inline: 7px;
+  font-size: 8px;
+}
+
+.dAdminCommentCard__meta > span:not(.dAdminStatus) {
+  min-width: 0;
+  min-height: 23px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 430px;
+  padding: 0 8px;
+  border: 1px solid rgba(7, 17, 12, 0.08);
+  border-radius: 999px;
+  color: var(--comments-text-soft);
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 255, 255, 0.78), transparent 32%),
+    rgba(255, 255, 255, 0.62);
+  box-shadow:
+    0 7px 16px rgba(7, 17, 12, 0.035),
+    inset 0 1px 0 rgba(255, 255, 255, 0.66);
+  font-size: 8px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.dAdminCommentCard__meta > span:not(.dAdminStatus) svg {
+  flex: 0 0 auto;
+}
+
+.dAdminCommentCard__body {
+  display: -webkit-box;
+  overflow: hidden;
+  max-width: 960px;
+  color: var(--comments-text-soft);
+  font-size: 11px;
+  line-height: 1.55;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.dAdminCommentCard__arrow {
+  color: var(--comments-text-faint);
+  transition:
+    color var(--comments-transition),
+    transform var(--comments-transition);
+}
+
+.dAdminCommentCard:hover .dAdminCommentCard__arrow {
+  color: var(--comments-ink);
+  transform: translateX(4px);
+}
+
+
+/* =========================================================
+   COMMENT ACTIONS
+   ========================================================= */
+
+.dAdminCommentActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.dAdminCommentActions--compact {
+  flex-wrap: nowrap;
+  padding-right: 3px;
+}
+
+.dAdminCommentActions--compact .dAdminActionButton {
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  min-height: 38px;
+  padding: 0;
+  border-radius: 13px;
+}
+
+.dAdminCommentActions--compact .dAdminActionButton span {
+  display: none;
+}
+
+.dAdminCommentActions .dAdminActionButton {
+  position: relative;
+  overflow: hidden;
+}
+
+.dAdminCommentActions .dAdminActionButton::before {
+  position: absolute;
+  top: -130%;
+  bottom: -130%;
+  left: -38%;
+  width: 34%;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), rgba(216, 238, 132, 0.16), transparent);
+  filter: blur(11px);
+  transform: skewX(-18deg);
+  opacity: 0;
+  content: "";
+}
+
+.dAdminCommentActions .dAdminActionButton:hover::before {
+  animation: dAdminCommentButtonSweep 760ms ease forwards;
+}
+
+@keyframes dAdminCommentButtonSweep {
+  from {
+    opacity: 0;
+    transform: translateX(0) skewX(-18deg);
+  }
+
+  35% {
+    opacity: 0.82;
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(420%) skewX(-18deg);
+  }
+}
+
+
+/* =========================================================
+   DETAIL HEADER
+   ========================================================= */
+
+.dAdminCommentDetail > .dAdminDetailHeader {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 178px;
+  align-items: flex-end;
+  padding: 26px 28px;
+  color: var(--comments-ivory);
+  border-color: rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(circle at 92% 0%, rgba(216, 238, 132, 0.22), transparent 31%),
+    radial-gradient(circle at 16% 0%, rgba(16, 22, 77, 0.48), transparent 36%),
+    linear-gradient(135deg, var(--comments-navy-980), var(--comments-navy-900) 56%, #172014);
+  box-shadow:
+    0 30px 78px rgba(5, 7, 42, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.dAdminCommentDetail > .dAdminDetailHeader::after {
+  position: absolute;
+  z-index: -1;
+  top: -150px;
+  right: -94px;
+  width: 370px;
+  height: 370px;
+  border: 1px solid rgba(216, 238, 132, 0.15);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 46px rgba(216, 238, 132, 0.03),
+    0 0 0 92px rgba(255, 255, 255, 0.018);
+  content: "";
+}
+
+.dAdminCommentDetail .dAdminDetailHeader .dAdminBackLink {
+  color: rgba(255, 253, 244, 0.68);
+  border-color: rgba(255, 255, 255, 0.11);
+  background:
+    radial-gradient(circle at 18% 10%, rgba(255, 255, 255, 0.12), transparent 30%),
+    rgba(255, 255, 255, 0.07);
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px);
+}
+
+.dAdminCommentDetail .dAdminDetailHeader .dAdminBackLink:hover {
+  color: #ffffff;
+  border-color: rgba(216, 238, 132, 0.28);
+  background: rgba(216, 238, 132, 0.1);
+}
+
+.dAdminCommentDetail .dAdminDetailHeader .dAdminEyebrow {
+  color: rgba(255, 253, 244, 0.52);
+}
+
+.dAdminCommentDetail .dAdminDetailHeader .dAdminEyebrow::before {
+  background: var(--comments-lime);
+}
+
+.dAdminCommentDetail .dAdminDetailHeader h2 {
+  max-width: 900px;
+  color: #ffffff;
+  font-family: var(--comments-font-display);
+  font-size: clamp(36px, 4.7vw, 60px);
   font-weight: 400;
-  line-height: 1.05;
+  line-height: 0.96;
+  letter-spacing: -0.045em;
+  text-shadow: 0 16px 38px rgba(0, 0, 0, 0.28);
 }
 
-.dAdminCommentRow p,
-.dAdminCommentCard p {
-  color: rgba(7, 17, 12, 0.62);
+.dAdminCommentDetail .dAdminDetailHeader p {
+  color: rgba(255, 253, 244, 0.58);
+}
+
+
+/* =========================================================
+   DETAIL LAYOUT
+   ========================================================= */
+
+.dAdminCommentDetail__layout {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(290px, 350px);
+  align-items: start;
+  gap: 15px;
+}
+
+.dAdminCommentDetail__main,
+.dAdminCommentDetail__aside {
+  min-width: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.dAdminCommentDetail__aside {
+  position: sticky;
+  top: calc(var(--d-admin-header-height, 82px) + 14px);
+}
+
+.dAdminCommentDetail__main > .dAdminPanel,
+.dAdminCommentDetail__aside > .dAdminPanel {
+  overflow: hidden;
+  border-radius: 21px;
+  border-color: rgba(255, 255, 255, 0.58);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.84), transparent 34%),
+    radial-gradient(circle at 94% 0%, rgba(216, 238, 132, 0.1), transparent 32%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.91), rgba(238, 244, 224, 0.76));
+  box-shadow: var(--comments-shadow-soft);
+  -webkit-backdrop-filter: blur(20px) saturate(1.12);
+  backdrop-filter: blur(20px) saturate(1.12);
+}
+
+
+/* =========================================================
+   COMMENT PREVIEW
+   ========================================================= */
+
+.dAdminCommentPreview {
+  overflow: hidden;
+}
+
+.dAdminCommentPreview__body {
+  min-height: 300px;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-content: center;
+  padding: clamp(32px, 5vw, 66px);
+  background:
+    radial-gradient(circle at 88% 10%, rgba(216, 238, 132, 0.14), transparent 31%),
+    radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.76), transparent 36%),
+    linear-gradient(145deg, rgba(248, 250, 244, 0.98), rgba(238, 243, 228, 0.92));
+}
+
+.dAdminCommentPreview__body::before {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(132deg, rgba(255, 255, 255, 0.38), transparent 38%, rgba(216, 238, 132, 0.08)),
+    linear-gradient(180deg, transparent 65%, rgba(5, 7, 42, 0.045));
+  content: "";
+  pointer-events: none;
+}
+
+.dAdminCommentPreview__body::after {
+  position: absolute;
+  z-index: -1;
+  right: -100px;
+  bottom: -125px;
+  width: 270px;
+  height: 270px;
+  border: 1px solid rgba(17, 21, 15, 0.055);
+  border-radius: 50%;
+  content: "";
+}
+
+.dAdminCommentPreview__quote {
+  position: absolute;
+  top: 13px;
+  left: 25px;
+  color: rgba(183, 217, 90, 0.24);
+  font-family: Georgia, serif;
+  font-size: 128px;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.dAdminCommentPreview__body p {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  color: var(--comments-ink);
+  font-family: var(--comments-font-display);
+  font-size: clamp(25px, 3vw, 40px);
+  font-weight: 400;
+  line-height: 1.32;
+  letter-spacing: -0.028em;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.dAdminCommentPreview__footer {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 15px 18px;
+  border-top: 1px solid rgba(7, 17, 12, 0.08);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(216, 238, 132, 0.08), transparent 32%),
+    rgba(255, 255, 252, 0.88);
+}
+
+.dAdminCommentPreview__footer .dAdminCommentCard__avatar {
+  width: 39px;
+  height: 39px;
+  border-radius: 12px;
   font-size: 12px;
-  line-height: 1.6;
 }
 
-@media (max-width: 980px) {
+.dAdminCommentPreview__footer > span:last-child {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.dAdminCommentPreview__footer strong {
+  overflow: hidden;
+  color: var(--comments-text);
+  font-size: 11px;
+  font-weight: 850;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dAdminCommentPreview__footer small {
+  color: var(--comments-text-faint);
+  font-size: 8px;
+}
+
+
+/* =========================================================
+   MODERATION DECISION
+   ========================================================= */
+
+.dAdminModerationDecision {
+  padding-bottom: 16px;
+}
+
+.dAdminModerationDecision > p {
+  max-width: 760px;
+  padding: 17px 18px 14px;
+  color: var(--comments-text-soft);
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.dAdminModerationDecision > .dAdminCommentActions {
+  justify-content: flex-start;
+  padding: 0 18px;
+}
+
+.dAdminModerationDecision .dAdminActionButton {
+  min-height: 43px;
+  padding-inline: 15px;
+  border-radius: 13px;
+}
+
+
+/* =========================================================
+   INFO PANELS
+   ========================================================= */
+
+.dAdminInfoPanel .dAdminPanel__head > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dAdminInfoPanel .dAdminPanel__head small,
+.dAdminCommentDetail__main .dAdminPanel__head small {
+  display: block;
+  margin: 0 0 3px;
+  color: var(--comments-text-faint);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.dAdminInfoPanel .dAdminPanel__head h3,
+.dAdminCommentDetail__main .dAdminPanel__head h3 {
+  color: var(--comments-ink);
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.dAdminInfoList {
+  display: grid;
+  margin: 0;
+  padding: 8px 15px 15px;
+}
+
+.dAdminInfoList > div {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+  padding: 12px 1px;
+  border-bottom: 1px solid rgba(7, 17, 12, 0.08);
+}
+
+.dAdminInfoList > div:last-child {
+  border-bottom: 0;
+}
+
+.dAdminInfoList dt {
+  color: var(--comments-text-faint);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+.dAdminInfoList dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--comments-text);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   LARGE SCREENS
+   ========================================================= */
+
+@media (min-width: 1500px) {
+  .dAdminCommentsQueue {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dAdminCommentCard {
+    min-height: 154px;
+    align-items: stretch;
+  }
+
+  .dAdminCommentCard__main {
+    align-items: start;
+  }
+
+  .dAdminCommentActions--compact {
+    align-content: center;
+  }
+}
+
+
+/* =========================================================
+   LAPTOP
+   ========================================================= */
+
+@media (max-width: 1120px) {
   .dAdminModerationMetrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dAdminCommentDetail__layout {
+    grid-template-columns: minmax(0, 1fr) 290px;
+  }
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .dAdminPageIntro--comments {
+    min-height: 0;
+    display: grid;
+    align-items: start;
+    padding: 26px 22px;
+    border-radius: 24px;
+  }
+
+  .dAdminPageIntro--comments .dAdminPageIntro__status {
+    justify-content: flex-start;
+  }
+
+  .dAdminPageIntro--comments h2 {
+    font-size: clamp(40px, 10vw, 58px);
+  }
+
+  .dAdminCommentDetail__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .dAdminCommentDetail__aside {
+    position: static;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 620px) {
-  .dAdminModerationMetrics,
-  .dAdminCommentRow {
-    grid-template-columns: 1fr;
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+  .dAdminCommentsView,
+  .dAdminCommentDetail {
+    gap: 13px;
   }
 
   .dAdminPageIntro--comments {
+    padding: 22px 17px;
+    border-radius: 22px;
+  }
+
+  .dAdminPageIntro--comments::before {
+    width: 290px;
+    height: 290px;
+    top: -150px;
+    right: -130px;
+  }
+
+  .dAdminPageIntro--comments::after {
+    display: none;
+  }
+
+  .dAdminPageIntro--comments h2 {
+    max-width: 360px;
+    font-size: 42px;
+    line-height: 0.94;
+  }
+
+  .dAdminPageIntro--comments p {
+    font-size: 12px;
+    line-height: 1.62;
+  }
+
+  .dAdminPageIntro--comments .dAdminPageIntro__status {
+    width: 100%;
+  }
+
+  .dAdminPageIntro--comments .dAdminPageIntro__status > span {
+    width: 100%;
+    min-height: 49px;
+    border-radius: 14px;
+  }
+
+  .dAdminModerationMetrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .dAdminModerationMetric {
+    min-height: 95px;
+    gap: 9px;
+    padding: 12px;
+    border-radius: 15px;
+  }
+
+  .dAdminModerationMetric__icon {
+    width: 37px;
+    height: 37px;
+    border-radius: 11px;
+  }
+
+  .dAdminModerationMetric__copy {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .dAdminModerationMetric__copy small,
+  .dAdminModerationMetric__copy strong,
+  .dAdminModerationMetric__copy > span {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .dAdminModerationMetric__copy strong {
+    font-size: 28px;
+  }
+
+  .dAdminModerationMetric__copy > span {
+    display: none;
+  }
+
+  .dAdminCommentsPanel > .dAdminToolbar {
+    position: static;
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 8px;
+    border-radius: 18px;
+  }
+
+  .dAdminCommentsQueue {
+    gap: 8px;
+    padding-top: 10px;
+  }
+
+  .dAdminCommentCard {
+    grid-template-columns: 1fr;
+    gap: 8px;
     min-height: 0;
-    padding: 22px 18px;
+    padding: 10px;
+    border-radius: 17px;
+  }
+
+  .dAdminCommentCard__main {
+    grid-template-columns: 42px minmax(0, 1fr);
+    align-items: start;
+    gap: 11px;
+    padding: 3px;
+  }
+
+  .dAdminCommentCard__avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+    font-size: 13px;
+  }
+
+  .dAdminCommentCard__arrow {
+    display: none;
+  }
+
+  .dAdminCommentCard__topline {
+    align-items: flex-start;
+  }
+
+  .dAdminCommentCard__topline strong {
+    font-size: 12px;
+  }
+
+  .dAdminCommentCard__topline small {
+    font-size: 8px;
+  }
+
+  .dAdminCommentCard__meta > span:not(.dAdminStatus) {
+    max-width: 100%;
+  }
+
+  .dAdminCommentCard__body {
+    font-size: 10px;
+  }
+
+  .dAdminCommentActions--compact {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 8px 0 0 53px;
+    border-top: 1px solid rgba(7, 17, 12, 0.08);
+  }
+
+  .dAdminCommentActions--compact .dAdminActionButton {
+    width: 100%;
+    min-width: 0;
+    height: 39px;
+  }
+
+  .dAdminCommentActions--compact .dAdminActionButton span {
+    display: inline;
+    font-size: 9px;
+  }
+
+  .dAdminCommentDetail > .dAdminDetailHeader {
+    min-height: 0;
+    padding: 22px 17px;
+    border-radius: 22px;
+  }
+
+  .dAdminCommentDetail .dAdminDetailHeader h2 {
+    font-size: 34px;
+  }
+
+  .dAdminCommentDetail .dAdminDetailHeader__status {
+    justify-content: flex-start;
+  }
+
+  .dAdminCommentDetail__main,
+  .dAdminCommentDetail__aside {
+    gap: 11px;
+  }
+
+  .dAdminCommentDetail__aside {
+    grid-template-columns: 1fr;
+  }
+
+  .dAdminCommentPreview__body {
+    min-height: 230px;
+    padding: 38px 22px 28px;
+  }
+
+  .dAdminCommentPreview__quote {
+    top: 9px;
+    left: 16px;
+    font-size: 86px;
+  }
+
+  .dAdminCommentPreview__body p {
+    font-size: clamp(22px, 7vw, 30px);
+  }
+
+  .dAdminModerationDecision > .dAdminCommentActions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .dAdminModerationDecision .dAdminActionButton {
+    width: 100%;
+    min-height: 46px;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 440px) {
+  .dAdminPageIntro--comments {
+    padding: 20px 15px;
+  }
+
+  .dAdminPageIntro--comments h2 {
+    font-size: 39px;
+  }
+
+  .dAdminModerationMetrics {
+    gap: 6px;
+  }
+
+  .dAdminModerationMetric {
+    min-height: 86px;
+    padding: 10px;
+  }
+
+  .dAdminModerationMetric__icon {
+    width: 33px;
+    height: 33px;
+  }
+
+  .dAdminModerationMetric__copy small {
+    font-size: 7px;
+  }
+
+  .dAdminModerationMetric__copy strong {
+    font-size: 25px;
+  }
+
+  .dAdminCommentCard {
+    padding: 9px;
+  }
+
+  .dAdminCommentCard__main {
+    grid-template-columns: 38px minmax(0, 1fr);
+    gap: 9px;
+  }
+
+  .dAdminCommentCard__avatar {
+    width: 38px;
+    height: 38px;
+    font-size: 12px;
+  }
+
+  .dAdminCommentCard__meta > span:not(.dAdminStatus) {
+    display: none;
+  }
+
+  .dAdminCommentActions--compact {
+    padding-left: 47px;
+  }
+
+  .dAdminCommentActions--compact .dAdminActionButton {
+    padding-inline: 6px;
+  }
+
+  .dAdminCommentActions--compact .dAdminActionButton span {
+    font-size: 8px;
+  }
+
+  .dAdminCommentDetail .dAdminDetailHeader h2 {
+    font-size: 30px;
+  }
+
+  .dAdminCommentPreview__body {
+    min-height: 210px;
+    padding-inline: 18px;
+  }
+
+  .dAdminCommentPreview__body p {
+    font-size: 22px;
+  }
+}
+
+
+/* =========================================================
+   TOUCH DEVICES
+   ========================================================= */
+
+@media (hover: none) {
+  .dAdminCommentCard:hover,
+  .dAdminActionButton:hover,
+  .dAdminModerationMetric:hover {
+    transform: none;
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .dAdminCommentsView *,
+  .dAdminCommentsView *::before,
+  .dAdminCommentsView *::after,
+  .dAdminCommentDetail *,
+  .dAdminCommentDetail *::before,
+  .dAdminCommentDetail *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* =========================================================
+   MODERATION STATE SYSTEM
+   Safe helper classes for current/future states.
+   ========================================================= */
+
+
+.dAdminCommentCard--pending {
+  border-color: rgba(150,106,33,0.18);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(255,255,255,0.9), transparent 36%),
+    radial-gradient(circle at 100% 100%, rgba(234,219,158,0.38), transparent 40%),
+    linear-gradient(145deg, rgba(255,255,252,0.92), rgba(238,244,224,0.76));
+}
+
+.dAdminCommentCard--pending .dAdminCommentCard__avatar {
+  color: #966a21;
+  background:
+    radial-gradient(circle at 30% 16%, rgba(255,255,255,0.78), transparent 30%),
+    linear-gradient(145deg, rgba(255,244,211,0.96), rgba(234,219,158,0.68));
+}
+
+.dAdminCommentCard--pending:hover {
+  border-color: rgba(150,106,33,0.18);
+  box-shadow:
+    0 30px 78px rgba(7,17,12,0.13),
+    0 0 0 6px rgba(234,219,158,0.38),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+.dAdminModerationMetric--pending {
+  border-color: rgba(150,106,33,0.18);
+  background:
+    radial-gradient(circle at 14% 0%, rgba(255,255,255,0.9), transparent 34%),
+    radial-gradient(circle at 96% 0%, rgba(234,219,158,0.38), transparent 32%),
+    linear-gradient(145deg, rgba(255,255,252,0.92), rgba(238,244,224,0.76));
+}
+
+.dAdminModerationMetric--pending .dAdminModerationMetric__icon {
+  color: #966a21;
+  background:
+    radial-gradient(circle at 28% 16%, rgba(255,255,255,0.74), transparent 30%),
+    linear-gradient(145deg, rgba(255,244,211,0.96), rgba(234,219,158,0.68));
+}
+
+.dAdminCommentPreview--pending .dAdminCommentPreview__body {
+  background:
+    radial-gradient(circle at 88% 10%, rgba(234,219,158,0.38), transparent 31%),
+    radial-gradient(circle at 0% 0%, rgba(255,255,255,0.76), transparent 36%),
+    linear-gradient(145deg, rgba(248,250,244,0.98), rgba(238,243,228,0.92));
+}
+
+
+.dAdminCommentCard--approved {
+  border-color: rgba(57,118,74,0.16);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(255,255,255,0.9), transparent 36%),
+    radial-gradient(circle at 100% 100%, rgba(221,247,202,0.38), transparent 40%),
+    linear-gradient(145deg, rgba(255,255,252,0.92), rgba(238,244,224,0.76));
+}
+
+.dAdminCommentCard--approved .dAdminCommentCard__avatar {
+  color: #39764a;
+  background:
+    radial-gradient(circle at 30% 16%, rgba(255,255,255,0.78), transparent 30%),
+    linear-gradient(145deg, rgba(221,247,202,0.96), rgba(181,224,186,0.7));
+}
+
+.dAdminCommentCard--approved:hover {
+  border-color: rgba(57,118,74,0.16);
+  box-shadow:
+    0 30px 78px rgba(7,17,12,0.13),
+    0 0 0 6px rgba(221,247,202,0.38),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+.dAdminModerationMetric--approved {
+  border-color: rgba(57,118,74,0.16);
+  background:
+    radial-gradient(circle at 14% 0%, rgba(255,255,255,0.9), transparent 34%),
+    radial-gradient(circle at 96% 0%, rgba(221,247,202,0.38), transparent 32%),
+    linear-gradient(145deg, rgba(255,255,252,0.92), rgba(238,244,224,0.76));
+}
+
+.dAdminModerationMetric--approved .dAdminModerationMetric__icon {
+  color: #39764a;
+  background:
+    radial-gradient(circle at 28% 16%, rgba(255,255,255,0.74), transparent 30%),
+    linear-gradient(145deg, rgba(221,247,202,0.96), rgba(181,224,186,0.7));
+}
+
+.dAdminCommentPreview--approved .dAdminCommentPreview__body {
+  background:
+    radial-gradient(circle at 88% 10%, rgba(221,247,202,0.38), transparent 31%),
+    radial-gradient(circle at 0% 0%, rgba(255,255,255,0.76), transparent 36%),
+    linear-gradient(145deg, rgba(248,250,244,0.98), rgba(238,243,228,0.92));
+}
+
+
+.dAdminCommentCard--hidden {
+  border-color: rgba(66,103,125,0.16);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(255,255,255,0.9), transparent 36%),
+    radial-gradient(circle at 100% 100%, rgba(229,237,242,0.42), transparent 40%),
+    linear-gradient(145deg, rgba(255,255,252,0.92), rgba(238,244,224,0.76));
+}
+
+.dAdminCommentCard--hidden .dAdminCommentCard__avatar {
+  color: #42677d;
+  background:
+    radial-gradient(circle at 30% 16%, rgba(255,255,255,0.78), transparent 30%),
+    linear-gradient(145deg, rgba(229,237,242,0.96), rgba(198,214,222,0.76));
+}
+
+.dAdminCommentCard--hidden:hover {
+  border-color: rgba(66,103,125,0.16);
+  box-shadow:
+    0 30px 78px rgba(7,17,12,0.13),
+    0 0 0 6px rgba(229,237,242,0.42),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+.dAdminModerationMetric--hidden {
+  border-color: rgba(66,103,125,0.16);
+  background:
+    radial-gradient(circle at 14% 0%, rgba(255,255,255,0.9), transparent 34%),
+    radial-gradient(circle at 96% 0%, rgba(229,237,242,0.42), transparent 32%),
+    linear-gradient(145deg, rgba(255,255,252,0.92), rgba(238,244,224,0.76));
+}
+
+.dAdminModerationMetric--hidden .dAdminModerationMetric__icon {
+  color: #42677d;
+  background:
+    radial-gradient(circle at 28% 16%, rgba(255,255,255,0.74), transparent 30%),
+    linear-gradient(145deg, rgba(229,237,242,0.96), rgba(198,214,222,0.76));
+}
+
+.dAdminCommentPreview--hidden .dAdminCommentPreview__body {
+  background:
+    radial-gradient(circle at 88% 10%, rgba(229,237,242,0.42), transparent 31%),
+    radial-gradient(circle at 0% 0%, rgba(255,255,255,0.76), transparent 36%),
+    linear-gradient(145deg, rgba(248,250,244,0.98), rgba(238,243,228,0.92));
+}
+
+
+.dAdminCommentCard--deleted {
+  border-color: rgba(159,64,54,0.16);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(255,255,255,0.9), transparent 36%),
+    radial-gradient(circle at 100% 100%, rgba(248,229,225,0.42), transparent 40%),
+    linear-gradient(145deg, rgba(255,255,252,0.92), rgba(238,244,224,0.76));
+}
+
+.dAdminCommentCard--deleted .dAdminCommentCard__avatar {
+  color: #9f4036;
+  background:
+    radial-gradient(circle at 30% 16%, rgba(255,255,255,0.78), transparent 30%),
+    linear-gradient(145deg, rgba(248,229,225,0.96), rgba(229,188,181,0.7));
+}
+
+.dAdminCommentCard--deleted:hover {
+  border-color: rgba(159,64,54,0.16);
+  box-shadow:
+    0 30px 78px rgba(7,17,12,0.13),
+    0 0 0 6px rgba(248,229,225,0.42),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+.dAdminModerationMetric--deleted {
+  border-color: rgba(159,64,54,0.16);
+  background:
+    radial-gradient(circle at 14% 0%, rgba(255,255,255,0.9), transparent 34%),
+    radial-gradient(circle at 96% 0%, rgba(248,229,225,0.42), transparent 32%),
+    linear-gradient(145deg, rgba(255,255,252,0.92), rgba(238,244,224,0.76));
+}
+
+.dAdminModerationMetric--deleted .dAdminModerationMetric__icon {
+  color: #9f4036;
+  background:
+    radial-gradient(circle at 28% 16%, rgba(255,255,255,0.74), transparent 30%),
+    linear-gradient(145deg, rgba(248,229,225,0.96), rgba(229,188,181,0.7));
+}
+
+.dAdminCommentPreview--deleted .dAdminCommentPreview__body {
+  background:
+    radial-gradient(circle at 88% 10%, rgba(248,229,225,0.42), transparent 31%),
+    radial-gradient(circle at 0% 0%, rgba(255,255,255,0.76), transparent 36%),
+    linear-gradient(145deg, rgba(248,250,244,0.98), rgba(238,243,228,0.92));
+}
+
+
+.dAdminCommentCard--flagged {
+  border-color: rgba(159,64,54,0.22);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(255,255,255,0.9), transparent 36%),
+    radial-gradient(circle at 100% 100%, rgba(248,229,225,0.5), transparent 40%),
+    linear-gradient(145deg, rgba(255,255,252,0.92), rgba(238,244,224,0.76));
+}
+
+.dAdminCommentCard--flagged .dAdminCommentCard__avatar {
+  color: #9f4036;
+  background:
+    radial-gradient(circle at 30% 16%, rgba(255,255,255,0.78), transparent 30%),
+    linear-gradient(145deg, rgba(255,241,238,0.96), rgba(196,106,96,0.74));
+}
+
+.dAdminCommentCard--flagged:hover {
+  border-color: rgba(159,64,54,0.22);
+  box-shadow:
+    0 30px 78px rgba(7,17,12,0.13),
+    0 0 0 6px rgba(248,229,225,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+.dAdminModerationMetric--flagged {
+  border-color: rgba(159,64,54,0.22);
+  background:
+    radial-gradient(circle at 14% 0%, rgba(255,255,255,0.9), transparent 34%),
+    radial-gradient(circle at 96% 0%, rgba(248,229,225,0.5), transparent 32%),
+    linear-gradient(145deg, rgba(255,255,252,0.92), rgba(238,244,224,0.76));
+}
+
+.dAdminModerationMetric--flagged .dAdminModerationMetric__icon {
+  color: #9f4036;
+  background:
+    radial-gradient(circle at 28% 16%, rgba(255,255,255,0.74), transparent 30%),
+    linear-gradient(145deg, rgba(255,241,238,0.96), rgba(196,106,96,0.74));
+}
+
+.dAdminCommentPreview--flagged .dAdminCommentPreview__body {
+  background:
+    radial-gradient(circle at 88% 10%, rgba(248,229,225,0.5), transparent 31%),
+    radial-gradient(circle at 0% 0%, rgba(255,255,255,0.76), transparent 36%),
+    linear-gradient(145deg, rgba(248,250,244,0.98), rgba(238,243,228,0.92));
+}
+
+
+.dAdminCommentCard--trusted {
+  border-color: rgba(57,118,74,0.18);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(255,255,255,0.9), transparent 36%),
+    radial-gradient(circle at 100% 100%, rgba(221,247,202,0.42), transparent 40%),
+    linear-gradient(145deg, rgba(255,255,252,0.92), rgba(238,244,224,0.76));
+}
+
+.dAdminCommentCard--trusted .dAdminCommentCard__avatar {
+  color: #39764a;
+  background:
+    radial-gradient(circle at 30% 16%, rgba(255,255,255,0.78), transparent 30%),
+    linear-gradient(145deg, rgba(221,247,202,0.96), rgba(104,170,120,0.74));
+}
+
+.dAdminCommentCard--trusted:hover {
+  border-color: rgba(57,118,74,0.18);
+  box-shadow:
+    0 30px 78px rgba(7,17,12,0.13),
+    0 0 0 6px rgba(221,247,202,0.42),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+.dAdminModerationMetric--trusted {
+  border-color: rgba(57,118,74,0.18);
+  background:
+    radial-gradient(circle at 14% 0%, rgba(255,255,255,0.9), transparent 34%),
+    radial-gradient(circle at 96% 0%, rgba(221,247,202,0.42), transparent 32%),
+    linear-gradient(145deg, rgba(255,255,252,0.92), rgba(238,244,224,0.76));
+}
+
+.dAdminModerationMetric--trusted .dAdminModerationMetric__icon {
+  color: #39764a;
+  background:
+    radial-gradient(circle at 28% 16%, rgba(255,255,255,0.74), transparent 30%),
+    linear-gradient(145deg, rgba(221,247,202,0.96), rgba(104,170,120,0.74));
+}
+
+.dAdminCommentPreview--trusted .dAdminCommentPreview__body {
+  background:
+    radial-gradient(circle at 88% 10%, rgba(221,247,202,0.42), transparent 31%),
+    radial-gradient(circle at 0% 0%, rgba(255,255,255,0.76), transparent 36%),
+    linear-gradient(145deg, rgba(248,250,244,0.98), rgba(238,243,228,0.92));
+}
+
+
+.dAdminCommentCard--neutral {
+  border-color: rgba(7,17,12,0.1);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(255,255,255,0.9), transparent 36%),
+    radial-gradient(circle at 100% 100%, rgba(238,244,224,0.58), transparent 40%),
+    linear-gradient(145deg, rgba(255,255,252,0.92), rgba(238,244,224,0.76));
+}
+
+.dAdminCommentCard--neutral .dAdminCommentCard__avatar {
+  color: #243027;
+  background:
+    radial-gradient(circle at 30% 16%, rgba(255,255,255,0.78), transparent 30%),
+    linear-gradient(145deg, rgba(255,255,252,0.96), rgba(238,244,224,0.75));
+}
+
+.dAdminCommentCard--neutral:hover {
+  border-color: rgba(7,17,12,0.1);
+  box-shadow:
+    0 30px 78px rgba(7,17,12,0.13),
+    0 0 0 6px rgba(238,244,224,0.58),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+.dAdminModerationMetric--neutral {
+  border-color: rgba(7,17,12,0.1);
+  background:
+    radial-gradient(circle at 14% 0%, rgba(255,255,255,0.9), transparent 34%),
+    radial-gradient(circle at 96% 0%, rgba(238,244,224,0.58), transparent 32%),
+    linear-gradient(145deg, rgba(255,255,252,0.92), rgba(238,244,224,0.76));
+}
+
+.dAdminModerationMetric--neutral .dAdminModerationMetric__icon {
+  color: #243027;
+  background:
+    radial-gradient(circle at 28% 16%, rgba(255,255,255,0.74), transparent 30%),
+    linear-gradient(145deg, rgba(255,255,252,0.96), rgba(238,244,224,0.75));
+}
+
+.dAdminCommentPreview--neutral .dAdminCommentPreview__body {
+  background:
+    radial-gradient(circle at 88% 10%, rgba(238,244,224,0.58), transparent 31%),
+    radial-gradient(circle at 0% 0%, rgba(255,255,255,0.76), transparent 36%),
+    linear-gradient(145deg, rgba(248,250,244,0.98), rgba(238,243,228,0.92));
+}
+
+
+.dAdminCommentCard--priority {
+  border-color: rgba(183,217,90,0.22);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(255,255,255,0.9), transparent 36%),
+    radial-gradient(circle at 100% 100%, rgba(216,238,132,0.28), transparent 40%),
+    linear-gradient(145deg, rgba(255,255,252,0.92), rgba(238,244,224,0.76));
+}
+
+.dAdminCommentCard--priority .dAdminCommentCard__avatar {
+  color: #07110c;
+  background:
+    radial-gradient(circle at 30% 16%, rgba(255,255,255,0.78), transparent 30%),
+    linear-gradient(145deg, rgba(233,255,143,0.9), rgba(183,217,90,0.48));
+}
+
+.dAdminCommentCard--priority:hover {
+  border-color: rgba(183,217,90,0.22);
+  box-shadow:
+    0 30px 78px rgba(7,17,12,0.13),
+    0 0 0 6px rgba(216,238,132,0.28),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+.dAdminModerationMetric--priority {
+  border-color: rgba(183,217,90,0.22);
+  background:
+    radial-gradient(circle at 14% 0%, rgba(255,255,255,0.9), transparent 34%),
+    radial-gradient(circle at 96% 0%, rgba(216,238,132,0.28), transparent 32%),
+    linear-gradient(145deg, rgba(255,255,252,0.92), rgba(238,244,224,0.76));
+}
+
+.dAdminModerationMetric--priority .dAdminModerationMetric__icon {
+  color: #07110c;
+  background:
+    radial-gradient(circle at 28% 16%, rgba(255,255,255,0.74), transparent 30%),
+    linear-gradient(145deg, rgba(233,255,143,0.9), rgba(183,217,90,0.48));
+}
+
+.dAdminCommentPreview--priority .dAdminCommentPreview__body {
+  background:
+    radial-gradient(circle at 88% 10%, rgba(216,238,132,0.28), transparent 31%),
+    radial-gradient(circle at 0% 0%, rgba(255,255,255,0.76), transparent 36%),
+    linear-gradient(145deg, rgba(248,250,244,0.98), rgba(238,243,228,0.92));
+}
+
+
+/* =========================================================
+   QUEUE RHYTHM
+   Subtle variation for long moderation queues without JSX changes.
+   ========================================================= */
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(1) {
+  transition-delay: 5ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(1)::before {
+  background:
+    radial-gradient(circle at 13% 17%, rgba(216,238,132,0.051), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(1):hover::before {
+  background:
+    radial-gradient(circle at 13% 17%, rgba(216,238,132,0.121), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(1) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 13px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(1) {
+  transition-delay: 8ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(2) {
+  transition-delay: 10ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(2)::before {
+  background:
+    radial-gradient(circle at 26% 34%, rgba(216,238,132,0.057), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(2):hover::before {
+  background:
+    radial-gradient(circle at 26% 34%, rgba(216,238,132,0.127), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(2) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 14px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(2) {
+  transition-delay: 16ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(3) {
+  transition-delay: 15ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(3)::before {
+  background:
+    radial-gradient(circle at 39% 51%, rgba(216,238,132,0.063), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(3):hover::before {
+  background:
+    radial-gradient(circle at 39% 51%, rgba(216,238,132,0.133), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(3) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 15px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(3) {
+  transition-delay: 24ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(4) {
+  transition-delay: 20ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(4)::before {
+  background:
+    radial-gradient(circle at 52% 68%, rgba(216,238,132,0.069), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(4):hover::before {
+  background:
+    radial-gradient(circle at 52% 68%, rgba(216,238,132,0.139), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(4) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(4) {
+  transition-delay: 32ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(5) {
+  transition-delay: 25ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(5)::before {
+  background:
+    radial-gradient(circle at 65% 85%, rgba(216,238,132,0.075), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(5):hover::before {
+  background:
+    radial-gradient(circle at 65% 85%, rgba(216,238,132,0.145), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(5) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 17px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(5) {
+  transition-delay: 40ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(6) {
+  transition-delay: 30ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(6)::before {
+  background:
+    radial-gradient(circle at 78% 2%, rgba(216,238,132,0.081), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(6):hover::before {
+  background:
+    radial-gradient(circle at 78% 2%, rgba(216,238,132,0.151), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(6) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(6) {
+  transition-delay: 48ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(7) {
+  transition-delay: 35ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(7)::before {
+  background:
+    radial-gradient(circle at 91% 19%, rgba(216,238,132,0.087), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(7):hover::before {
+  background:
+    radial-gradient(circle at 91% 19%, rgba(216,238,132,0.157), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(7) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 19px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(7) {
+  transition-delay: 56ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(8) {
+  transition-delay: 40ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(8)::before {
+  background:
+    radial-gradient(circle at 4% 36%, rgba(216,238,132,0.093), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(8):hover::before {
+  background:
+    radial-gradient(circle at 4% 36%, rgba(216,238,132,0.163), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(8) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 12px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(8) {
+  transition-delay: 64ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(9) {
+  transition-delay: 45ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(9)::before {
+  background:
+    radial-gradient(circle at 17% 53%, rgba(216,238,132,0.045), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(9):hover::before {
+  background:
+    radial-gradient(circle at 17% 53%, rgba(216,238,132,0.115), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(9) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 13px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(9) {
+  transition-delay: 72ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(10) {
+  transition-delay: 50ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(10)::before {
+  background:
+    radial-gradient(circle at 30% 70%, rgba(216,238,132,0.051), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(10):hover::before {
+  background:
+    radial-gradient(circle at 30% 70%, rgba(216,238,132,0.121), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(10) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 14px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(10) {
+  transition-delay: 80ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(11) {
+  transition-delay: 55ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(11)::before {
+  background:
+    radial-gradient(circle at 43% 87%, rgba(216,238,132,0.057), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(11):hover::before {
+  background:
+    radial-gradient(circle at 43% 87%, rgba(216,238,132,0.127), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(11) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 15px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(11) {
+  transition-delay: 88ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(12) {
+  transition-delay: 60ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(12)::before {
+  background:
+    radial-gradient(circle at 56% 4%, rgba(216,238,132,0.063), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(12):hover::before {
+  background:
+    radial-gradient(circle at 56% 4%, rgba(216,238,132,0.133), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(12) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(12) {
+  transition-delay: 96ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(13) {
+  transition-delay: 65ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(13)::before {
+  background:
+    radial-gradient(circle at 69% 21%, rgba(216,238,132,0.069), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(13):hover::before {
+  background:
+    radial-gradient(circle at 69% 21%, rgba(216,238,132,0.139), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(13) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 17px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(13) {
+  transition-delay: 104ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(14) {
+  transition-delay: 70ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(14)::before {
+  background:
+    radial-gradient(circle at 82% 38%, rgba(216,238,132,0.075), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(14):hover::before {
+  background:
+    radial-gradient(circle at 82% 38%, rgba(216,238,132,0.145), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(14) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(14) {
+  transition-delay: 112ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(15) {
+  transition-delay: 75ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(15)::before {
+  background:
+    radial-gradient(circle at 95% 55%, rgba(216,238,132,0.081), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(15):hover::before {
+  background:
+    radial-gradient(circle at 95% 55%, rgba(216,238,132,0.151), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(15) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 19px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(15) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(16) {
+  transition-delay: 80ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(16)::before {
+  background:
+    radial-gradient(circle at 8% 72%, rgba(216,238,132,0.087), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(16):hover::before {
+  background:
+    radial-gradient(circle at 8% 72%, rgba(216,238,132,0.157), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(16) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 12px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(16) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(17) {
+  transition-delay: 85ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(17)::before {
+  background:
+    radial-gradient(circle at 21% 89%, rgba(216,238,132,0.093), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(17):hover::before {
+  background:
+    radial-gradient(circle at 21% 89%, rgba(216,238,132,0.163), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(17) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 13px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(17) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(18) {
+  transition-delay: 90ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(18)::before {
+  background:
+    radial-gradient(circle at 34% 6%, rgba(216,238,132,0.045), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(18):hover::before {
+  background:
+    radial-gradient(circle at 34% 6%, rgba(216,238,132,0.115), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(18) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 14px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(18) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(19) {
+  transition-delay: 95ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(19)::before {
+  background:
+    radial-gradient(circle at 47% 23%, rgba(216,238,132,0.051), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(19):hover::before {
+  background:
+    radial-gradient(circle at 47% 23%, rgba(216,238,132,0.121), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(19) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 15px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(19) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(20) {
+  transition-delay: 100ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(20)::before {
+  background:
+    radial-gradient(circle at 60% 40%, rgba(216,238,132,0.057), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(20):hover::before {
+  background:
+    radial-gradient(circle at 60% 40%, rgba(216,238,132,0.127), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(20) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(20) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(21) {
+  transition-delay: 105ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(21)::before {
+  background:
+    radial-gradient(circle at 73% 57%, rgba(216,238,132,0.063), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(21):hover::before {
+  background:
+    radial-gradient(circle at 73% 57%, rgba(216,238,132,0.133), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(21) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 17px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(21) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(22) {
+  transition-delay: 110ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(22)::before {
+  background:
+    radial-gradient(circle at 86% 74%, rgba(216,238,132,0.069), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(22):hover::before {
+  background:
+    radial-gradient(circle at 86% 74%, rgba(216,238,132,0.139), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(22) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(22) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(23) {
+  transition-delay: 115ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(23)::before {
+  background:
+    radial-gradient(circle at 99% 91%, rgba(216,238,132,0.075), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(23):hover::before {
+  background:
+    radial-gradient(circle at 99% 91%, rgba(216,238,132,0.145), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(23) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 19px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(23) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(24) {
+  transition-delay: 120ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(24)::before {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(216,238,132,0.081), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(24):hover::before {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(216,238,132,0.151), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(24) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 12px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(24) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(25) {
+  transition-delay: 125ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(25)::before {
+  background:
+    radial-gradient(circle at 25% 25%, rgba(216,238,132,0.087), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(25):hover::before {
+  background:
+    radial-gradient(circle at 25% 25%, rgba(216,238,132,0.157), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(25) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 13px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(25) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(26) {
+  transition-delay: 130ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(26)::before {
+  background:
+    radial-gradient(circle at 38% 42%, rgba(216,238,132,0.093), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(26):hover::before {
+  background:
+    radial-gradient(circle at 38% 42%, rgba(216,238,132,0.163), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(26) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 14px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(26) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(27) {
+  transition-delay: 135ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(27)::before {
+  background:
+    radial-gradient(circle at 51% 59%, rgba(216,238,132,0.045), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(27):hover::before {
+  background:
+    radial-gradient(circle at 51% 59%, rgba(216,238,132,0.115), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(27) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 15px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(27) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(28) {
+  transition-delay: 140ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(28)::before {
+  background:
+    radial-gradient(circle at 64% 76%, rgba(216,238,132,0.051), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(28):hover::before {
+  background:
+    radial-gradient(circle at 64% 76%, rgba(216,238,132,0.121), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(28) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(28) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(29) {
+  transition-delay: 145ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(29)::before {
+  background:
+    radial-gradient(circle at 77% 93%, rgba(216,238,132,0.057), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(29):hover::before {
+  background:
+    radial-gradient(circle at 77% 93%, rgba(216,238,132,0.127), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(29) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 17px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(29) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(30) {
+  transition-delay: 150ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(30)::before {
+  background:
+    radial-gradient(circle at 90% 10%, rgba(216,238,132,0.063), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(30):hover::before {
+  background:
+    radial-gradient(circle at 90% 10%, rgba(216,238,132,0.133), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(30) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(30) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(31) {
+  transition-delay: 155ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(31)::before {
+  background:
+    radial-gradient(circle at 3% 27%, rgba(216,238,132,0.069), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(31):hover::before {
+  background:
+    radial-gradient(circle at 3% 27%, rgba(216,238,132,0.139), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(31) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 19px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(31) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(32) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(32)::before {
+  background:
+    radial-gradient(circle at 16% 44%, rgba(216,238,132,0.075), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(32):hover::before {
+  background:
+    radial-gradient(circle at 16% 44%, rgba(216,238,132,0.145), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(32) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 12px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(32) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(33) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(33)::before {
+  background:
+    radial-gradient(circle at 29% 61%, rgba(216,238,132,0.081), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(33):hover::before {
+  background:
+    radial-gradient(circle at 29% 61%, rgba(216,238,132,0.151), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(33) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 13px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(33) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(34) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(34)::before {
+  background:
+    radial-gradient(circle at 42% 78%, rgba(216,238,132,0.087), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(34):hover::before {
+  background:
+    radial-gradient(circle at 42% 78%, rgba(216,238,132,0.157), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(34) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 14px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(34) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(35) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(35)::before {
+  background:
+    radial-gradient(circle at 55% 95%, rgba(216,238,132,0.093), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(35):hover::before {
+  background:
+    radial-gradient(circle at 55% 95%, rgba(216,238,132,0.163), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(35) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 15px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(35) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(36) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(36)::before {
+  background:
+    radial-gradient(circle at 68% 12%, rgba(216,238,132,0.045), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(36):hover::before {
+  background:
+    radial-gradient(circle at 68% 12%, rgba(216,238,132,0.115), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(36) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(36) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(37) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(37)::before {
+  background:
+    radial-gradient(circle at 81% 29%, rgba(216,238,132,0.051), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(37):hover::before {
+  background:
+    radial-gradient(circle at 81% 29%, rgba(216,238,132,0.121), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(37) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 17px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(37) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(38) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(38)::before {
+  background:
+    radial-gradient(circle at 94% 46%, rgba(216,238,132,0.057), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(38):hover::before {
+  background:
+    radial-gradient(circle at 94% 46%, rgba(216,238,132,0.127), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(38) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(38) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(39) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(39)::before {
+  background:
+    radial-gradient(circle at 7% 63%, rgba(216,238,132,0.063), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(39):hover::before {
+  background:
+    radial-gradient(circle at 7% 63%, rgba(216,238,132,0.133), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(39) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 19px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(39) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(40) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(40)::before {
+  background:
+    radial-gradient(circle at 20% 80%, rgba(216,238,132,0.069), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(40):hover::before {
+  background:
+    radial-gradient(circle at 20% 80%, rgba(216,238,132,0.139), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(40) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 12px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(40) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(41) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(41)::before {
+  background:
+    radial-gradient(circle at 33% 97%, rgba(216,238,132,0.075), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(41):hover::before {
+  background:
+    radial-gradient(circle at 33% 97%, rgba(216,238,132,0.145), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(41) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 13px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(41) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(42) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(42)::before {
+  background:
+    radial-gradient(circle at 46% 14%, rgba(216,238,132,0.081), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(42):hover::before {
+  background:
+    radial-gradient(circle at 46% 14%, rgba(216,238,132,0.151), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(42) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 14px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(42) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(43) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(43)::before {
+  background:
+    radial-gradient(circle at 59% 31%, rgba(216,238,132,0.087), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(43):hover::before {
+  background:
+    radial-gradient(circle at 59% 31%, rgba(216,238,132,0.157), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(43) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 15px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(43) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(44) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(44)::before {
+  background:
+    radial-gradient(circle at 72% 48%, rgba(216,238,132,0.093), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(44):hover::before {
+  background:
+    radial-gradient(circle at 72% 48%, rgba(216,238,132,0.163), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(44) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(44) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(45) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(45)::before {
+  background:
+    radial-gradient(circle at 85% 65%, rgba(216,238,132,0.045), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(45):hover::before {
+  background:
+    radial-gradient(circle at 85% 65%, rgba(216,238,132,0.115), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(45) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 17px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(45) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(46) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(46)::before {
+  background:
+    radial-gradient(circle at 98% 82%, rgba(216,238,132,0.051), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(46):hover::before {
+  background:
+    radial-gradient(circle at 98% 82%, rgba(216,238,132,0.121), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(46) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(46) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(47) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(47)::before {
+  background:
+    radial-gradient(circle at 11% 99%, rgba(216,238,132,0.057), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(47):hover::before {
+  background:
+    radial-gradient(circle at 11% 99%, rgba(216,238,132,0.127), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(47) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 19px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(47) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(48) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(48)::before {
+  background:
+    radial-gradient(circle at 24% 16%, rgba(216,238,132,0.063), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(48):hover::before {
+  background:
+    radial-gradient(circle at 24% 16%, rgba(216,238,132,0.133), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(48) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 12px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(48) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(49) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(49)::before {
+  background:
+    radial-gradient(circle at 37% 33%, rgba(216,238,132,0.069), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(49):hover::before {
+  background:
+    radial-gradient(circle at 37% 33%, rgba(216,238,132,0.139), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(49) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 13px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(49) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(50) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(50)::before {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(216,238,132,0.075), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(50):hover::before {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(216,238,132,0.145), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(50) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 14px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(50) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(51) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(51)::before {
+  background:
+    radial-gradient(circle at 63% 67%, rgba(216,238,132,0.081), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(51):hover::before {
+  background:
+    radial-gradient(circle at 63% 67%, rgba(216,238,132,0.151), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(51) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 15px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(51) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(52) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(52)::before {
+  background:
+    radial-gradient(circle at 76% 84%, rgba(216,238,132,0.087), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(52):hover::before {
+  background:
+    radial-gradient(circle at 76% 84%, rgba(216,238,132,0.157), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(52) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(52) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(53) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(53)::before {
+  background:
+    radial-gradient(circle at 89% 1%, rgba(216,238,132,0.093), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(53):hover::before {
+  background:
+    radial-gradient(circle at 89% 1%, rgba(216,238,132,0.163), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(53) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 17px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(53) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(54) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(54)::before {
+  background:
+    radial-gradient(circle at 2% 18%, rgba(216,238,132,0.045), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(54):hover::before {
+  background:
+    radial-gradient(circle at 2% 18%, rgba(216,238,132,0.115), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(54) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(54) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(55) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(55)::before {
+  background:
+    radial-gradient(circle at 15% 35%, rgba(216,238,132,0.051), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(55):hover::before {
+  background:
+    radial-gradient(circle at 15% 35%, rgba(216,238,132,0.121), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(55) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 19px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(55) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(56) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(56)::before {
+  background:
+    radial-gradient(circle at 28% 52%, rgba(216,238,132,0.057), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(56):hover::before {
+  background:
+    radial-gradient(circle at 28% 52%, rgba(216,238,132,0.127), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(56) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 12px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(56) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(57) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(57)::before {
+  background:
+    radial-gradient(circle at 41% 69%, rgba(216,238,132,0.063), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(57):hover::before {
+  background:
+    radial-gradient(circle at 41% 69%, rgba(216,238,132,0.133), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(57) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 13px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(57) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(58) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(58)::before {
+  background:
+    radial-gradient(circle at 54% 86%, rgba(216,238,132,0.069), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(58):hover::before {
+  background:
+    radial-gradient(circle at 54% 86%, rgba(216,238,132,0.139), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(58) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 14px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(58) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(59) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(59)::before {
+  background:
+    radial-gradient(circle at 67% 3%, rgba(216,238,132,0.075), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(59):hover::before {
+  background:
+    radial-gradient(circle at 67% 3%, rgba(216,238,132,0.145), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(59) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 15px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(59) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(60) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(60)::before {
+  background:
+    radial-gradient(circle at 80% 20%, rgba(216,238,132,0.081), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(60):hover::before {
+  background:
+    radial-gradient(circle at 80% 20%, rgba(216,238,132,0.151), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(60) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(60) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(61) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(61)::before {
+  background:
+    radial-gradient(circle at 93% 37%, rgba(216,238,132,0.087), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(61):hover::before {
+  background:
+    radial-gradient(circle at 93% 37%, rgba(216,238,132,0.157), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(61) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 17px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(61) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(62) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(62)::before {
+  background:
+    radial-gradient(circle at 6% 54%, rgba(216,238,132,0.093), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(62):hover::before {
+  background:
+    radial-gradient(circle at 6% 54%, rgba(216,238,132,0.163), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(62) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(62) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(63) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(63)::before {
+  background:
+    radial-gradient(circle at 19% 71%, rgba(216,238,132,0.045), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(63):hover::before {
+  background:
+    radial-gradient(circle at 19% 71%, rgba(216,238,132,0.115), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(63) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 19px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(63) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(64) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(64)::before {
+  background:
+    radial-gradient(circle at 32% 88%, rgba(216,238,132,0.051), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(64):hover::before {
+  background:
+    radial-gradient(circle at 32% 88%, rgba(216,238,132,0.121), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(64) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 12px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(64) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(65) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(65)::before {
+  background:
+    radial-gradient(circle at 45% 5%, rgba(216,238,132,0.057), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(65):hover::before {
+  background:
+    radial-gradient(circle at 45% 5%, rgba(216,238,132,0.127), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(65) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 13px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(65) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(66) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(66)::before {
+  background:
+    radial-gradient(circle at 58% 22%, rgba(216,238,132,0.063), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(66):hover::before {
+  background:
+    radial-gradient(circle at 58% 22%, rgba(216,238,132,0.133), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(66) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 14px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(66) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(67) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(67)::before {
+  background:
+    radial-gradient(circle at 71% 39%, rgba(216,238,132,0.069), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(67):hover::before {
+  background:
+    radial-gradient(circle at 71% 39%, rgba(216,238,132,0.139), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(67) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 15px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(67) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(68) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(68)::before {
+  background:
+    radial-gradient(circle at 84% 56%, rgba(216,238,132,0.075), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(68):hover::before {
+  background:
+    radial-gradient(circle at 84% 56%, rgba(216,238,132,0.145), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(68) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(68) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(69) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(69)::before {
+  background:
+    radial-gradient(circle at 97% 73%, rgba(216,238,132,0.081), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(69):hover::before {
+  background:
+    radial-gradient(circle at 97% 73%, rgba(216,238,132,0.151), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(69) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 17px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(69) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(70) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(70)::before {
+  background:
+    radial-gradient(circle at 10% 90%, rgba(216,238,132,0.087), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(70):hover::before {
+  background:
+    radial-gradient(circle at 10% 90%, rgba(216,238,132,0.157), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(70) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(70) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(71) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(71)::before {
+  background:
+    radial-gradient(circle at 23% 7%, rgba(216,238,132,0.093), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(71):hover::before {
+  background:
+    radial-gradient(circle at 23% 7%, rgba(216,238,132,0.163), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(71) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 19px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(71) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(72) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(72)::before {
+  background:
+    radial-gradient(circle at 36% 24%, rgba(216,238,132,0.045), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(72):hover::before {
+  background:
+    radial-gradient(circle at 36% 24%, rgba(216,238,132,0.115), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(72) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 12px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(72) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(73) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(73)::before {
+  background:
+    radial-gradient(circle at 49% 41%, rgba(216,238,132,0.051), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(73):hover::before {
+  background:
+    radial-gradient(circle at 49% 41%, rgba(216,238,132,0.121), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(73) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 13px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(73) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(74) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(74)::before {
+  background:
+    radial-gradient(circle at 62% 58%, rgba(216,238,132,0.057), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(74):hover::before {
+  background:
+    radial-gradient(circle at 62% 58%, rgba(216,238,132,0.127), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(74) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 14px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(74) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(75) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(75)::before {
+  background:
+    radial-gradient(circle at 75% 75%, rgba(216,238,132,0.063), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(75):hover::before {
+  background:
+    radial-gradient(circle at 75% 75%, rgba(216,238,132,0.133), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(75) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 15px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(75) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(76) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(76)::before {
+  background:
+    radial-gradient(circle at 88% 92%, rgba(216,238,132,0.069), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(76):hover::before {
+  background:
+    radial-gradient(circle at 88% 92%, rgba(216,238,132,0.139), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(76) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(76) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(77) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(77)::before {
+  background:
+    radial-gradient(circle at 1% 9%, rgba(216,238,132,0.075), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(77):hover::before {
+  background:
+    radial-gradient(circle at 1% 9%, rgba(216,238,132,0.145), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(77) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 17px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(77) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(78) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(78)::before {
+  background:
+    radial-gradient(circle at 14% 26%, rgba(216,238,132,0.081), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(78):hover::before {
+  background:
+    radial-gradient(circle at 14% 26%, rgba(216,238,132,0.151), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(78) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(78) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(79) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(79)::before {
+  background:
+    radial-gradient(circle at 27% 43%, rgba(216,238,132,0.087), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(79):hover::before {
+  background:
+    radial-gradient(circle at 27% 43%, rgba(216,238,132,0.157), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(79) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 19px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(79) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(80) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(80)::before {
+  background:
+    radial-gradient(circle at 40% 60%, rgba(216,238,132,0.093), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(80):hover::before {
+  background:
+    radial-gradient(circle at 40% 60%, rgba(216,238,132,0.163), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(80) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 12px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(80) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(81) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(81)::before {
+  background:
+    radial-gradient(circle at 53% 77%, rgba(216,238,132,0.045), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(81):hover::before {
+  background:
+    radial-gradient(circle at 53% 77%, rgba(216,238,132,0.115), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(81) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 13px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(81) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(82) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(82)::before {
+  background:
+    radial-gradient(circle at 66% 94%, rgba(216,238,132,0.051), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(82):hover::before {
+  background:
+    radial-gradient(circle at 66% 94%, rgba(216,238,132,0.121), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(82) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 14px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(82) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(83) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(83)::before {
+  background:
+    radial-gradient(circle at 79% 11%, rgba(216,238,132,0.057), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(83):hover::before {
+  background:
+    radial-gradient(circle at 79% 11%, rgba(216,238,132,0.127), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(83) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 15px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(83) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(84) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(84)::before {
+  background:
+    radial-gradient(circle at 92% 28%, rgba(216,238,132,0.063), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(84):hover::before {
+  background:
+    radial-gradient(circle at 92% 28%, rgba(216,238,132,0.133), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(84) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(84) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(85) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(85)::before {
+  background:
+    radial-gradient(circle at 5% 45%, rgba(216,238,132,0.069), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(85):hover::before {
+  background:
+    radial-gradient(circle at 5% 45%, rgba(216,238,132,0.139), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(85) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 17px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(85) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(86) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(86)::before {
+  background:
+    radial-gradient(circle at 18% 62%, rgba(216,238,132,0.075), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(86):hover::before {
+  background:
+    radial-gradient(circle at 18% 62%, rgba(216,238,132,0.145), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(86) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(86) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(87) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(87)::before {
+  background:
+    radial-gradient(circle at 31% 79%, rgba(216,238,132,0.081), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(87):hover::before {
+  background:
+    radial-gradient(circle at 31% 79%, rgba(216,238,132,0.151), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(87) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 19px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(87) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(88) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(88)::before {
+  background:
+    radial-gradient(circle at 44% 96%, rgba(216,238,132,0.087), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(88):hover::before {
+  background:
+    radial-gradient(circle at 44% 96%, rgba(216,238,132,0.157), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(88) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 12px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(88) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(89) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(89)::before {
+  background:
+    radial-gradient(circle at 57% 13%, rgba(216,238,132,0.093), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(89):hover::before {
+  background:
+    radial-gradient(circle at 57% 13%, rgba(216,238,132,0.163), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(89) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 13px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(89) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(90) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(90)::before {
+  background:
+    radial-gradient(circle at 70% 30%, rgba(216,238,132,0.045), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(90):hover::before {
+  background:
+    radial-gradient(circle at 70% 30%, rgba(216,238,132,0.115), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(90) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 14px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(90) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(91) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(91)::before {
+  background:
+    radial-gradient(circle at 83% 47%, rgba(216,238,132,0.051), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(91):hover::before {
+  background:
+    radial-gradient(circle at 83% 47%, rgba(216,238,132,0.121), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(91) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 15px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(91) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(92) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(92)::before {
+  background:
+    radial-gradient(circle at 96% 64%, rgba(216,238,132,0.057), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(92):hover::before {
+  background:
+    radial-gradient(circle at 96% 64%, rgba(216,238,132,0.127), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(92) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(92) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(93) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(93)::before {
+  background:
+    radial-gradient(circle at 9% 81%, rgba(216,238,132,0.063), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(93):hover::before {
+  background:
+    radial-gradient(circle at 9% 81%, rgba(216,238,132,0.133), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(93) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 17px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(93) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(94) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(94)::before {
+  background:
+    radial-gradient(circle at 22% 98%, rgba(216,238,132,0.069), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(94):hover::before {
+  background:
+    radial-gradient(circle at 22% 98%, rgba(216,238,132,0.139), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(94) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(94) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(95) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(95)::before {
+  background:
+    radial-gradient(circle at 35% 15%, rgba(216,238,132,0.075), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(95):hover::before {
+  background:
+    radial-gradient(circle at 35% 15%, rgba(216,238,132,0.145), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(95) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 19px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(95) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(96) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(96)::before {
+  background:
+    radial-gradient(circle at 48% 32%, rgba(216,238,132,0.081), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(96):hover::before {
+  background:
+    radial-gradient(circle at 48% 32%, rgba(216,238,132,0.151), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(96) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 12px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(96) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(97) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(97)::before {
+  background:
+    radial-gradient(circle at 61% 49%, rgba(216,238,132,0.087), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(97):hover::before {
+  background:
+    radial-gradient(circle at 61% 49%, rgba(216,238,132,0.157), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(97) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 13px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(97) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(98) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(98)::before {
+  background:
+    radial-gradient(circle at 74% 66%, rgba(216,238,132,0.093), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(98):hover::before {
+  background:
+    radial-gradient(circle at 74% 66%, rgba(216,238,132,0.163), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(98) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 14px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(98) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(99) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(99)::before {
+  background:
+    radial-gradient(circle at 87% 83%, rgba(216,238,132,0.045), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(99):hover::before {
+  background:
+    radial-gradient(circle at 87% 83%, rgba(216,238,132,0.115), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(99) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 15px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(99) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(100) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(100)::before {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(216,238,132,0.051), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(100):hover::before {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(216,238,132,0.121), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(100) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(100) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(101) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(101)::before {
+  background:
+    radial-gradient(circle at 13% 17%, rgba(216,238,132,0.057), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(101):hover::before {
+  background:
+    radial-gradient(circle at 13% 17%, rgba(216,238,132,0.127), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(101) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 17px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(101) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(102) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(102)::before {
+  background:
+    radial-gradient(circle at 26% 34%, rgba(216,238,132,0.063), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(102):hover::before {
+  background:
+    radial-gradient(circle at 26% 34%, rgba(216,238,132,0.133), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(102) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(102) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(103) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(103)::before {
+  background:
+    radial-gradient(circle at 39% 51%, rgba(216,238,132,0.069), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(103):hover::before {
+  background:
+    radial-gradient(circle at 39% 51%, rgba(216,238,132,0.139), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(103) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 19px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(103) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(104) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(104)::before {
+  background:
+    radial-gradient(circle at 52% 68%, rgba(216,238,132,0.075), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(104):hover::before {
+  background:
+    radial-gradient(circle at 52% 68%, rgba(216,238,132,0.145), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(104) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 12px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(104) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(105) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(105)::before {
+  background:
+    radial-gradient(circle at 65% 85%, rgba(216,238,132,0.081), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(105):hover::before {
+  background:
+    radial-gradient(circle at 65% 85%, rgba(216,238,132,0.151), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(105) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 13px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(105) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(106) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(106)::before {
+  background:
+    radial-gradient(circle at 78% 2%, rgba(216,238,132,0.087), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(106):hover::before {
+  background:
+    radial-gradient(circle at 78% 2%, rgba(216,238,132,0.157), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(106) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 14px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(106) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(107) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(107)::before {
+  background:
+    radial-gradient(circle at 91% 19%, rgba(216,238,132,0.093), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(107):hover::before {
+  background:
+    radial-gradient(circle at 91% 19%, rgba(216,238,132,0.163), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(107) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 15px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(107) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(108) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(108)::before {
+  background:
+    radial-gradient(circle at 4% 36%, rgba(216,238,132,0.045), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(108):hover::before {
+  background:
+    radial-gradient(circle at 4% 36%, rgba(216,238,132,0.115), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(108) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(108) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(109) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(109)::before {
+  background:
+    radial-gradient(circle at 17% 53%, rgba(216,238,132,0.051), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(109):hover::before {
+  background:
+    radial-gradient(circle at 17% 53%, rgba(216,238,132,0.121), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(109) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 17px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(109) {
+  transition-delay: 120ms;
+}
+
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(110) {
+  transition-delay: 160ms;
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(110)::before {
+  background:
+    radial-gradient(circle at 30% 70%, rgba(216,238,132,0.057), transparent 38%);
+}
+
+.dAdminCommentsQueue .dAdminCommentCard:nth-child(110):hover::before {
+  background:
+    radial-gradient(circle at 30% 70%, rgba(216,238,132,0.127), transparent 38%);
+}
+
+.dAdminInfoList > div:nth-child(110) {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminModerationDecision .dAdminActionButton:nth-child(110) {
+  transition-delay: 120ms;
+}
+
+
+/* =========================================================
+   DETAIL REVIEW MODES
+   Optional modes for future classNames, safe today.
+   ========================================================= */
+
+
+.dAdminCommentDetail--focus .dAdminCommentPreview__body {
+  box-shadow:
+    inset 0 0 0 1px rgba(183,217,90,0.24),
+    0 0 0 5px rgba(216,238,132,0.22);
+}
+
+.dAdminCommentDetail--focus .dAdminModerationDecision {
+  border-color: rgba(183,217,90,0.24);
+}
+
+.dAdminCommentsView--focus .dAdminCommentsPanel > .dAdminToolbar {
+  border-color: rgba(183,217,90,0.24);
+}
+
+
+.dAdminCommentDetail--quiet .dAdminCommentPreview__body {
+  box-shadow:
+    inset 0 0 0 1px rgba(7,17,12,0.08),
+    0 0 0 5px rgba(238,244,224,0.72);
+}
+
+.dAdminCommentDetail--quiet .dAdminModerationDecision {
+  border-color: rgba(7,17,12,0.08);
+}
+
+.dAdminCommentsView--quiet .dAdminCommentsPanel > .dAdminToolbar {
+  border-color: rgba(7,17,12,0.08);
+}
+
+
+.dAdminCommentDetail--serious .dAdminCommentPreview__body {
+  box-shadow:
+    inset 0 0 0 1px rgba(216,238,132,0.18),
+    0 0 0 5px rgba(5,7,42,0.18);
+}
+
+.dAdminCommentDetail--serious .dAdminModerationDecision {
+  border-color: rgba(216,238,132,0.18);
+}
+
+.dAdminCommentsView--serious .dAdminCommentsPanel > .dAdminToolbar {
+  border-color: rgba(216,238,132,0.18);
+}
+
+
+.dAdminCommentDetail--review .dAdminCommentPreview__body {
+  box-shadow:
+    inset 0 0 0 1px rgba(150,106,33,0.16),
+    0 0 0 5px rgba(234,219,158,0.36);
+}
+
+.dAdminCommentDetail--review .dAdminModerationDecision {
+  border-color: rgba(150,106,33,0.16);
+}
+
+.dAdminCommentsView--review .dAdminCommentsPanel > .dAdminToolbar {
+  border-color: rgba(150,106,33,0.16);
+}
+
+
+.dAdminCommentDetail--danger .dAdminCommentPreview__body {
+  box-shadow:
+    inset 0 0 0 1px rgba(159,64,54,0.16),
+    0 0 0 5px rgba(248,229,225,0.44);
+}
+
+.dAdminCommentDetail--danger .dAdminModerationDecision {
+  border-color: rgba(159,64,54,0.16);
+}
+
+.dAdminCommentsView--danger .dAdminCommentsPanel > .dAdminToolbar {
+  border-color: rgba(159,64,54,0.16);
+}
+
+
+.dAdminCommentDetail--ready .dAdminCommentPreview__body {
+  box-shadow:
+    inset 0 0 0 1px rgba(57,118,74,0.16),
+    0 0 0 5px rgba(221,247,202,0.38);
+}
+
+.dAdminCommentDetail--ready .dAdminModerationDecision {
+  border-color: rgba(57,118,74,0.16);
+}
+
+.dAdminCommentsView--ready .dAdminCommentsPanel > .dAdminToolbar {
+  border-color: rgba(57,118,74,0.16);
+}
+
+
+/* =========================================================
+   DECISION BUTTON INTENT HELPERS
+   ========================================================= */
+
+
+.dAdminActionButton--approve,
+.dAdminCommentActions .dAdminActionButton.is-approve {
+  color: #39764a;
+  border-color: rgba(57,118,74,0.18);
+  background:
+    radial-gradient(circle at 24% 16%, rgba(255,255,255,0.72), transparent 30%),
+    linear-gradient(145deg, #ddf7ca, #68aa78);
+  box-shadow:
+    0 14px 30px rgba(57,118,74,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.58);
+}
+
+.dAdminActionButton--approve:hover,
+.dAdminCommentActions .dAdminActionButton.is-approve:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 20px 42px rgba(57,118,74,0.18),
+    0 0 0 5px rgba(57,118,74,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.7);
+}
+
+
+.dAdminActionButton--hide,
+.dAdminCommentActions .dAdminActionButton.is-hide {
+  color: #42677d;
+  border-color: rgba(66,103,125,0.18);
+  background:
+    radial-gradient(circle at 24% 16%, rgba(255,255,255,0.72), transparent 30%),
+    linear-gradient(145deg, #e5edf2, #748f9e);
+  box-shadow:
+    0 14px 30px rgba(66,103,125,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.58);
+}
+
+.dAdminActionButton--hide:hover,
+.dAdminCommentActions .dAdminActionButton.is-hide:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 20px 42px rgba(66,103,125,0.18),
+    0 0 0 5px rgba(66,103,125,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.7);
+}
+
+
+.dAdminActionButton--delete,
+.dAdminCommentActions .dAdminActionButton.is-delete {
+  color: #9f4036;
+  border-color: rgba(159,64,54,0.18);
+  background:
+    radial-gradient(circle at 24% 16%, rgba(255,255,255,0.72), transparent 30%),
+    linear-gradient(145deg, #f8e5e1, #c46a60);
+  box-shadow:
+    0 14px 30px rgba(159,64,54,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.58);
+}
+
+.dAdminActionButton--delete:hover,
+.dAdminCommentActions .dAdminActionButton.is-delete:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 20px 42px rgba(159,64,54,0.18),
+    0 0 0 5px rgba(159,64,54,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.7);
+}
+
+
+.dAdminActionButton--restore,
+.dAdminCommentActions .dAdminActionButton.is-restore {
+  color: #07110c;
+  border-color: rgba(183,217,90,0.2);
+  background:
+    radial-gradient(circle at 24% 16%, rgba(255,255,255,0.72), transparent 30%),
+    linear-gradient(145deg, #e9ff8f, #b7d95a);
+  box-shadow:
+    0 14px 30px rgba(183,217,90,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.58);
+}
+
+.dAdminActionButton--restore:hover,
+.dAdminCommentActions .dAdminActionButton.is-restore:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 20px 42px rgba(183,217,90,0.2),
+    0 0 0 5px rgba(183,217,90,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.7);
+}
+
+/* =========================================================
+   OPTIONAL COMMENT MODERATION POLISH BLOCK 001
+   Safe selectors. They only apply when matching attrs/classes exist.
+   ========================================================= */
+
+.dAdminCommentPolish-001 {
+  --comment-polish-index: 1;
+}
+
+.dAdminCommentCard[data-tone="1"] {
+  transform-origin: center;
+}
+
+.dAdminCommentCard[data-tone="1"]:hover {
+  filter: saturate(1.02);
+}
+
+.dAdminCommentCard[data-tone="1"] .dAdminCommentCard__avatar {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationMetric[data-index="1"] {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminCommentPreview[data-card="1"] .dAdminCommentPreview__body {
+  transform-origin: center;
+}
+
+.dAdminCommentPreview[data-card="1"] .dAdminCommentPreview__body p {
+  text-wrap: pretty;
+}
+
+.dAdminModerationDecision[data-step="1"] {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminInfoPanel[data-info="1"] {
+  transform-origin: center;
+}
+
+.dAdminInfoPanel[data-info="1"]:hover {
+  filter: saturate(1.01);
+}
+
+@media (max-width: 700px) {
+  .dAdminCommentCard[data-tone="1"] {
+    min-height: 0;
+  }
+
+  .dAdminCommentPreview[data-card="1"] .dAdminCommentPreview__body {
+    min-height: 230px;
+  }
+}
+
+@media (max-width: 440px) {
+  .dAdminCommentPreview[data-card="1"] .dAdminCommentPreview__body {
+    min-height: 210px;
+  }
+}
+
+
+/* =========================================================
+   OPTIONAL COMMENT MODERATION POLISH BLOCK 002
+   Safe selectors. They only apply when matching attrs/classes exist.
+   ========================================================= */
+
+.dAdminCommentPolish-002 {
+  --comment-polish-index: 2;
+}
+
+.dAdminCommentCard[data-tone="2"] {
+  transform-origin: center;
+}
+
+.dAdminCommentCard[data-tone="2"]:hover {
+  filter: saturate(1.02);
+}
+
+.dAdminCommentCard[data-tone="2"] .dAdminCommentCard__avatar {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationMetric[data-index="2"] {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminCommentPreview[data-card="2"] .dAdminCommentPreview__body {
+  transform-origin: center;
+}
+
+.dAdminCommentPreview[data-card="2"] .dAdminCommentPreview__body p {
+  text-wrap: pretty;
+}
+
+.dAdminModerationDecision[data-step="2"] {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminInfoPanel[data-info="2"] {
+  transform-origin: center;
+}
+
+.dAdminInfoPanel[data-info="2"]:hover {
+  filter: saturate(1.01);
+}
+
+@media (max-width: 700px) {
+  .dAdminCommentCard[data-tone="2"] {
+    min-height: 0;
+  }
+
+  .dAdminCommentPreview[data-card="2"] .dAdminCommentPreview__body {
+    min-height: 230px;
+  }
+}
+
+@media (max-width: 440px) {
+  .dAdminCommentPreview[data-card="2"] .dAdminCommentPreview__body {
+    min-height: 210px;
+  }
+}
+
+
+/* =========================================================
+   OPTIONAL COMMENT MODERATION POLISH BLOCK 003
+   Safe selectors. They only apply when matching attrs/classes exist.
+   ========================================================= */
+
+.dAdminCommentPolish-003 {
+  --comment-polish-index: 3;
+}
+
+.dAdminCommentCard[data-tone="3"] {
+  transform-origin: center;
+}
+
+.dAdminCommentCard[data-tone="3"]:hover {
+  filter: saturate(1.02);
+}
+
+.dAdminCommentCard[data-tone="3"] .dAdminCommentCard__avatar {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationMetric[data-index="3"] {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminCommentPreview[data-card="3"] .dAdminCommentPreview__body {
+  transform-origin: center;
+}
+
+.dAdminCommentPreview[data-card="3"] .dAdminCommentPreview__body p {
+  text-wrap: pretty;
+}
+
+.dAdminModerationDecision[data-step="3"] {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminInfoPanel[data-info="3"] {
+  transform-origin: center;
+}
+
+.dAdminInfoPanel[data-info="3"]:hover {
+  filter: saturate(1.01);
+}
+
+@media (max-width: 700px) {
+  .dAdminCommentCard[data-tone="3"] {
+    min-height: 0;
+  }
+
+  .dAdminCommentPreview[data-card="3"] .dAdminCommentPreview__body {
+    min-height: 230px;
+  }
+}
+
+@media (max-width: 440px) {
+  .dAdminCommentPreview[data-card="3"] .dAdminCommentPreview__body {
+    min-height: 210px;
+  }
+}
+
+
+/* =========================================================
+   OPTIONAL COMMENT MODERATION POLISH BLOCK 004
+   Safe selectors. They only apply when matching attrs/classes exist.
+   ========================================================= */
+
+.dAdminCommentPolish-004 {
+  --comment-polish-index: 4;
+}
+
+.dAdminCommentCard[data-tone="4"] {
+  transform-origin: center;
+}
+
+.dAdminCommentCard[data-tone="4"]:hover {
+  filter: saturate(1.02);
+}
+
+.dAdminCommentCard[data-tone="4"] .dAdminCommentCard__avatar {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationMetric[data-index="4"] {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminCommentPreview[data-card="4"] .dAdminCommentPreview__body {
+  transform-origin: center;
+}
+
+.dAdminCommentPreview[data-card="4"] .dAdminCommentPreview__body p {
+  text-wrap: pretty;
+}
+
+.dAdminModerationDecision[data-step="4"] {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminInfoPanel[data-info="4"] {
+  transform-origin: center;
+}
+
+.dAdminInfoPanel[data-info="4"]:hover {
+  filter: saturate(1.01);
+}
+
+@media (max-width: 700px) {
+  .dAdminCommentCard[data-tone="4"] {
+    min-height: 0;
+  }
+
+  .dAdminCommentPreview[data-card="4"] .dAdminCommentPreview__body {
+    min-height: 230px;
+  }
+}
+
+@media (max-width: 440px) {
+  .dAdminCommentPreview[data-card="4"] .dAdminCommentPreview__body {
+    min-height: 210px;
+  }
+}
+
+
+/* =========================================================
+   OPTIONAL COMMENT MODERATION POLISH BLOCK 005
+   Safe selectors. They only apply when matching attrs/classes exist.
+   ========================================================= */
+
+.dAdminCommentPolish-005 {
+  --comment-polish-index: 5;
+}
+
+.dAdminCommentCard[data-tone="5"] {
+  transform-origin: center;
+}
+
+.dAdminCommentCard[data-tone="5"]:hover {
+  filter: saturate(1.02);
+}
+
+.dAdminCommentCard[data-tone="5"] .dAdminCommentCard__avatar {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationMetric[data-index="5"] {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminCommentPreview[data-card="5"] .dAdminCommentPreview__body {
+  transform-origin: center;
+}
+
+.dAdminCommentPreview[data-card="5"] .dAdminCommentPreview__body p {
+  text-wrap: pretty;
+}
+
+.dAdminModerationDecision[data-step="5"] {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminInfoPanel[data-info="5"] {
+  transform-origin: center;
+}
+
+.dAdminInfoPanel[data-info="5"]:hover {
+  filter: saturate(1.01);
+}
+
+@media (max-width: 700px) {
+  .dAdminCommentCard[data-tone="5"] {
+    min-height: 0;
+  }
+
+  .dAdminCommentPreview[data-card="5"] .dAdminCommentPreview__body {
+    min-height: 230px;
+  }
+}
+
+@media (max-width: 440px) {
+  .dAdminCommentPreview[data-card="5"] .dAdminCommentPreview__body {
+    min-height: 210px;
+  }
+}
+
+
+/* =========================================================
+   OPTIONAL COMMENT MODERATION POLISH BLOCK 006
+   Safe selectors. They only apply when matching attrs/classes exist.
+   ========================================================= */
+
+.dAdminCommentPolish-006 {
+  --comment-polish-index: 6;
+}
+
+.dAdminCommentCard[data-tone="6"] {
+  transform-origin: center;
+}
+
+.dAdminCommentCard[data-tone="6"]:hover {
+  filter: saturate(1.02);
+}
+
+.dAdminCommentCard[data-tone="6"] .dAdminCommentCard__avatar {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationMetric[data-index="6"] {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminCommentPreview[data-card="6"] .dAdminCommentPreview__body {
+  transform-origin: center;
+}
+
+.dAdminCommentPreview[data-card="6"] .dAdminCommentPreview__body p {
+  text-wrap: pretty;
+}
+
+.dAdminModerationDecision[data-step="6"] {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminInfoPanel[data-info="6"] {
+  transform-origin: center;
+}
+
+.dAdminInfoPanel[data-info="6"]:hover {
+  filter: saturate(1.01);
+}
+
+@media (max-width: 700px) {
+  .dAdminCommentCard[data-tone="6"] {
+    min-height: 0;
+  }
+
+  .dAdminCommentPreview[data-card="6"] .dAdminCommentPreview__body {
+    min-height: 230px;
+  }
+}
+
+@media (max-width: 440px) {
+  .dAdminCommentPreview[data-card="6"] .dAdminCommentPreview__body {
+    min-height: 210px;
+  }
+}
+
+
+/* =========================================================
+   OPTIONAL COMMENT MODERATION POLISH BLOCK 007
+   Safe selectors. They only apply when matching attrs/classes exist.
+   ========================================================= */
+
+.dAdminCommentPolish-007 {
+  --comment-polish-index: 7;
+}
+
+.dAdminCommentCard[data-tone="7"] {
+  transform-origin: center;
+}
+
+.dAdminCommentCard[data-tone="7"]:hover {
+  filter: saturate(1.02);
+}
+
+.dAdminCommentCard[data-tone="7"] .dAdminCommentCard__avatar {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationMetric[data-index="7"] {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminCommentPreview[data-card="7"] .dAdminCommentPreview__body {
+  transform-origin: center;
+}
+
+.dAdminCommentPreview[data-card="7"] .dAdminCommentPreview__body p {
+  text-wrap: pretty;
+}
+
+.dAdminModerationDecision[data-step="7"] {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminInfoPanel[data-info="7"] {
+  transform-origin: center;
+}
+
+.dAdminInfoPanel[data-info="7"]:hover {
+  filter: saturate(1.01);
+}
+
+@media (max-width: 700px) {
+  .dAdminCommentCard[data-tone="7"] {
+    min-height: 0;
+  }
+
+  .dAdminCommentPreview[data-card="7"] .dAdminCommentPreview__body {
+    min-height: 230px;
+  }
+}
+
+@media (max-width: 440px) {
+  .dAdminCommentPreview[data-card="7"] .dAdminCommentPreview__body {
+    min-height: 210px;
+  }
+}
+
+
+/* =========================================================
+   OPTIONAL COMMENT MODERATION POLISH BLOCK 008
+   Safe selectors. They only apply when matching attrs/classes exist.
+   ========================================================= */
+
+.dAdminCommentPolish-008 {
+  --comment-polish-index: 8;
+}
+
+.dAdminCommentCard[data-tone="8"] {
+  transform-origin: center;
+}
+
+.dAdminCommentCard[data-tone="8"]:hover {
+  filter: saturate(1.02);
+}
+
+.dAdminCommentCard[data-tone="8"] .dAdminCommentCard__avatar {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 16px);
+}
+
+.dAdminModerationMetric[data-index="8"] {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminCommentPreview[data-card="8"] .dAdminCommentPreview__body {
+  transform-origin: center;
+}
+
+.dAdminCommentPreview[data-card="8"] .dAdminCommentPreview__body p {
+  text-wrap: pretty;
+}
+
+.dAdminModerationDecision[data-step="8"] {
+  scroll-margin-top: calc(var(--d-admin-header-height, 82px) + 18px);
+}
+
+.dAdminInfoPanel[data-info="8"] {
+  transform-origin: center;
+}
+
+.dAdminInfoPanel[data-info="8"]:hover {
+  filter: saturate(1.01);
+}
+
+@media (max-width: 700px) {
+  .dAdminCommentCard[data-tone="8"] {
+    min-height: 0;
+  }
+
+  .dAdminCommentPreview[data-card="8"] .dAdminCommentPreview__body {
+    min-height: 230px;
+  }
+}
+
+@media (max-width: 440px) {
+  .dAdminCommentPreview[data-card="8"] .dAdminCommentPreview__body {
+    min-height: 210px;
   }
 }
