@@ -1,4 +1,4 @@
-import { ArrowRight, ShieldCheck } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { TextField } from './AdminUi.jsx';
 import './view/AdminLogin.css';
 
@@ -11,11 +11,17 @@ export default function AdminLogin({
   login,
   saving,
 }) {
+  const DankovPhoto = ({ loader = false }) => (
+    <span className={`${loader ? 'dAdminLoader__mark' : 'dAdminAuthCard__mark'} dAdminPhotoMark`}>
+      <img src="/diyan-dankov.png" alt="Dankov Admin" />
+    </span>
+  );
+
   if (booting) {
     return (
-        <main className="dAdminLoginShell dAdminAuthShell">
+      <main className="dAdminLoginShell dAdminAuthShell">
         <div className="dAdminLoader" aria-live="polite">
-          <span className="dAdminLoader__mark"><ShieldCheck size={25} /></span>
+          <DankovPhoto loader />
           <div>
             <strong>Dankov Admin</strong>
             <p>Зареждане на работното пространство…</p>
@@ -29,7 +35,7 @@ export default function AdminLogin({
     <main className="dAdminAuthShell">
       <section className="dAdminAuthCard">
         <div className="dAdminAuthCard__brand">
-          <span className="dAdminAuthCard__mark"><ShieldCheck size={24} /></span>
+          <DankovPhoto />
           <span>Dankov Admin</span>
         </div>
 
@@ -53,6 +59,7 @@ export default function AdminLogin({
             value={loginForm.username}
             onChange={(value) => setLoginForm((current) => ({ ...current, username: value }))}
           />
+
           <TextField
             label="Парола"
             type="password"
