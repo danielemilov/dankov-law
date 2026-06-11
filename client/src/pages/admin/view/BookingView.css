@@ -1,12 +1,11 @@
 /* =========================================================
-   DANKOV ADMIN — BOOKINGS / CALENDAR CRM
-   Календар, управление на заявки и клиентски детайл
+   Dankov Admin — Full CSS replacement
+   Design only. No new features. No API changes.
+   Visual reference: public website / AboutPage / Chat / Booking.
+   Fonts: uses existing site variables var(--font-display), var(--serif),
+   var(--font-sans), var(--sans).
    ========================================================= */
 
-
-/* =========================================================
-   ОСНОВНА СТРУКТУРА
-   ========================================================= */
 
 .dAdminBookingsView,
 .dAdminBookingDetailView {
@@ -19,71 +18,9 @@
   gap: 18px;
 }
 
-
-/* =========================================================
-   ГОЛЯМ КАЛЕНДАРЕН ПАНЕЛ
-   ========================================================= */
-
 .dAdminCalendarPanel {
   min-width: 0;
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--d-admin-radius-lg);
-  color: #f8faef;
-  background:
-    radial-gradient(
-      circle at 90% 3%,
-      rgba(214, 239, 103, 0.19),
-      transparent 29%
-    ),
-    radial-gradient(
-      circle at 15% 115%,
-      rgba(214, 239, 103, 0.07),
-      transparent 34%
-    ),
-    linear-gradient(
-      135deg,
-      #10140e 0%,
-      #182016 49%,
-      #273222 100%
-    );
-  box-shadow:
-    0 30px 78px rgba(17, 21, 15, 0.19),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
-
-.dAdminCalendarPanel::before {
-  position: absolute;
-  z-index: -1;
-  top: -180px;
-  right: -120px;
-  width: 430px;
-  height: 430px;
-  border: 1px solid rgba(214, 239, 103, 0.13);
-  border-radius: 50%;
-  content: "";
-  pointer-events: none;
-}
-
-.dAdminCalendarPanel::after {
-  position: absolute;
-  z-index: -1;
-  bottom: -320px;
-  left: 22%;
-  width: 520px;
-  height: 520px;
-  border: 1px solid rgba(255, 255, 255, 0.045);
-  border-radius: 50%;
-  content: "";
-  pointer-events: none;
-}
-
-
-/* =========================================================
-   CALENDAR HEADER
-   ========================================================= */
 
 .dAdminCalendarPanel__head {
   position: relative;
@@ -102,37 +39,6 @@
   gap: 9px;
 }
 
-.dAdminCalendarPanel__head .dAdminEyebrow {
-  color: rgba(248, 250, 239, 0.5);
-}
-
-.dAdminCalendarPanel__head .dAdminEyebrow::before {
-  background: var(--d-admin-accent);
-  box-shadow: 0 0 0 5px rgba(214, 239, 103, 0.1);
-}
-
-.dAdminCalendarPanel__head h2 {
-  color: #ffffff;
-  font-family: var(--serif, Georgia, serif);
-  font-size: clamp(40px, 5vw, 68px);
-  font-weight: 400;
-  line-height: 0.94;
-  letter-spacing: -0.05em;
-  text-transform: capitalize;
-}
-
-.dAdminCalendarPanel__head p {
-  max-width: 620px;
-  color: rgba(248, 250, 239, 0.58);
-  font-size: 13px;
-  line-height: 1.65;
-}
-
-
-/* =========================================================
-   CALENDAR NAVIGATION
-   ========================================================= */
-
 .dAdminCalendarNav {
   flex: 0 0 auto;
   display: grid;
@@ -141,8 +47,8 @@
   gap: 6px;
   padding: 6px;
   border: 1px solid rgba(255, 255, 255, 0.11);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.07);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.075);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.07),
     0 12px 30px rgba(0, 0, 0, 0.12);
@@ -156,8 +62,8 @@
   align-items: center;
   justify-content: center;
   border: 0;
-  border-radius: 11px;
-  color: rgba(248, 250, 239, 0.72);
+  border-radius: 13px;
+  color: rgba(255, 253, 244, 0.72);
   background: transparent;
   font-size: 12px;
   font-weight: 850;
@@ -168,7 +74,7 @@
 }
 
 .dAdminCalendarNav button:hover {
-  color: #ffffff;
+  color: #fffdf4;
   background: rgba(255, 255, 255, 0.1);
   transform: translateY(-1px);
 }
@@ -176,19 +82,11 @@
 .dAdminCalendarNav .dAdminCalendarNav__today {
   min-width: 82px;
   padding-inline: 15px;
-  color: var(--d-admin-ink);
-  background: var(--d-admin-accent);
+  color: #07110c;
+  background:
+    radial-gradient(circle at 24% 16%, rgba(255, 255, 255, 0.76), transparent 28%),
+    linear-gradient(145deg, #e9ff8f, #b7d95a);
 }
-
-.dAdminCalendarNav .dAdminCalendarNav__today:hover {
-  color: var(--d-admin-ink);
-  background: var(--d-admin-accent-strong);
-}
-
-
-/* =========================================================
-   CALENDAR LEGEND
-   ========================================================= */
 
 .dAdminCalendarLegend {
   position: relative;
@@ -204,7 +102,7 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  color: rgba(248, 250, 239, 0.52);
+  color: rgba(255, 253, 244, 0.54);
   font-size: 9px;
   font-weight: 850;
   letter-spacing: 0.055em;
@@ -218,30 +116,11 @@
   box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.04);
 }
 
-.dAdminCalendarLegend i.is-new {
-  background: var(--d-admin-accent);
-}
-
-.dAdminCalendarLegend i.is-reviewed {
-  background: #dca64b;
-}
-
-.dAdminCalendarLegend i.is-confirmed {
-  background: #68aa78;
-}
-
-.dAdminCalendarLegend i.is-completed {
-  background: #748f9e;
-}
-
-.dAdminCalendarLegend i.is-cancelled {
-  background: #c46a60;
-}
-
-
-/* =========================================================
-   CALENDAR GRID
-   ========================================================= */
+.dAdminCalendarLegend i.is-new { background: var(--d-admin-accent); }
+.dAdminCalendarLegend i.is-reviewed { background: #dca64b; }
+.dAdminCalendarLegend i.is-confirmed { background: #68aa78; }
+.dAdminCalendarLegend i.is-completed { background: #748f9e; }
+.dAdminCalendarLegend i.is-cancelled { background: #c46a60; }
 
 .dAdminCalendar {
   position: relative;
@@ -252,8 +131,8 @@
   margin: 0 14px 14px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.07);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.075);
   box-shadow:
     0 18px 48px rgba(0, 0, 0, 0.16),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
@@ -264,19 +143,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(248, 250, 239, 0.45);
+  color: rgba(255, 253, 244, 0.45);
   background: rgba(255, 255, 255, 0.055);
   font-size: 9px;
-  font-weight: 900;
+  font-weight: 950;
   line-height: 1;
   letter-spacing: 0.09em;
   text-transform: uppercase;
 }
-
-
-/* =========================================================
-   CALENDAR DAY
-   ========================================================= */
 
 .dAdminCalendarDay {
   min-width: 0;
@@ -289,7 +163,7 @@
   gap: 8px;
   padding: 10px;
   border: 0;
-  color: #f8faef;
+  color: #fffdf4;
   background: rgba(255, 255, 255, 0.045);
   text-align: left;
   transition:
@@ -301,28 +175,21 @@
 .dAdminCalendarDay:hover {
   z-index: 2;
   background: rgba(255, 255, 255, 0.095);
-  box-shadow: inset 0 0 0 1px rgba(214, 239, 103, 0.15);
+  box-shadow: inset 0 0 0 1px rgba(216, 238, 132, 0.15);
 }
 
 .dAdminCalendarDay.is-outside {
-  color: rgba(248, 250, 239, 0.25);
+  color: rgba(255, 253, 244, 0.25);
   background: rgba(0, 0, 0, 0.075);
-}
-
-.dAdminCalendarDay.is-outside .dAdminCalendarEvent {
-  opacity: 0.46;
 }
 
 .dAdminCalendarDay.is-today {
   background:
-    linear-gradient(
-      145deg,
-      rgba(214, 239, 103, 0.14),
-      rgba(255, 255, 255, 0.055)
-    );
+    linear-gradient(145deg, rgba(216, 238, 132, 0.14), rgba(255, 255, 255, 0.055));
 }
 
 .dAdminCalendarDay.is-today::before {
+  content: "";
   position: absolute;
   top: 8px;
   right: 8px;
@@ -330,1607 +197,118 @@
   height: 7px;
   border-radius: 50%;
   background: var(--d-admin-accent);
-  box-shadow: 0 0 0 5px rgba(214, 239, 103, 0.11);
-  content: "";
+  box-shadow: 0 0 0 5px rgba(216, 238, 132, 0.11);
 }
 
 .dAdminCalendarDay.is-selected {
   z-index: 3;
   background:
-    linear-gradient(
-      145deg,
-      rgba(214, 239, 103, 0.22),
-      rgba(255, 255, 255, 0.075)
-    );
+    linear-gradient(145deg, rgba(216, 238, 132, 0.22), rgba(255, 255, 255, 0.075));
   box-shadow:
-    inset 0 0 0 2px rgba(214, 239, 103, 0.7),
-    0 10px 24px rgba(0, 0, 0, 0.12);
+    inset 0 0 0 2px rgba(216, 238, 132, 0.7),
+    0 10px 24px rgba(0, 0, 0, 0.18);
 }
 
 .dAdminCalendarDay__number {
-  width: 28px;
-  height: 28px;
-  display: inline-grid;
-  place-items: center;
-  border-radius: 9px;
-  color: inherit;
-  font-size: 11px;
-  font-weight: 900;
-}
-
-.dAdminCalendarDay.is-today .dAdminCalendarDay__number {
-  color: var(--d-admin-ink);
-  background: var(--d-admin-accent);
-}
-
-
-/* =========================================================
-   CALENDAR EVENTS
-   ========================================================= */
-
-.dAdminCalendarDay__events {
-  min-width: 0;
-  display: grid;
-  align-content: start;
-  gap: 4px;
+  font-family: var(--font-display, var(--serif, Georgia)), Georgia, serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1;
 }
 
 .dAdminCalendarEvent {
   min-width: 0;
-  min-height: 29px;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: 6px;
-  width: 100%;
-  padding: 5px 7px;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  color: #ffffff;
-  text-align: left;
-  transition:
-    transform var(--d-admin-transition),
-    filter var(--d-admin-transition),
-    box-shadow var(--d-admin-transition);
-}
-
-.dAdminCalendarEvent:hover {
-  z-index: 2;
-  transform: translateY(-1px);
-  filter: brightness(1.07);
-  box-shadow: 0 7px 16px rgba(0, 0, 0, 0.16);
-}
-
-.dAdminCalendarEvent > span {
-  font-size: 7px;
-  font-weight: 850;
-  opacity: 0.72;
-  white-space: nowrap;
-}
-
-.dAdminCalendarEvent > strong {
-  overflow: hidden;
-  font-size: 8px;
-  font-weight: 850;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.dAdminCalendarEvent--new {
-  color: var(--d-admin-ink);
-  border-color: rgba(214, 239, 103, 0.2);
-  background: var(--d-admin-accent);
-}
-
-.dAdminCalendarEvent--reviewed {
-  background: #a7782e;
-}
-
-.dAdminCalendarEvent--confirmed {
-  background: #39764a;
-}
-
-.dAdminCalendarEvent--completed {
-  background: #496a7c;
-}
-
-.dAdminCalendarEvent--cancelled {
-  background: #91473f;
-}
-
-.dAdminCalendarDay__more {
-  padding: 3px 6px;
-  color: rgba(248, 250, 239, 0.48);
-  font-size: 8px;
-  font-weight: 800;
-}
-
-
-/* =========================================================
-   MANAGEMENT SECTION
-   ========================================================= */
-
-.dAdminBookingManagement {
-  min-width: 0;
-  display: grid;
-  gap: 13px;
-}
-
-.dAdminBookingManagement__metrics {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-}
-
-
-/* =========================================================
-   MANAGEMENT METRICS
-   ========================================================= */
-
-.dAdminBookingMetric {
-  min-width: 0;
-  min-height: 102px;
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 12px;
-  padding: 15px;
-  border: 1px solid var(--d-admin-line);
-  border-radius: var(--d-admin-radius-md);
-  color: var(--d-admin-text);
-  background: rgba(255, 255, 255, 0.8);
-  text-align: left;
-  box-shadow: var(--d-admin-shadow-sm);
-  transition:
-    transform var(--d-admin-transition),
-    border-color var(--d-admin-transition),
-    background var(--d-admin-transition),
-    box-shadow var(--d-admin-transition);
-}
-
-.dAdminBookingMetric::after {
-  position: absolute;
-  z-index: -1;
-  top: -70px;
-  right: -65px;
-  width: 155px;
-  height: 155px;
-  border-radius: 50%;
-  background: rgba(214, 239, 103, 0.07);
-  content: "";
-}
-
-.dAdminBookingMetric:hover {
-  transform: translateY(-3px);
-  border-color: var(--d-admin-line-strong);
-  background: var(--d-admin-surface);
-  box-shadow: var(--d-admin-shadow-md);
-}
-
-.dAdminBookingMetric > span {
-  width: 43px;
-  height: 43px;
-  display: grid;
-  place-items: center;
-  border-radius: 13px;
-  color: var(--d-admin-ink);
-  background: var(--d-admin-surface-soft);
-}
-
-.dAdminBookingMetric > div {
-  min-width: 0;
-  display: grid;
-  gap: 2px;
-}
-
-.dAdminBookingMetric strong {
-  color: var(--d-admin-ink);
-  font-family: var(--serif, Georgia, serif);
-  font-size: 31px;
-  font-weight: 400;
-  line-height: 0.9;
-  letter-spacing: -0.04em;
-}
-
-.dAdminBookingMetric small {
-  color: var(--d-admin-text-soft);
-  font-size: 9px;
-  font-weight: 850;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.dAdminBookingMetric > svg {
-  color: var(--d-admin-text-faint);
-  transition:
-    color var(--d-admin-transition),
-    transform var(--d-admin-transition);
-}
-
-.dAdminBookingMetric:hover > svg {
-  color: var(--d-admin-ink);
-  transform: translateX(3px);
-}
-
-.dAdminBookingMetric--warning > span {
-  color: var(--d-admin-warning);
-  background: var(--d-admin-warning-soft);
-}
-
-.dAdminBookingMetric--primary {
-  color: #f8faef;
-  border-color: rgba(255, 255, 255, 0.05);
-  background:
-    radial-gradient(
-      circle at 100% 0%,
-      rgba(214, 239, 103, 0.16),
-      transparent 40%
-    ),
-    linear-gradient(135deg, #171d15, #293323);
-}
-
-.dAdminBookingMetric--primary:hover {
-  border-color: rgba(214, 239, 103, 0.24);
-  background:
-    radial-gradient(
-      circle at 100% 0%,
-      rgba(214, 239, 103, 0.22),
-      transparent 42%
-    ),
-    linear-gradient(135deg, #171d15, #303c29);
-}
-
-.dAdminBookingMetric--primary > span {
-  color: var(--d-admin-ink);
-  background: var(--d-admin-accent);
-}
-
-.dAdminBookingMetric--primary strong {
-  color: #ffffff;
-}
-
-.dAdminBookingMetric--primary small {
-  color: rgba(248, 250, 239, 0.55);
-}
-
-.dAdminBookingMetric--primary > svg {
-  color: rgba(248, 250, 239, 0.43);
-}
-
-.dAdminBookingMetric--success > span {
-  color: var(--d-admin-success);
-  background: var(--d-admin-success-soft);
-}
-
-.dAdminBookingMetric--danger > span {
-  color: var(--d-admin-danger);
-  background: var(--d-admin-danger-soft);
-}
-
-
-/* =========================================================
-   MANAGEMENT PANEL
-   ========================================================= */
-
-.dAdminBookingManagement__panel {
-  overflow: visible;
-  border-radius: 21px;
-  background: rgba(255, 255, 255, 0.82);
-}
-
-.dAdminBookingManagement__head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 21px 22px 17px;
-  border-bottom: 1px solid var(--d-admin-line);
-}
-
-.dAdminBookingManagement__head > div {
-  min-width: 0;
-  display: grid;
-  gap: 6px;
-}
-
-.dAdminBookingManagement__head h3 {
-  color: var(--d-admin-ink);
-  font-family: var(--serif, Georgia, serif);
-  font-size: clamp(26px, 3vw, 38px);
-  font-weight: 400;
-  line-height: 1.02;
-  letter-spacing: -0.035em;
-}
-
-.dAdminBookingManagement__head p {
-  max-width: 680px;
-  color: var(--d-admin-text-soft);
-  font-size: 11px;
-  line-height: 1.55;
-}
-
-.dAdminClearDay {
-  min-height: 39px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  flex: 0 0 auto;
-  padding: 0 12px;
-  border: 1px solid var(--d-admin-line);
-  border-radius: 11px;
-  color: var(--d-admin-text-soft);
-  background: var(--d-admin-surface-soft);
-  font-size: 10px;
-  font-weight: 850;
-  transition:
-    color var(--d-admin-transition),
-    border-color var(--d-admin-transition),
-    background var(--d-admin-transition),
-    transform var(--d-admin-transition);
-}
-
-.dAdminClearDay:hover {
-  color: var(--d-admin-ink);
-  border-color: var(--d-admin-line-strong);
-  background: var(--d-admin-surface);
-  transform: translateY(-1px);
-}
-
-.dAdminBookingManagement__tools {
-  position: sticky;
-  top: calc(var(--d-admin-header-height) + 14px);
-  z-index: 9;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  padding: 10px;
-  border-bottom: 1px solid var(--d-admin-line);
-  background: rgba(250, 250, 246, 0.9);
-  box-shadow: 0 8px 24px rgba(17, 21, 15, 0.045);
-  backdrop-filter: blur(20px);
-}
-
-
-/* =========================================================
-   BOOKING ROWS
-   ========================================================= */
-
-.dAdminBookingRows {
-  display: grid;
-  gap: 8px;
-  padding: 10px;
-}
-
-.dAdminBookingRows > .dAdminEmptyState {
-  border-radius: 15px;
-  background: var(--d-admin-surface-soft);
-}
-
-.dAdminBookingRow {
-  min-width: 0;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 13px;
-  padding: 9px 10px;
-  border: 1px solid transparent;
-  border-radius: 15px;
-  background: var(--d-admin-surface-soft);
-  transition:
-    transform var(--d-admin-transition),
-    border-color var(--d-admin-transition),
-    background var(--d-admin-transition),
-    box-shadow var(--d-admin-transition);
-}
-
-.dAdminBookingRow:hover {
-  z-index: 2;
-  transform: translateY(-2px);
-  border-color: var(--d-admin-line);
-  background: var(--d-admin-surface);
-  box-shadow: 0 13px 30px rgba(17, 21, 15, 0.075);
-}
-
-.dAdminBookingRow__main {
-  min-width: 0;
-  display: grid;
-  grid-template-columns:
-    auto
-    minmax(140px, 1.05fr)
-    minmax(150px, 1fr)
-    minmax(140px, 0.85fr);
-  align-items: center;
-  gap: 14px;
-  padding: 3px;
-  border: 0;
-  color: var(--d-admin-text);
-  background: transparent;
-  text-align: left;
-}
-
-.dAdminBookingRow__avatar {
-  width: 43px;
-  height: 43px;
-  display: grid;
-  place-items: center;
-  border-radius: 13px;
-  color: var(--d-admin-ink);
-  background:
-    linear-gradient(
-      145deg,
-      var(--d-admin-accent),
-      var(--d-admin-accent-strong)
-    );
-  box-shadow:
-    0 7px 17px rgba(151, 174, 48, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
-}
-
-.dAdminBookingRow__client,
-.dAdminBookingRow__case,
-.dAdminBookingRow__date {
-  min-width: 0;
   display: grid;
   gap: 3px;
-}
-
-.dAdminBookingRow__client strong,
-.dAdminBookingRow__case strong,
-.dAdminBookingRow__date strong {
-  overflow: hidden;
-  color: var(--d-admin-text);
-  font-size: 11px;
-  font-weight: 850;
-  line-height: 1.35;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.dAdminBookingRow__client small,
-.dAdminBookingRow__case small,
-.dAdminBookingRow__date small {
-  overflow: hidden;
-  color: var(--d-admin-text-faint);
-  font-size: 9px;
-  line-height: 1.35;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.dAdminBookingRow__actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 7px;
-}
-
-.dAdminBookingRow__actions select {
-  min-height: 35px;
-  padding: 0 30px 0 9px;
-  border: 1px solid var(--d-admin-line);
-  border-radius: 9px;
-  outline: 0;
-  color: var(--d-admin-text);
-  background-color: var(--d-admin-surface);
-  font-size: 9px;
-  font-weight: 800;
-}
-
-.dAdminBookingRow__actions select:focus {
-  border-color: rgba(151, 174, 48, 0.6);
-  box-shadow: 0 0 0 3px rgba(214, 239, 103, 0.18);
-}
-
-.dAdminBookingRow__actions > button {
-  min-height: 35px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 0 10px;
-  border: 0;
-  border-radius: 9px;
-  color: var(--d-admin-ink);
-  background: var(--d-admin-accent);
-  font-size: 9px;
-  font-weight: 900;
-  transition:
-    background var(--d-admin-transition),
-    transform var(--d-admin-transition);
-}
-
-.dAdminBookingRow__actions > button:hover {
-  transform: translateY(-1px);
-  background: var(--d-admin-accent-strong);
-}
-
-
-/* =========================================================
-   BOOKING DETAIL HEADER
-   ========================================================= */
-
-.dAdminBookingDetailView > .dAdminDetailHeader {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  min-height: 170px;
-  align-items: flex-end;
-  padding: 24px 26px;
-  color: #f8faef;
-  border-color: rgba(255, 255, 255, 0.07);
+  padding: 8px;
+  border-radius: 13px;
+  color: #07110c;
   background:
-    radial-gradient(
-      circle at 92% 0%,
-      rgba(214, 239, 103, 0.2),
-      transparent 31%
-    ),
-    linear-gradient(
-      135deg,
-      #10140e,
-      #222d1e
-    );
+    radial-gradient(circle at 20% 10%, rgba(255, 255, 255, 0.82), transparent 30%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.94), rgba(238, 244, 224, 0.82));
   box-shadow:
-    0 23px 60px rgba(17, 21, 15, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-}
-
-.dAdminBookingDetailView > .dAdminDetailHeader::after {
-  position: absolute;
-  z-index: -1;
-  top: -140px;
-  right: -85px;
-  width: 350px;
-  height: 350px;
-  border: 1px solid rgba(214, 239, 103, 0.14);
-  border-radius: 50%;
-  content: "";
-}
-
-.dAdminBookingDetailView .dAdminDetailHeader .dAdminBackLink {
-  color: rgba(248, 250, 239, 0.68);
-  border-color: rgba(255, 255, 255, 0.11);
-  background: rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(15px);
-}
-
-.dAdminBookingDetailView .dAdminDetailHeader .dAdminBackLink:hover {
-  color: #ffffff;
-  border-color: rgba(214, 239, 103, 0.28);
-  background: rgba(214, 239, 103, 0.1);
-}
-
-.dAdminBookingDetailView .dAdminDetailHeader .dAdminEyebrow {
-  color: rgba(248, 250, 239, 0.48);
-}
-
-.dAdminBookingDetailView .dAdminDetailHeader .dAdminEyebrow::before {
-  background: var(--d-admin-accent);
-}
-
-.dAdminBookingDetailView .dAdminDetailHeader h2 {
-  color: #ffffff;
-  font-size: clamp(35px, 4.4vw, 56px);
-}
-
-.dAdminBookingDetailView .dAdminDetailHeader p {
-  color: rgba(248, 250, 239, 0.55);
-}
-
-.dAdminBookingDetailView .dAdminDetailHeader__status select {
-  min-height: 39px;
-  padding: 0 34px 0 11px;
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  border-radius: 11px;
-  outline: 0;
-  color: #f8faef;
-  background-color: rgba(255, 255, 255, 0.09);
+    0 8px 18px rgba(0, 0, 0, 0.11),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
   font-size: 10px;
-  font-weight: 850;
-  backdrop-filter: blur(12px);
 }
 
-.dAdminBookingDetailView .dAdminDetailHeader__status select option {
-  color: var(--d-admin-text);
-  background: #ffffff;
-}
-
-
-/* =========================================================
-   BOOKING DETAIL LAYOUT
-   ========================================================= */
-
-.dAdminBookingDetailLayout {
-  min-width: 0;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(290px, 350px);
-  align-items: start;
-  gap: 15px;
-}
-
-.dAdminBookingDetailMain,
-.dAdminBookingDetailSide {
-  min-width: 0;
-  display: grid;
-  gap: 14px;
-}
-
-.dAdminBookingDetailMain > .dAdminPanel,
-.dAdminBookingDetailSide > .dAdminPanel {
-  border-radius: 19px;
-}
-
-.dAdminBookingDetailSide {
-  position: sticky;
-  top: calc(var(--d-admin-header-height) + 14px);
-}
-
-
-/* =========================================================
-   PANEL HEADERS IN DETAIL
-   ========================================================= */
-
-.dAdminBookingDetailView .dAdminPanel__head > div {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-}
-
-.dAdminBookingDetailView .dAdminPanel__head small {
-  display: block;
-  margin: 0 0 3px;
-  color: var(--d-admin-text-faint);
-  font-size: 8px;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.dAdminBookingDetailView .dAdminPanel__head h3 {
-  font-size: 14px;
-}
-
-
-/* =========================================================
-   BOOKING INFORMATION GRID
-   ========================================================= */
-
-.dAdminBookingInfoGrid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 9px;
-}
-
-.dAdminBookingInfoGrid > div {
-  min-width: 0;
-  min-height: 92px;
-  display: grid;
-  align-content: space-between;
-  gap: 12px;
-  padding: 13px;
-  border: 1px solid var(--d-admin-line);
-  border-radius: 14px;
-  background: var(--d-admin-surface-soft);
-}
-
-.dAdminBookingInfoGrid span {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--d-admin-text-faint);
-  font-size: 8px;
-  font-weight: 900;
-  letter-spacing: 0.075em;
-  text-transform: uppercase;
-}
-
-.dAdminBookingInfoGrid span svg {
-  color: var(--d-admin-ink);
-}
-
-.dAdminBookingInfoGrid strong {
-  overflow-wrap: anywhere;
-  color: var(--d-admin-text);
-  font-size: 12px;
-  font-weight: 850;
-  line-height: 1.4;
-}
-
-
-/* =========================================================
-   CLIENT SUMMARY
-   ========================================================= */
-
-.dAdminBookingSummary {
-  display: grid;
-  gap: 8px;
-  margin-top: 11px;
-  padding: 16px;
-  border: 1px solid rgba(66, 103, 125, 0.12);
-  border-radius: 15px;
-  background:
-    linear-gradient(
-      145deg,
-      rgba(229, 237, 242, 0.82),
-      rgba(247, 250, 251, 0.92)
-    );
-}
-
-.dAdminBookingSummary > span {
-  color: var(--d-admin-info);
-  font-size: 8px;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.dAdminBookingSummary p {
-  color: var(--d-admin-text);
-  font-size: 12px;
-  line-height: 1.65;
-  overflow-wrap: anywhere;
-  white-space: pre-wrap;
-}
-
-
-/* =========================================================
-   NOTES TIMELINE
-   ========================================================= */
-
-.dAdminBookingNotes {
-  display: grid;
-  gap: 15px;
-}
-
-.dAdminBookingNotes__timeline {
-  position: relative;
-  display: grid;
-  gap: 0;
-}
-
-.dAdminBookingNotes__timeline::before {
-  position: absolute;
-  top: 14px;
-  bottom: 14px;
-  left: 7px;
-  width: 1px;
-  background: var(--d-admin-line-strong);
-  content: "";
-}
-
-.dAdminBookingNotes__timeline article {
-  position: relative;
-  display: grid;
-  grid-template-columns: 16px minmax(0, 1fr);
-  gap: 12px;
-  padding: 0 0 16px;
-}
-
-.dAdminBookingNotes__timeline article:last-child {
-  padding-bottom: 0;
-}
-
-.dAdminBookingNotes__timeline article > span {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  padding-top: 3px;
-  color: var(--d-admin-accent-strong);
-  background: var(--d-admin-surface);
-}
-
-.dAdminBookingNotes__timeline article > div {
-  display: grid;
-  gap: 5px;
-  padding: 12px 13px;
-  border: 1px solid var(--d-admin-line);
-  border-radius: 13px;
-  background: var(--d-admin-surface-soft);
-}
-
-.dAdminBookingNotes__timeline small {
-  color: var(--d-admin-text-faint);
-  font-size: 8px;
-  font-weight: 800;
-}
-
-.dAdminBookingNotes__timeline p {
-  color: var(--d-admin-text);
-  font-size: 11px;
-  line-height: 1.55;
-  overflow-wrap: anywhere;
-  white-space: pre-wrap;
-}
-
-
-/* =========================================================
-   NOTES COMPOSER
-   ========================================================= */
-
-.dAdminBookingNotes__composer {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: stretch;
-  gap: 9px;
-  padding-top: 14px;
-  border-top: 1px solid var(--d-admin-line);
-}
-
-.dAdminBookingNotes__composer textarea {
-  width: 100%;
-  min-height: 94px;
-  padding: 12px 13px;
-  border: 1px solid var(--d-admin-line);
-  border-radius: 14px;
-  outline: 0;
-  color: var(--d-admin-text);
-  background: var(--d-admin-surface-soft);
-  font-size: 11px;
-  line-height: 1.55;
-  transition:
-    border-color var(--d-admin-transition),
-    background var(--d-admin-transition),
-    box-shadow var(--d-admin-transition);
-}
-
-.dAdminBookingNotes__composer textarea:focus {
-  border-color: rgba(151, 174, 48, 0.62);
-  background: #ffffff;
-  box-shadow: 0 0 0 4px rgba(214, 239, 103, 0.18);
-}
-
-.dAdminBookingNotes__composer button {
-  min-width: 150px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  padding: 0 15px;
-  border: 0;
-  border-radius: 13px;
-  color: var(--d-admin-ink);
-  background: var(--d-admin-accent);
-  font-size: 10px;
-  font-weight: 900;
-  transition:
-    background var(--d-admin-transition),
-    transform var(--d-admin-transition);
-}
-
-.dAdminBookingNotes__composer button:hover {
-  transform: translateY(-1px);
-  background: var(--d-admin-accent-strong);
-}
-
-.dAdminBookingNotes__composer button:disabled {
-  opacity: 0.48;
-  transform: none;
-}
-
-
-/* =========================================================
-   CLIENT CARD
-   ========================================================= */
-
-.dAdminBookingClientCard__identity {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 13px;
-  border: 1px solid var(--d-admin-line);
-  border-radius: 15px;
-  background:
-    linear-gradient(
-      145deg,
-      var(--d-admin-surface-soft),
-      rgba(247, 250, 235, 0.88)
-    );
-}
-
-.dAdminBookingClientCard__identity > span {
-  width: 48px;
-  height: 48px;
-  display: grid;
-  place-items: center;
-  flex: 0 0 auto;
-  border-radius: 15px;
-  color: var(--d-admin-ink);
-  background:
-    linear-gradient(
-      145deg,
-      var(--d-admin-accent),
-      var(--d-admin-accent-strong)
-    );
-}
-
-.dAdminBookingClientCard__identity > div {
-  min-width: 0;
-  display: grid;
-  gap: 3px;
-}
-
-.dAdminBookingClientCard__identity strong {
+.dAdminCalendarEvent strong {
   overflow: hidden;
-  color: var(--d-admin-ink);
-  font-family: var(--serif, Georgia, serif);
-  font-size: 22px;
-  font-weight: 400;
-  line-height: 1.05;
+  font-size: 10px;
+  font-weight: 900;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.dAdminBookingClientCard__identity small {
-  color: var(--d-admin-text-faint);
-  font-size: 8px;
-  font-weight: 900;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-}
-
-.dAdminBookingClientCard__details {
-  display: grid;
-  gap: 0;
-  margin: 14px 0 0;
-}
-
-.dAdminBookingClientCard__details > div {
-  display: grid;
-  gap: 4px;
-  padding: 11px 1px;
-  border-bottom: 1px solid var(--d-admin-line);
-}
-
-.dAdminBookingClientCard__details > div:last-child {
-  border-bottom: 0;
-}
-
-.dAdminBookingClientCard__details dt {
-  color: var(--d-admin-text-faint);
-  font-size: 8px;
-  font-weight: 900;
-  letter-spacing: 0.075em;
-  text-transform: uppercase;
-}
-
-.dAdminBookingClientCard__details dd {
-  margin: 0;
-  overflow-wrap: anywhere;
-  color: var(--d-admin-text);
-  font-size: 11px;
-  font-weight: 800;
-  line-height: 1.45;
-}
-
-.dAdminBookingClientCard__actions {
+.dAdminBookingCards,
+.dAdminBookingGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 13px;
+  gap: 12px;
 }
 
-
-/* =========================================================
-   CONTACT ACTIONS
-   ========================================================= */
-
-.dAdminBookingAction {
-  min-height: 43px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  padding: 0 10px;
-  border: 1px solid var(--d-admin-line);
-  border-radius: 11px;
-  color: var(--d-admin-text);
-  background: var(--d-admin-surface-soft);
-  font-size: 9px;
-  font-weight: 900;
-  transition:
-    color var(--d-admin-transition),
-    border-color var(--d-admin-transition),
-    background var(--d-admin-transition),
-    transform var(--d-admin-transition);
-}
-
-.dAdminBookingAction:hover {
-  transform: translateY(-1px);
-  color: var(--d-admin-ink);
-  border-color: rgba(151, 174, 48, 0.35);
-  background: var(--d-admin-accent-soft);
-}
-
-.dAdminBookingAction.is-disabled {
-  cursor: not-allowed;
-  color: var(--d-admin-text-faint);
-  background: var(--d-admin-surface-muted);
-  opacity: 0.58;
-}
-
-
-/* =========================================================
-   WORKFLOW STATUS CARD
-   ========================================================= */
-
-.dAdminBookingStatusCard__steps {
+.dAdminBookingCard {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: grid;
-  gap: 7px;
-}
-
-.dAdminBookingStatusCard__steps button {
-  min-height: 47px;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 7px 10px;
-  border: 1px solid transparent;
-  border-radius: 12px;
-  color: var(--d-admin-text-soft);
-  background: var(--d-admin-surface-soft);
-  text-align: left;
-  transition:
-    color var(--d-admin-transition),
-    border-color var(--d-admin-transition),
-    background var(--d-admin-transition),
-    transform var(--d-admin-transition);
-}
-
-.dAdminBookingStatusCard__steps button:hover {
-  transform: translateX(2px);
-  color: var(--d-admin-ink);
-  border-color: var(--d-admin-line);
-  background: var(--d-admin-surface);
-}
-
-.dAdminBookingStatusCard__steps button > span {
-  width: 31px;
-  height: 31px;
-  display: grid;
-  place-items: center;
-  border-radius: 9px;
-  color: var(--d-admin-text-faint);
-  background: var(--d-admin-surface);
-}
-
-.dAdminBookingStatusCard__steps button strong {
-  font-size: 10px;
-  font-weight: 850;
-}
-
-.dAdminBookingStatusCard__steps button.is-active {
-  color: var(--d-admin-ink);
-  border-color: rgba(151, 174, 48, 0.26);
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 26px;
   background:
-    linear-gradient(
-      145deg,
-      rgba(239, 247, 205, 0.92),
-      rgba(249, 252, 236, 0.95)
-    );
+    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.86), transparent 34%),
+    radial-gradient(circle at 96% 0%, rgba(216, 238, 132, 0.12), transparent 32%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.9), rgba(238, 244, 224, 0.74));
+  box-shadow: var(--d-admin-shadow-sm);
 }
 
-.dAdminBookingStatusCard__steps button.is-active > span {
-  color: var(--d-admin-ink);
-  background: var(--d-admin-accent);
+.dAdminBookingCard h3,
+.dAdminBookingCard strong {
+  color: #07110c;
+  font-family: var(--font-display, var(--serif, Georgia)), Georgia, serif;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.04;
 }
 
-
-/* =========================================================
-   LARGE SCREENS
-   ========================================================= */
-
-@media (min-width: 1540px) {
-  .dAdminCalendarDay {
-    min-height: 154px;
-  }
-
-  .dAdminBookingRow__main {
-    grid-template-columns:
-      auto
-      minmax(180px, 1.15fr)
-      minmax(190px, 1fr)
-      minmax(170px, 0.9fr);
-  }
+.dAdminBookingCard p,
+.dAdminBookingCard small {
+  color: rgba(7, 17, 12, 0.62);
+  line-height: 1.6;
 }
 
-
-/* =========================================================
-   LAPTOP
-   ========================================================= */
-
-@media (max-width: 1220px) {
-  .dAdminBookingManagement__metrics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .dAdminCalendarDay {
-    min-height: 122px;
-    padding: 8px;
-  }
-
-  .dAdminCalendarEvent {
-    grid-template-columns: 1fr;
-    gap: 1px;
-  }
-
-  .dAdminCalendarEvent > span {
-    display: none;
-  }
-
-  .dAdminBookingRow {
-    grid-template-columns: 1fr;
-  }
-
-  .dAdminBookingRow__actions {
-    padding: 7px 2px 1px 57px;
-    border-top: 1px solid var(--d-admin-line);
-  }
-
-  .dAdminBookingDetailLayout {
-    grid-template-columns: minmax(0, 1fr) 300px;
-  }
-
-  .dAdminBookingInfoGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-
-/* =========================================================
-   TABLET
-   ========================================================= */
-
-@media (max-width: 940px) {
-  .dAdminCalendarPanel__head {
-    align-items: flex-start;
-  }
-
-  .dAdminCalendarPanel__head h2 {
-    font-size: clamp(42px, 7vw, 57px);
-  }
-
-  .dAdminCalendarDay {
-    min-height: 110px;
-    padding: 7px;
-  }
-
-  .dAdminCalendarEvent {
-    min-height: 25px;
-    padding: 4px 5px;
-  }
-
-  .dAdminCalendarEvent > strong {
-    font-size: 7px;
-  }
-
-  .dAdminBookingRow__main {
-    grid-template-columns:
-      auto
-      minmax(130px, 1fr)
-      minmax(130px, 1fr);
-  }
-
-  .dAdminBookingRow__date {
-    display: none;
-  }
-
-  .dAdminBookingDetailLayout {
-    grid-template-columns: 1fr;
-  }
-
-  .dAdminBookingDetailSide {
-    position: static;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-
-/* =========================================================
-   MOBILE — КАЛЕНДАРЪТ СТАВА КОМПАКТЕН, НЕ МИКРОСКОПИЧЕН
-   ========================================================= */
-
-@media (max-width: 720px) {
-  .dAdminBookingsView {
-    gap: 13px;
-  }
-
-  .dAdminCalendarPanel {
-    border-radius: 19px;
-  }
-
+@media (max-width: 1050px) {
   .dAdminCalendarPanel__head {
     display: grid;
-    gap: 20px;
-    padding: 22px 17px 17px;
-  }
-
-  .dAdminCalendarPanel__head h2 {
-    font-size: clamp(39px, 12vw, 50px);
-  }
-
-  .dAdminCalendarPanel__head p {
-    font-size: 11px;
+    align-items: start;
   }
 
   .dAdminCalendarNav {
-    width: 100%;
-    grid-template-columns: 45px minmax(0, 1fr) 45px;
-  }
-
-  .dAdminCalendarNav .dAdminCalendarNav__today {
-    width: 100%;
-  }
-
-  .dAdminCalendarLegend {
-    gap: 7px 12px;
-    padding: 0 17px 15px;
-  }
-
-  .dAdminCalendarLegend > span {
-    font-size: 7px;
-  }
-
-  .dAdminCalendar {
-    gap: 1px;
-    margin: 0 7px 7px;
-    border-radius: 14px;
-  }
-
-  .dAdminCalendar__weekday {
-    min-height: 33px;
-    font-size: 7px;
-    letter-spacing: 0.04em;
+    width: fit-content;
   }
 
   .dAdminCalendarDay {
-    min-height: 67px;
-    gap: 4px;
-    padding: 5px 3px;
+    min-height: 112px;
   }
 
-  .dAdminCalendarDay.is-today::before {
-    top: 5px;
-    right: 5px;
-    width: 5px;
-    height: 5px;
-    box-shadow: 0 0 0 3px rgba(214, 239, 103, 0.11);
-  }
-
-  .dAdminCalendarDay__number {
-    width: 23px;
-    height: 23px;
-    border-radius: 7px;
-    font-size: 9px;
-  }
-
-  /*
-   * На телефон събитията стават статус точки.
-   * Името и цялата информация се виждат в CRM списъка отдолу,
-   * след натискане върху деня.
-   */
-
-  .dAdminCalendarDay__events {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    align-content: start;
-    justify-content: center;
-    gap: 3px;
-    max-height: 18px;
-    overflow: hidden;
-  }
-
-  .dAdminCalendarEvent {
-    width: 7px;
-    min-width: 7px;
-    height: 7px;
-    min-height: 7px;
-    display: block;
-    padding: 0;
-    border: 0;
-    border-radius: 50%;
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.07);
-  }
-
-  .dAdminCalendarEvent > span,
-  .dAdminCalendarEvent > strong {
-    display: none;
-  }
-
-  .dAdminCalendarEvent:hover {
-    transform: scale(1.25);
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
-  }
-
-  .dAdminCalendarDay__more {
-    display: none;
-  }
-
-  .dAdminBookingManagement__metrics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-  }
-
-  .dAdminBookingMetric {
-    min-height: 91px;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 9px;
-    padding: 12px;
-    border-radius: 15px;
-  }
-
-  .dAdminBookingMetric > span {
-    width: 37px;
-    height: 37px;
-    border-radius: 11px;
-  }
-
-  .dAdminBookingMetric strong {
-    font-size: 27px;
-  }
-
-  .dAdminBookingMetric small {
-    font-size: 7px;
-  }
-
-  .dAdminBookingMetric > svg {
-    display: none;
-  }
-
-  .dAdminBookingManagement__panel {
-    border-radius: 17px;
-  }
-
-  .dAdminBookingManagement__head {
-    display: grid;
-    align-items: start;
-    gap: 13px;
-    padding: 17px 15px 14px;
-  }
-
-  .dAdminBookingManagement__head h3 {
-    font-size: 28px;
-  }
-
-  .dAdminClearDay {
-    width: 100%;
-  }
-
-  .dAdminBookingManagement__tools {
-    position: static;
-    display: grid;
+  .dAdminBookingCards,
+  .dAdminBookingGrid {
     grid-template-columns: 1fr;
-    padding: 8px;
-  }
-
-  .dAdminBookingRows {
-    gap: 8px;
-    padding: 8px;
-  }
-
-  .dAdminBookingRow {
-    gap: 9px;
-    padding: 11px;
-    border-color: var(--d-admin-line);
-    border-radius: 15px;
-    background: rgba(255, 255, 255, 0.8);
-  }
-
-  .dAdminBookingRow__main {
-    grid-template-columns: 42px minmax(0, 1fr);
-    gap: 10px;
-    padding: 0;
-  }
-
-  .dAdminBookingRow__avatar {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-  }
-
-  .dAdminBookingRow__case,
-  .dAdminBookingRow__date {
-    grid-column: 2;
-  }
-
-  .dAdminBookingRow__case {
-    padding-top: 6px;
-    border-top: 1px solid var(--d-admin-line);
-  }
-
-  .dAdminBookingRow__client strong,
-  .dAdminBookingRow__case strong,
-  .dAdminBookingRow__date strong {
-    font-size: 11px;
-  }
-
-  .dAdminBookingRow__actions {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 7px;
-    padding: 9px 0 0;
-  }
-
-  .dAdminBookingRow__actions .dAdminStatus {
-    justify-self: start;
-  }
-
-  .dAdminBookingRow__actions select,
-  .dAdminBookingRow__actions > button {
-    width: 100%;
-    min-height: 42px;
-    border-radius: 11px;
-    font-size: 10px;
-  }
-
-  .dAdminBookingDetailView {
-    gap: 12px;
-  }
-
-  .dAdminBookingDetailView > .dAdminDetailHeader {
-    min-height: 0;
-    padding: 19px 16px;
-    border-radius: 18px;
-  }
-
-  .dAdminBookingDetailView .dAdminDetailHeader h2 {
-    font-size: 35px;
-  }
-
-  .dAdminBookingDetailView .dAdminDetailHeader__status {
-    width: 100%;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    justify-content: stretch;
-  }
-
-  .dAdminBookingDetailView .dAdminDetailHeader__status select {
-    width: 100%;
-    min-height: 43px;
-  }
-
-  .dAdminBookingDetailMain,
-  .dAdminBookingDetailSide {
-    gap: 11px;
-  }
-
-  .dAdminBookingDetailSide {
-    grid-template-columns: 1fr;
-  }
-
-  .dAdminBookingInfoGrid {
-    grid-template-columns: 1fr;
-    gap: 7px;
-  }
-
-  .dAdminBookingInfoGrid > div {
-    min-height: 77px;
-  }
-
-  .dAdminBookingSummary {
-    padding: 14px;
-  }
-
-  .dAdminBookingNotes__composer {
-    grid-template-columns: 1fr;
-  }
-
-  .dAdminBookingNotes__composer button {
-    min-height: 46px;
-  }
-
-  .dAdminBookingClientCard__actions {
-    grid-template-columns: 1fr;
-  }
-
-  .dAdminBookingAction {
-    min-height: 46px;
   }
 }
 
+@media (max-width: 720px) {
+  .dAdminCalendar {
+    overflow-x: auto;
+    grid-template-columns: repeat(7, minmax(112px, 1fr));
+  }
 
-/* =========================================================
-   VERY SMALL MOBILE
-   ========================================================= */
-
-@media (max-width: 430px) {
   .dAdminCalendarPanel__head {
-    padding: 19px 14px 15px;
-  }
-
-  .dAdminCalendarPanel__head h2 {
-    font-size: 38px;
+    padding: 22px 18px 16px;
   }
 
   .dAdminCalendarLegend {
-    padding-inline: 14px;
-  }
-
-  .dAdminCalendarLegend > span {
-    gap: 5px;
-  }
-
-  .dAdminCalendarLegend i {
-    width: 6px;
-    height: 6px;
-  }
-
-  .dAdminCalendar {
-    margin-inline: 5px;
-  }
-
-  .dAdminCalendar__weekday {
-    font-size: 6px;
-  }
-
-  .dAdminCalendarDay {
-    min-height: 61px;
-  }
-
-  .dAdminCalendarDay__number {
-    width: 21px;
-    height: 21px;
-    font-size: 8px;
-  }
-
-  .dAdminBookingManagement__metrics {
-    gap: 6px;
-  }
-
-  .dAdminBookingMetric {
-    min-height: 82px;
-    padding: 10px;
-  }
-
-  .dAdminBookingMetric > span {
-    width: 33px;
-    height: 33px;
-  }
-
-  .dAdminBookingMetric strong {
-    font-size: 24px;
-  }
-
-  .dAdminBookingManagement__head h3 {
-    font-size: 25px;
-  }
-
-  .dAdminBookingRow {
-    padding: 10px;
-  }
-
-  .dAdminBookingRow__avatar {
-    width: 39px;
-    height: 39px;
-  }
-
-  .dAdminBookingDetailView .dAdminDetailHeader h2 {
-    font-size: 31px;
-  }
-
-  .dAdminBookingClientCard__identity strong {
-    font-size: 20px;
-  }
-}
-
-
-/* =========================================================
-   TOUCH DEVICES
-   ========================================================= */
-
-@media (hover: none) {
-  .dAdminCalendarDay:hover,
-  .dAdminCalendarEvent:hover,
-  .dAdminBookingMetric:hover,
-  .dAdminBookingRow:hover,
-  .dAdminBookingAction:hover,
-  .dAdminBookingStatusCard__steps button:hover {
-    transform: none;
+    padding-inline: 18px;
   }
 }

@@ -1,75 +1,131 @@
 /* =========================================================
-   DANKOV ADMIN — SHARED UI COMPONENTS
-   Общи компоненти за всички admin views
+   Dankov Admin — Full CSS replacement
+   Design only. No new features. No API changes.
+   Visual reference: public website / AboutPage / Chat / Booking.
+   Fonts: uses existing site variables var(--font-display), var(--serif),
+   var(--font-sans), var(--sans).
    ========================================================= */
 
-/* =========================
-   VIEW / PAGE STRUCTURE
-   ========================= */
 
 .dAdminView {
   width: 100%;
   max-width: 1680px;
   display: grid;
-  gap: 24px;
+  gap: clamp(18px, 2.2vw, 28px);
   margin: 0 auto;
 }
 
-.dAdminEyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  color: var(--d-admin-text-soft);
-  font-size: 11px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-}
-
-.dAdminEyebrow::before {
-  width: 7px;
-  height: 7px;
-  flex: 0 0 auto;
-  border-radius: 50%;
-  background: var(--d-admin-accent-strong);
-  content: "";
-}
-
-.dAdminPageIntro {
+.dAdminPageIntro,
+.dAdminDetailHeader {
+  position: relative;
+  isolation: isolate;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 24px;
-  padding: 6px 2px 2px;
+  padding: clamp(24px, 3.4vw, 42px);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: var(--d-admin-radius-lg);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.86), transparent 34%),
+    radial-gradient(circle at 88% 0%, rgba(216, 238, 132, 0.18), transparent 32%),
+    radial-gradient(circle at 100% 100%, rgba(5, 7, 42, 0.05), transparent 36%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.9), rgba(238, 244, 224, 0.78));
+  box-shadow: var(--d-admin-shadow-md);
+  -webkit-backdrop-filter: blur(24px) saturate(1.14);
+  backdrop-filter: blur(24px) saturate(1.14);
 }
 
-.dAdminPageIntro > div:first-child {
+.dAdminPageIntro::before,
+.dAdminDetailHeader::before {
+  content: "";
+  position: absolute;
+  top: -155px;
+  right: -135px;
+  z-index: -1;
+  width: 330px;
+  height: 330px;
+  border-radius: 50%;
+  border: 1px solid rgba(183, 217, 90, 0.18);
+  box-shadow:
+    0 0 0 44px rgba(216, 238, 132, 0.04),
+    0 0 0 90px rgba(5, 7, 42, 0.018);
+  pointer-events: none;
+  animation: dAdminGlassOrb 14s ease-in-out infinite alternate;
+}
+
+@keyframes dAdminGlassOrb {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(-18px, 22px, 0) scale(1.07); }
+}
+
+.dAdminPageIntro > div:first-child,
+.dAdminDetailHeader > div:first-child {
   min-width: 0;
   display: grid;
-  gap: 9px;
+  gap: 11px;
+}
+
+.dAdminEyebrow {
+  width: fit-content;
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 12px 0 10px;
+  border: 1px solid rgba(183, 217, 90, 0.22);
+  border-radius: 999px;
+  color: rgba(7, 17, 12, 0.58);
+  background:
+    radial-gradient(circle at 24% 16%, rgba(255, 255, 255, 0.92), transparent 32%),
+    linear-gradient(145deg, rgba(242, 250, 200, 0.68), rgba(216, 238, 132, 0.18));
+  box-shadow:
+    0 10px 26px rgba(183, 217, 90, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  font-family: var(--font-sans, var(--sans, "DM Sans")), ui-sans-serif, system-ui, sans-serif;
+  font-size: 9px;
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+}
+
+.dAdminEyebrow::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #e9ff8f, #b7d95a);
+  box-shadow:
+    0 0 0 4px rgba(183, 217, 90, 0.14),
+    0 0 20px rgba(183, 217, 90, 0.38);
 }
 
 .dAdminPageIntro h1,
-.dAdminPageIntro h2 {
-  max-width: 820px;
-  color: var(--d-admin-ink);
-  font-family: var(--serif, Georgia, serif);
-  font-size: clamp(30px, 4vw, 52px);
+.dAdminPageIntro h2,
+.dAdminDetailHeader h2 {
+  max-width: 900px;
+  color: #07110c;
+  font-family: var(--font-display, var(--serif, Georgia)), Georgia, serif;
+  font-size: clamp(38px, 5.2vw, 74px);
   font-weight: 400;
-  line-height: 0.98;
-  letter-spacing: -0.035em;
+  line-height: 0.96;
+  letter-spacing: -0.045em;
 }
 
 .dAdminPageIntro p,
-.dAdminPageIntro__summary {
-  max-width: 700px;
-  color: var(--d-admin-text-soft);
+.dAdminPageIntro__summary,
+.dAdminDetailHeader p {
+  max-width: 740px;
+  color: rgba(7, 17, 12, 0.62);
   font-size: 14px;
-  line-height: 1.65;
+  line-height: 1.72;
 }
 
-.dAdminPageIntro__status {
+.dAdminPageIntro__status,
+.dAdminDetailHeader__status {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -84,10 +140,91 @@
   gap: 10px;
 }
 
+.dAdminPanel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: var(--d-admin-radius-lg);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.82), transparent 34%),
+    radial-gradient(circle at 94% 0%, rgba(216, 238, 132, 0.11), transparent 32%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.91), rgba(238, 244, 224, 0.74));
+  box-shadow: var(--d-admin-shadow-sm);
+  -webkit-backdrop-filter: blur(22px) saturate(1.12);
+  backdrop-filter: blur(22px) saturate(1.12);
+}
 
-/* =========================
-   BUTTONS
-   ========================= */
+.dAdminPanel::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(132deg, rgba(255, 255, 255, 0.48), transparent 36%, transparent 72%, rgba(216, 238, 132, 0.09));
+  opacity: 0.8;
+}
+
+.dAdminPanel--wide {
+  width: 100%;
+}
+
+.dAdminPanel__head {
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(7, 17, 12, 0.075);
+  background: linear-gradient(180deg, rgba(255, 255, 252, 0.52), rgba(255, 255, 252, 0.12));
+}
+
+.dAdminPanel__head > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dAdminPanel__icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 16px;
+  color: #07110c;
+  background:
+    radial-gradient(circle at 30% 16%, rgba(255, 255, 255, 0.8), transparent 30%),
+    linear-gradient(145deg, rgba(233, 255, 143, 0.9), rgba(183, 217, 90, 0.46));
+  box-shadow:
+    0 13px 30px rgba(183, 217, 90, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.68);
+}
+
+.dAdminPanel__head small {
+  display: block;
+  margin-bottom: 4px;
+  color: rgba(7, 17, 12, 0.42);
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.dAdminPanel__head h3 {
+  color: #07110c;
+  font-family: var(--font-sans, var(--sans, "DM Sans")), ui-sans-serif, system-ui, sans-serif;
+  font-size: 17px;
+  font-weight: 920;
+  letter-spacing: -0.03em;
+}
+
+.dAdminPanel__body {
+  padding: 20px;
+}
 
 .dAdminButton,
 .dAdminPrimaryAction,
@@ -103,12 +240,13 @@
   gap: 8px;
   padding: 0 15px;
   border: 1px solid transparent;
-  border-radius: var(--d-admin-radius-sm);
+  border-radius: 999px;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 950;
   line-height: 1;
   text-align: center;
   white-space: nowrap;
+  letter-spacing: 0.03em;
   transition:
     transform var(--d-admin-transition),
     color var(--d-admin-transition),
@@ -147,91 +285,127 @@
   opacity: 0.48;
 }
 
+.dAdminPrimaryAction,
 .dAdminButton--primary,
-.dAdminPrimaryAction {
-  color: var(--d-admin-ink);
-  background: var(--d-admin-accent);
-  border-color: rgba(17, 21, 15, 0.08);
+.dAdminInlineSave {
+  position: relative;
+  overflow: hidden;
+  color: #07110c;
+  border-color: rgba(7, 17, 12, 0.12);
+  background:
+    radial-gradient(circle at 24% 16%, rgba(255, 255, 255, 0.76), transparent 28%),
+    linear-gradient(145deg, #e9ff8f 0%, #d8ee84 42%, #b7d95a 100%);
   box-shadow:
-    0 8px 20px rgba(191, 214, 78, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.42);
+    0 18px 42px rgba(183, 217, 90, 0.21),
+    0 8px 20px rgba(7, 17, 12, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.62);
 }
 
+.dAdminPrimaryAction::before,
+.dAdminButton--primary::before,
+.dAdminInlineSave::before {
+  content: "";
+  position: absolute;
+  top: -130%;
+  bottom: -130%;
+  left: -38%;
+  width: 34%;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.34), rgba(216, 238, 132, 0.2), transparent);
+  filter: blur(11px);
+  transform: skewX(-18deg);
+  opacity: 0.78;
+  animation: dAdminButtonSweep 5.6s ease-in-out infinite;
+}
+
+@keyframes dAdminButtonSweep {
+  0%, 62% { transform: translateX(0) skewX(-18deg); opacity: 0; }
+  76% { opacity: 0.8; }
+  100% { transform: translateX(420%) skewX(-18deg); opacity: 0; }
+}
+
+.dAdminPrimaryAction:hover,
 .dAdminButton--primary:hover,
-.dAdminPrimaryAction:hover {
-  background: var(--d-admin-accent-strong);
+.dAdminInlineSave:hover {
+  transform: translateY(-2px);
+  color: #07110c;
+  background:
+    radial-gradient(circle at 22% 16%, rgba(255, 255, 255, 0.88), transparent 30%),
+    linear-gradient(145deg, #f2fac9 0%, #d8ee84 42%, #b7d95a 100%);
   box-shadow:
-    0 11px 26px rgba(191, 214, 78, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
-}
-
-.dAdminButton--dark {
-  color: #f8faef;
-  background: var(--d-admin-ink);
-  border-color: var(--d-admin-ink);
-}
-
-.dAdminButton--dark:hover {
-  background: var(--d-admin-ink-soft);
+    0 26px 58px rgba(183, 217, 90, 0.3),
+    0 12px 28px rgba(7, 17, 12, 0.09),
+    0 0 0 7px rgba(183, 217, 90, 0.075),
+    inset 0 1px 0 rgba(255, 255, 255, 0.76);
 }
 
 .dAdminButton--soft,
-.dAdminSecondaryAction {
-  color: var(--d-admin-text);
-  background: var(--d-admin-surface-soft);
-  border-color: var(--d-admin-line);
+.dAdminSecondaryAction,
+.dAdminActionButton {
+  color: rgba(7, 17, 12, 0.82);
+  border-color: rgba(7, 17, 12, 0.1);
+  background:
+    radial-gradient(circle at 16% 0%, rgba(255, 255, 255, 0.78), transparent 30%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.86), rgba(238, 244, 224, 0.72));
+  box-shadow:
+    0 10px 26px rgba(7, 17, 12, 0.055),
+    inset 0 1px 0 rgba(255, 255, 255, 0.74);
 }
 
 .dAdminButton--soft:hover,
-.dAdminSecondaryAction:hover {
-  border-color: var(--d-admin-line-strong);
-  background: var(--d-admin-surface);
+.dAdminSecondaryAction:hover,
+.dAdminActionButton:hover {
+  transform: translateY(-2px);
+  color: #07110c;
+  border-color: rgba(183, 217, 90, 0.26);
+  background:
+    radial-gradient(circle at 16% 0%, rgba(255, 255, 255, 0.96), transparent 30%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.98), rgba(239, 249, 219, 0.86));
+  box-shadow:
+    0 18px 42px rgba(7, 17, 12, 0.085),
+    0 0 0 5px rgba(183, 217, 90, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86);
 }
 
-.dAdminButton--large {
-  min-height: 50px;
-  padding: 0 20px;
-  border-radius: 14px;
-  font-size: 14px;
+.dAdminButton--dark {
+  color: #fffdf4;
+  border-color: rgba(255, 255, 255, 0.11);
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.12), transparent 28%),
+    linear-gradient(145deg, #05072a 0%, #070b36 55%, #172014 100%);
+  box-shadow:
+    0 20px 46px rgba(5, 7, 42, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
-.dAdminActionButton {
-  min-height: 36px;
-  padding: 0 11px;
-  border-radius: 10px;
-  color: var(--d-admin-text);
-  background: var(--d-admin-surface-soft);
-  border-color: var(--d-admin-line);
-  font-size: 12px;
+.dAdminButton--dark:hover {
+  color: #07110c;
+  border-color: rgba(183, 217, 90, 0.42);
+  background:
+    radial-gradient(circle at 24% 16%, rgba(255, 255, 255, 0.78), transparent 30%),
+    linear-gradient(145deg, #e9ff8f, #b7d95a);
 }
 
-.dAdminActionButton--success {
-  color: var(--d-admin-success);
-  background: var(--d-admin-success-soft);
-  border-color: rgba(57, 118, 74, 0.14);
-}
-
-.dAdminActionButton--danger,
-.dAdminDangerAction {
-  color: var(--d-admin-danger);
-  background: var(--d-admin-danger-soft);
+.dAdminDangerAction,
+.dAdminActionButton--danger {
+  color: #8a3028;
   border-color: rgba(159, 64, 54, 0.16);
+  background:
+    radial-gradient(circle at 16% 0%, rgba(255, 255, 255, 0.78), transparent 30%),
+    linear-gradient(145deg, rgba(248, 229, 225, 0.92), rgba(255, 246, 244, 0.82));
 }
 
 .dAdminDangerAction:hover,
 .dAdminActionButton--danger:hover {
-  color: #fff;
-  background: var(--d-admin-danger);
-  border-color: var(--d-admin-danger);
-}
-
-.dAdminInlineSave {
-  min-height: 36px;
-  padding: 0 11px;
-  color: var(--d-admin-ink);
-  background: var(--d-admin-accent);
-  border-radius: 10px;
-  font-size: 12px;
+  color: #fffdf4;
+  border-color: rgba(159, 64, 54, 0.22);
+  background:
+    radial-gradient(circle at 18% 10%, rgba(255, 255, 255, 0.14), transparent 28%),
+    linear-gradient(145deg, #7f2e2e, #a33c32);
+  box-shadow:
+    0 20px 48px rgba(159, 64, 54, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .dAdminTextButton {
@@ -242,681 +416,470 @@
   border-radius: 0;
   color: var(--d-admin-text-soft);
   background: transparent;
+  box-shadow: none;
 }
 
 .dAdminTextButton:hover {
   color: var(--d-admin-ink);
+  transform: none;
 }
 
-
-/* =========================
-   BACK BUTTON
-   ========================= */
-
 .dAdminBackLink {
-  min-height: 38px;
+  min-height: 39px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 7px;
   width: fit-content;
-  padding: 0 12px;
-  border: 1px solid var(--d-admin-line);
-  border-radius: 11px;
-  color: var(--d-admin-text-soft);
-  background: rgba(255, 255, 255, 0.66);
+  padding: 0 14px;
+  border: 1px solid rgba(7, 17, 12, 0.09);
+  border-radius: 999px;
+  color: rgba(7, 17, 12, 0.66);
+  background:
+    radial-gradient(circle at 16% 0%, rgba(255, 255, 255, 0.84), transparent 30%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.74), rgba(238, 244, 224, 0.58));
+  box-shadow:
+    0 10px 24px rgba(7, 17, 12, 0.045),
+    inset 0 1px 0 rgba(255, 255, 255, 0.62);
   font-size: 12px;
-  font-weight: 800;
-  transition:
-    color var(--d-admin-transition),
-    border-color var(--d-admin-transition),
-    background var(--d-admin-transition),
-    transform var(--d-admin-transition);
-}
-
-.dAdminBackLink svg {
-  transition: transform var(--d-admin-transition);
+  font-weight: 900;
 }
 
 .dAdminBackLink:hover {
-  color: var(--d-admin-ink);
-  border-color: var(--d-admin-line-strong);
-  background: var(--d-admin-surface);
+  color: #07110c;
+  border-color: rgba(183, 217, 90, 0.26);
+  background:
+    radial-gradient(circle at 16% 0%, rgba(255, 255, 255, 0.96), transparent 30%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.96), rgba(239, 249, 219, 0.82));
   transform: translateY(-1px);
 }
 
-.dAdminBackLink:hover svg {
-  transform: translateX(-2px);
-}
-
-
-/* =========================
-   PANELS
-   ========================= */
-
-.dAdminPanel {
-  min-width: 0;
-  overflow: hidden;
-  border: 1px solid var(--d-admin-line);
-  border-radius: var(--d-admin-radius-md);
-  background: rgba(255, 255, 255, 0.82);
-  box-shadow: var(--d-admin-shadow-sm);
-  backdrop-filter: blur(16px);
-}
-
-.dAdminPanel--wide {
-  grid-column: 1 / -1;
-}
-
-.dAdminPanel--attention {
-  border-color: rgba(150, 106, 33, 0.22);
-  background:
-    linear-gradient(
-      135deg,
-      rgba(247, 237, 213, 0.72),
-      rgba(255, 255, 255, 0.9)
-    );
-}
-
-.dAdminPanel__head {
-  min-height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  padding: 16px 18px;
-  border-bottom: 1px solid var(--d-admin-line);
-}
-
-.dAdminPanel__head > div {
-  min-width: 0;
-}
-
-.dAdminPanel__head h2,
-.dAdminPanel__head h3 {
-  color: var(--d-admin-ink);
-  font-size: 16px;
-  font-weight: 850;
-  letter-spacing: -0.015em;
-}
-
-.dAdminPanel__head p,
-.dAdminPanel__head span {
-  margin-top: 4px;
-  color: var(--d-admin-text-soft);
-  font-size: 12px;
-  line-height: 1.45;
-}
-
-.dAdminPanel__icon {
-  width: 39px;
-  height: 39px;
-  flex: 0 0 auto;
+.dAdminField,
+.dAdminField label {
   display: grid;
-  place-items: center;
-  border-radius: 12px;
-  color: var(--d-admin-ink);
-  background: var(--d-admin-accent-soft);
+  gap: 7px;
 }
 
-.dAdminPanel__body {
-  padding: 18px;
+.dAdminField > span,
+.dAdminField label > span,
+.dAdminField label > small,
+.dAdminField > small,
+.dAdminField small {
+  color: rgba(7, 17, 12, 0.52);
 }
 
-.dAdminPanel__actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
+.dAdminField label,
+.dAdminField > label {
+  color: rgba(7, 17, 12, 0.58);
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
 }
 
-
-/* =========================
-   SEARCH
-   ========================= */
-
-.dAdminSearchBox {
-  min-width: min(100%, 250px);
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 0 13px;
-  border: 1px solid var(--d-admin-line);
-  border-radius: var(--d-admin-radius-sm);
-  color: var(--d-admin-text-faint);
-  background: rgba(255, 255, 255, 0.82);
-  transition:
-    border-color var(--d-admin-transition),
-    background var(--d-admin-transition),
-    box-shadow var(--d-admin-transition);
-}
-
-.dAdminSearchBox--wide {
-  flex: 1 1 360px;
-}
-
-.dAdminSearchBox:focus-within {
-  border-color: rgba(150, 175, 46, 0.58);
-  background: var(--d-admin-surface);
-  box-shadow: 0 0 0 4px rgba(214, 239, 103, 0.19);
-}
-
-.dAdminSearchBox svg {
-  flex: 0 0 auto;
-}
-
+.dAdminField input,
+.dAdminField select,
+.dAdminField textarea,
 .dAdminSearchBox input {
   width: 100%;
-  height: 42px;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  color: var(--d-admin-text);
-  background: transparent;
-  font-size: 13px;
-}
-
-.dAdminSearchBox input::placeholder {
-  color: var(--d-admin-text-faint);
-}
-
-
-/* =========================
-   FILTER TABS
-   ========================= */
-
-.dAdminFilterRow {
-  max-width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  overflow-x: auto;
-  padding: 4px;
-  border: 1px solid var(--d-admin-line);
-  border-radius: 13px;
-  background: var(--d-admin-surface-soft);
-  scrollbar-width: none;
-}
-
-.dAdminFilterRow::-webkit-scrollbar {
-  display: none;
-}
-
-.dAdminFilterRow button {
-  min-height: 35px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  flex: 0 0 auto;
-  padding: 0 11px;
+  outline: none;
   border: 1px solid transparent;
-  border-radius: 9px;
-  color: var(--d-admin-text-soft);
-  background: transparent;
-  font-size: 12px;
-  font-weight: 800;
-  white-space: nowrap;
+  border-radius: 21px;
+  color: #07110c;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(248, 251, 240, 0.9)) padding-box,
+    linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(7, 17, 12, 0.09), rgba(183, 217, 90, 0.22)) border-box;
+  box-shadow:
+    0 10px 28px rgba(7, 17, 12, 0.055),
+    inset 0 1px 0 rgba(255, 255, 255, 0.94),
+    inset 0 -1px 0 rgba(7, 17, 12, 0.035);
   transition:
-    color var(--d-admin-transition),
-    border-color var(--d-admin-transition),
+    transform var(--d-admin-transition),
+    box-shadow var(--d-admin-transition),
     background var(--d-admin-transition),
-    box-shadow var(--d-admin-transition);
-}
-
-.dAdminFilterRow button:hover {
-  color: var(--d-admin-ink);
-  background: rgba(255, 255, 255, 0.58);
-}
-
-.dAdminFilterRow button.is-active {
-  color: var(--d-admin-ink);
-  border-color: var(--d-admin-line);
-  background: var(--d-admin-surface);
-  box-shadow: 0 3px 10px rgba(17, 21, 15, 0.07);
-}
-
-.dAdminFilterRow button span {
-  min-width: 21px;
-  height: 21px;
-  display: inline-grid;
-  place-items: center;
-  padding: 0 6px;
-  border-radius: 999px;
-  color: var(--d-admin-text-soft);
-  background: var(--d-admin-surface-muted);
-  font-size: 10px;
-  font-weight: 900;
-}
-
-.dAdminFilterRow button.is-active span {
-  color: var(--d-admin-ink);
-  background: var(--d-admin-accent);
-}
-
-
-/* =========================
-   STATUS BADGES
-   ========================= */
-
-.dAdminStatus {
-  min-height: 27px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: fit-content;
-  padding: 0 9px;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: 0.035em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.dAdminStatus::before {
-  width: 6px;
-  height: 6px;
-  flex: 0 0 auto;
-  border-radius: 50%;
-  background: currentColor;
-  content: "";
-}
-
-.dAdminStatus--neutral {
-  color: #687066;
-  border-color: rgba(104, 112, 102, 0.14);
-  background: #edf0ea;
-}
-
-.dAdminStatus--success {
-  color: var(--d-admin-success);
-  border-color: rgba(57, 118, 74, 0.14);
-  background: var(--d-admin-success-soft);
-}
-
-.dAdminStatus--warning {
-  color: var(--d-admin-warning);
-  border-color: rgba(150, 106, 33, 0.15);
-  background: var(--d-admin-warning-soft);
-}
-
-.dAdminStatus--danger {
-  color: var(--d-admin-danger);
-  border-color: rgba(159, 64, 54, 0.14);
-  background: var(--d-admin-danger-soft);
-}
-
-.dAdminStatus--info {
-  color: var(--d-admin-info);
-  border-color: rgba(66, 103, 125, 0.14);
-  background: var(--d-admin-info-soft);
-}
-
-
-/* =========================
-   FORM FIELDS
-   ========================= */
-
-.dAdminField {
-  min-width: 0;
-  display: grid;
-  align-content: start;
-  gap: 7px;
-}
-
-.dAdminField > span {
-  color: var(--d-admin-text-soft);
-  font-size: 10px;
-  font-weight: 900;
-  line-height: 1.2;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-}
-
-.dAdminField input,
-.dAdminField textarea,
-.dAdminField select {
-  width: 100%;
-  border: 1px solid var(--d-admin-line);
-  border-radius: var(--d-admin-radius-sm);
-  color: var(--d-admin-text);
-  background: rgba(255, 255, 255, 0.9);
-  outline: 0;
-  transition:
-    border-color var(--d-admin-transition),
-    background var(--d-admin-transition),
-    box-shadow var(--d-admin-transition);
+    border-color var(--d-admin-transition);
 }
 
 .dAdminField input,
 .dAdminField select {
-  min-height: 44px;
-  padding: 0 12px;
+  min-height: 54px;
+  padding: 14px 16px;
 }
 
 .dAdminField textarea {
-  min-height: 108px;
-  padding: 11px 12px;
-  line-height: 1.55;
-}
-
-.dAdminField select {
-  padding-right: 38px;
-  appearance: none;
-  background-image:
-    linear-gradient(45deg, transparent 50%, #7a8376 50%),
-    linear-gradient(135deg, #7a8376 50%, transparent 50%);
-  background-position:
-    calc(100% - 17px) 19px,
-    calc(100% - 12px) 19px;
-  background-repeat: no-repeat;
-  background-size: 5px 5px, 5px 5px;
+  min-height: 126px;
+  padding: 15px 16px;
+  line-height: 1.65;
 }
 
 .dAdminField input:hover,
+.dAdminField select:hover,
 .dAdminField textarea:hover,
-.dAdminField select:hover {
-  border-color: var(--d-admin-line-strong);
+.dAdminSearchBox input:hover {
+  transform: translateY(-1px);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 1), rgba(244, 250, 229, 0.96)) padding-box,
+    linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(183, 217, 90, 0.34), rgba(234, 219, 158, 0.26)) border-box;
+  box-shadow:
+    0 16px 38px rgba(7, 17, 12, 0.08),
+    0 0 0 4px rgba(183, 217, 90, 0.055),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
 }
 
 .dAdminField input:focus,
+.dAdminField select:focus,
 .dAdminField textarea:focus,
-.dAdminField select:focus {
-  border-color: rgba(150, 175, 46, 0.68);
-  background: var(--d-admin-surface);
-  box-shadow: 0 0 0 4px rgba(214, 239, 103, 0.18);
+.dAdminSearchBox input:focus {
+  transform: translateY(-2px);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 1), rgba(239, 249, 219, 0.98)) padding-box,
+    linear-gradient(135deg, rgba(183, 217, 90, 0.95), rgba(255, 255, 255, 0.92), rgba(234, 219, 158, 0.55)) border-box;
+  box-shadow:
+    0 22px 48px rgba(7, 17, 12, 0.105),
+    0 0 0 5px rgba(183, 217, 90, 0.13),
+    0 0 34px rgba(183, 217, 90, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
 }
 
-.dAdminField input::placeholder,
-.dAdminField textarea::placeholder {
-  color: var(--d-admin-text-faint);
-}
-
-.dAdminField--full {
-  grid-column: 1 / -1;
-}
-
-.dAdminField--editor input,
-.dAdminField--editor select {
-  min-height: 48px;
+.dAdminField select {
+  cursor: pointer;
 }
 
 .dAdminFieldGrid {
   display: grid;
-  gap: 14px;
-}
-
-.dAdminFieldGrid--two {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
 }
 
 .dAdminFieldGrid--three {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.dAdminField--full {
+  grid-column: 1 / -1;
+}
 
-/* =========================
-   TOGGLE SWITCH
-   ========================= */
-
-.dAdminSettingToggle {
-  min-height: 76px;
+.dAdminSearchBox {
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 18px;
-  padding: 14px 15px;
-  border: 1px solid var(--d-admin-line);
-  border-radius: var(--d-admin-radius-sm);
-  background: rgba(255, 255, 255, 0.72);
-  transition:
-    border-color var(--d-admin-transition),
-    background var(--d-admin-transition),
-    box-shadow var(--d-admin-transition);
+  min-width: min(380px, 100%);
 }
 
-.dAdminSettingToggle:hover {
-  border-color: var(--d-admin-line-strong);
-  background: var(--d-admin-surface);
+.dAdminSearchBox svg {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  color: rgba(7, 17, 12, 0.42);
+  transform: translateY(-50%);
 }
 
-.dAdminSettingToggle > span {
-  min-width: 0;
-  display: grid;
-  gap: 4px;
-}
-
-.dAdminSettingToggle strong {
-  color: var(--d-admin-text);
+.dAdminSearchBox input {
+  min-height: 48px;
+  padding-left: 42px;
   font-size: 13px;
-  font-weight: 850;
-  line-height: 1.3;
 }
 
-.dAdminSettingToggle small {
-  color: var(--d-admin-text-soft);
-  font-size: 11px;
-  line-height: 1.45;
+.dAdminSearchBox--wide,
+.dAdminSearchBox.is-wide {
+  flex: 1 1 360px;
 }
 
-.dAdminSettingToggle input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.dAdminSettingToggle i {
-  width: 46px;
-  height: 26px;
-  position: relative;
-  flex: 0 0 auto;
-  border: 1px solid var(--d-admin-line-strong);
+.dAdminFilterTabs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid rgba(7, 17, 12, 0.08);
   border-radius: 999px;
-  background: var(--d-admin-surface-muted);
+  background:
+    radial-gradient(circle at 16% 0%, rgba(255, 255, 255, 0.82), transparent 32%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.72), rgba(238, 244, 224, 0.62));
+  box-shadow:
+    0 12px 28px rgba(7, 17, 12, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.dAdminFilterTabs button {
+  min-height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  color: rgba(7, 17, 12, 0.6);
+  background: transparent;
+  font-size: 11px;
+  font-weight: 900;
   transition:
-    border-color var(--d-admin-transition),
+    transform var(--d-admin-transition),
+    color var(--d-admin-transition),
     background var(--d-admin-transition),
     box-shadow var(--d-admin-transition);
 }
 
-.dAdminSettingToggle i::after {
-  width: 18px;
-  height: 18px;
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  border-radius: 50%;
-  background: var(--d-admin-surface);
-  box-shadow: 0 2px 7px rgba(17, 21, 15, 0.22);
-  content: "";
-  transition: transform var(--d-admin-transition);
+.dAdminFilterTabs button:hover {
+  color: #07110c;
+  background: rgba(255, 255, 255, 0.58);
+  transform: translateY(-1px);
 }
 
-.dAdminSettingToggle input:checked + i {
-  border-color: var(--d-admin-accent-strong);
-  background: var(--d-admin-accent);
+.dAdminFilterTabs button.is-active {
+  color: #07110c;
+  background:
+    radial-gradient(circle at 24% 14%, rgba(255, 255, 255, 0.78), transparent 30%),
+    linear-gradient(145deg, #e9ff8f, #b7d95a);
+  box-shadow:
+    0 12px 25px rgba(183, 217, 90, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.68);
 }
 
-.dAdminSettingToggle input:checked + i::after {
-  transform: translateX(20px);
+.dAdminFilterTabs button b,
+.dAdminFilterTabs button span:last-child {
+  min-width: 20px;
+  height: 20px;
+  display: inline-grid;
+  place-items: center;
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: rgba(7, 17, 12, 0.08);
+  font-size: 10px;
 }
 
-.dAdminSettingToggle:has(input:focus-visible) {
-  border-color: rgba(150, 175, 46, 0.68);
-  box-shadow: 0 0 0 4px rgba(214, 239, 103, 0.18);
+.dAdminStatus,
+.dAdminBadge {
+  min-height: 25px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: fit-content;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 8px;
+  font-weight: 950;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
+.dAdminStatus {
+  color: rgba(7, 17, 12, 0.76);
+  border: 1px solid rgba(7, 17, 12, 0.08);
+  background:
+    radial-gradient(circle at 22% 12%, rgba(255, 255, 255, 0.78), transparent 32%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.82), rgba(238, 244, 224, 0.68));
+  box-shadow:
+    0 8px 18px rgba(7, 17, 12, 0.035),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
 
-/* =========================
-   EMPTY STATE
-   ========================= */
+.dAdminStatus--published,
+.dAdminStatus.is-published {
+  color: #275d38;
+  border-color: rgba(57, 118, 74, 0.16);
+  background: linear-gradient(145deg, rgba(221, 247, 202, 0.88), rgba(244, 250, 241, 0.9));
+}
+
+.dAdminStatus--draft,
+.dAdminStatus.is-draft {
+  color: rgba(7, 17, 12, 0.58);
+  border-color: rgba(7, 17, 12, 0.09);
+  background: linear-gradient(145deg, rgba(255, 255, 252, 0.88), rgba(238, 244, 224, 0.72));
+}
+
+.dAdminStatus--archived,
+.dAdminStatus.is-archived {
+  color: rgba(7, 17, 12, 0.46);
+  border-color: rgba(7, 17, 12, 0.08);
+  background: linear-gradient(145deg, rgba(232, 235, 225, 0.9), rgba(246, 247, 241, 0.86));
+}
+
+.dAdminStatus--new,
+.dAdminStatus.is-new {
+  color: #07110c;
+  border-color: rgba(183, 217, 90, 0.26);
+  background: linear-gradient(145deg, rgba(233, 255, 143, 0.82), rgba(183, 217, 90, 0.46));
+}
 
 .dAdminEmptyState {
-  min-height: 260px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: grid;
-  place-items: center;
-  align-content: center;
-  gap: 15px;
-  padding: 38px 24px;
-  color: var(--d-admin-text-soft);
+  justify-items: center;
+  gap: 12px;
+  padding: clamp(32px, 5vw, 58px) 22px;
   text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: var(--d-admin-radius-lg);
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.84), transparent 34%),
+    radial-gradient(circle at 86% 0%, rgba(216, 238, 132, 0.14), transparent 32%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.9), rgba(238, 244, 224, 0.72));
+  box-shadow: var(--d-admin-shadow-sm);
 }
 
-.dAdminEmptyState--compact {
-  min-height: 150px;
-  padding: 24px 18px;
+.dAdminEmptyState::before {
+  content: "";
+  position: absolute;
+  top: -120px;
+  right: -105px;
+  z-index: -1;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: rgba(216, 238, 132, 0.14);
 }
 
+.dAdminEmptyState > svg,
 .dAdminEmptyState__icon {
   width: 52px;
   height: 52px;
   display: grid;
   place-items: center;
-  border: 1px solid var(--d-admin-line);
-  border-radius: 16px;
-  color: var(--d-admin-ink);
-  background: var(--d-admin-surface-soft);
+  padding: 13px;
+  border-radius: 18px;
+  color: #07110c;
+  background:
+    radial-gradient(circle at 30% 16%, rgba(255, 255, 255, 0.78), transparent 30%),
+    linear-gradient(145deg, #e9ff8f, #b7d95a);
+  box-shadow:
+    0 16px 36px rgba(183, 217, 90, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.64);
 }
 
-.dAdminEmptyState > div {
-  display: grid;
-  gap: 5px;
-}
-
-.dAdminEmptyState strong {
-  color: var(--d-admin-text);
-  font-size: 15px;
-  font-weight: 850;
-}
-
-.dAdminEmptyState span:not(.dAdminEmptyState__icon) {
-  max-width: 430px;
-  font-size: 12px;
-  line-height: 1.55;
-}
-
-
-/* =========================
-   DETAIL HEADER
-   ========================= */
-
-.dAdminDetailHeader {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 18px;
-  border: 1px solid var(--d-admin-line);
-  border-radius: var(--d-admin-radius-md);
-  background: rgba(255, 255, 255, 0.84);
-  box-shadow: var(--d-admin-shadow-sm);
-}
-
-.dAdminDetailHeader > div:first-child {
-  min-width: 0;
-  display: grid;
-  gap: 8px;
-}
-
-.dAdminDetailHeader h1,
-.dAdminDetailHeader h2 {
-  color: var(--d-admin-ink);
-  font-family: var(--serif, Georgia, serif);
-  font-size: clamp(25px, 3vw, 38px);
+.dAdminEmptyState h3 {
+  color: #07110c;
+  font-family: var(--font-display, var(--serif, Georgia)), Georgia, serif;
+  font-size: clamp(26px, 3.2vw, 38px);
   font-weight: 400;
-  line-height: 1.05;
-  letter-spacing: -0.025em;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
 }
 
-.dAdminDetailHeader p {
-  max-width: 700px;
-  color: var(--d-admin-text-soft);
+.dAdminEmptyState p {
+  max-width: 520px;
+  color: rgba(7, 17, 12, 0.62);
   font-size: 13px;
+  line-height: 1.7;
+}
+
+.dAdminSettingToggle,
+.dAdminToggleField {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  min-height: 78px;
+  padding: 16px;
+  border: 1px solid rgba(7, 17, 12, 0.09);
+  border-radius: 24px;
+  color: rgba(7, 17, 12, 0.82);
+  background:
+    radial-gradient(circle at 14% 0%, rgba(255, 255, 255, 0.76), transparent 34%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.82), rgba(238, 244, 224, 0.7));
+  box-shadow:
+    0 12px 30px rgba(7, 17, 12, 0.045),
+    inset 0 1px 0 rgba(255, 255, 255, 0.68);
+}
+
+.dAdminSettingToggle:hover,
+.dAdminToggleField:hover {
+  border-color: rgba(183, 217, 90, 0.24);
+  box-shadow:
+    0 16px 38px rgba(7, 17, 12, 0.07),
+    0 0 0 5px rgba(183, 217, 90, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.76);
+}
+
+.dAdminSettingToggle strong,
+.dAdminToggleField strong {
+  display: block;
+  color: #07110c;
+  font-size: 14px;
+  font-weight: 920;
+}
+
+.dAdminSettingToggle small,
+.dAdminToggleField small {
+  display: block;
+  margin-top: 5px;
+  color: rgba(7, 17, 12, 0.56);
+  font-size: 12px;
   line-height: 1.55;
 }
 
-.dAdminDetailHeader__status {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
+.dAdminSettingToggle input,
+.dAdminToggleField input {
+  appearance: none;
+  width: 54px;
+  height: 30px;
+  position: relative;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  cursor: pointer;
+  background: rgba(7, 17, 12, 0.16);
+  box-shadow:
+    inset 0 1px 2px rgba(7, 17, 12, 0.15),
+    inset 0 0 0 1px rgba(7, 17, 12, 0.08);
+  transition:
+    background var(--d-admin-transition),
+    box-shadow var(--d-admin-transition);
 }
 
-.dAdminDetailHeader--editor {
-  position: sticky;
-  top: calc(var(--d-admin-header-height) + 14px);
-  z-index: 8;
-  backdrop-filter: blur(18px);
+.dAdminSettingToggle input::after,
+.dAdminToggleField input::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fffdf4;
+  box-shadow:
+    0 3px 10px rgba(7, 17, 12, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: transform var(--d-admin-transition);
 }
 
-
-/* =========================
-   NOTICES
-   ========================= */
-
-.dAdminNotice {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 12px 14px;
-  border: 1px solid rgba(66, 103, 125, 0.16);
-  border-radius: var(--d-admin-radius-sm);
-  color: var(--d-admin-info);
-  background: var(--d-admin-info-soft);
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1.5;
+.dAdminSettingToggle input:checked,
+.dAdminToggleField input:checked {
+  background: linear-gradient(145deg, #e9ff8f, #b7d95a);
+  box-shadow:
+    0 0 0 5px rgba(183, 217, 90, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42);
 }
 
-.dAdminNotice--error {
-  color: var(--d-admin-danger);
-  border-color: rgba(159, 64, 54, 0.17);
-  background: var(--d-admin-danger-soft);
+.dAdminSettingToggle input:checked::after,
+.dAdminToggleField input:checked::after {
+  transform: translateX(24px);
 }
 
-
-/* =========================
-   RESPONSIVE
-   ========================= */
-
-@media (max-width: 1100px) {
-  .dAdminFieldGrid--three {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .dAdminPageIntro {
-    align-items: flex-start;
-  }
-}
-
-@media (max-width: 760px) {
-  .dAdminView {
-    gap: 18px;
-  }
-
-  .dAdminPageIntro {
+@media (max-width: 820px) {
+  .dAdminPageIntro,
+  .dAdminDetailHeader {
     display: grid;
-    gap: 16px;
-    padding-top: 0;
+    align-items: start;
+    gap: 18px;
+    padding: 22px;
+    border-radius: 26px;
   }
 
   .dAdminPageIntro h1,
-  .dAdminPageIntro h2 {
-    font-size: clamp(30px, 10vw, 42px);
+  .dAdminPageIntro h2,
+  .dAdminDetailHeader h2 {
+    font-size: clamp(34px, 10vw, 52px);
   }
 
-  .dAdminPageIntro__status {
-    justify-content: flex-start;
+  .dAdminPanel {
+    border-radius: 26px;
+  }
+
+  .dAdminPanel__head,
+  .dAdminPanel__body {
+    padding: 16px;
   }
 
   .dAdminToolbar {
@@ -924,81 +887,61 @@
     grid-template-columns: 1fr;
   }
 
-  .dAdminSearchBox,
-  .dAdminSearchBox--wide {
-    width: 100%;
+  .dAdminSearchBox {
     min-width: 0;
-  }
-
-  .dAdminFilterRow {
     width: 100%;
   }
 
-  .dAdminPanel {
-    border-radius: 16px;
+  .dAdminFilterTabs {
+    width: 100%;
+    border-radius: 22px;
   }
 
-  .dAdminPanel__head {
-    min-height: 62px;
-    align-items: flex-start;
-    padding: 14px;
+  .dAdminFilterTabs button {
+    flex: 1 1 auto;
   }
 
-  .dAdminPanel__body {
-    padding: 14px;
-  }
-
-  .dAdminFieldGrid--two,
+  .dAdminFieldGrid,
   .dAdminFieldGrid--three {
     grid-template-columns: 1fr;
   }
-
-  .dAdminField--full {
-    grid-column: auto;
-  }
-
-  .dAdminDetailHeader {
-    display: grid;
-    gap: 15px;
-    padding: 15px;
-    border-radius: 16px;
-  }
-
-  .dAdminDetailHeader__status {
-    justify-content: flex-start;
-  }
-
-  .dAdminDetailHeader--editor {
-    position: static;
-  }
-
-  .dAdminButton,
-  .dAdminPrimaryAction,
-  .dAdminSecondaryAction {
-    min-height: 44px;
-  }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 520px) {
+  .dAdminPageIntro,
+  .dAdminDetailHeader {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .dAdminPageIntro h1,
+  .dAdminPageIntro h2,
+  .dAdminDetailHeader h2 {
+    font-size: 34px;
+  }
+
+  .dAdminPanel {
+    border-radius: 22px;
+  }
+
   .dAdminPanel__head {
-    display: grid;
+    min-height: 68px;
   }
 
-  .dAdminPanel__actions {
-    justify-content: flex-start;
+  .dAdminPanel__icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 14px;
   }
 
-  .dAdminSettingToggle {
-    min-height: 70px;
-    padding: 12px;
+  .dAdminField input,
+  .dAdminField select {
+    min-height: 50px;
   }
 
-  .dAdminEmptyState {
-    min-height: 210px;
-    padding: 30px 16px;
-  }
-
-  .dAdminStatus {
-    font-size: 9px;
+  .dAdminPrimaryAction,
+  .dAdminSecondaryAction,
+  .dAdminDangerAction {
+    width: 100%;
   }
 }

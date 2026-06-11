@@ -1,12 +1,11 @@
 /* =========================================================
-   DANKOV ADMIN — COMMENTS / MODERATION
-   Опашка за преглед, решения и детайлен екран
+   Dankov Admin — Full CSS replacement
+   Design only. No new features. No API changes.
+   Visual reference: public website / AboutPage / Chat / Booking.
+   Fonts: uses existing site variables var(--font-display), var(--serif),
+   var(--font-sans), var(--sans).
    ========================================================= */
 
-
-/* =========================================================
-   ОБЩА СТРУКТУРА
-   ========================================================= */
 
 .dAdminCommentsView,
 .dAdminCommentDetail {
@@ -15,114 +14,19 @@
   margin: 0 auto;
 }
 
-
-/* =========================================================
-   MODERATION HERO
-   ========================================================= */
-
 .dAdminPageIntro--comments {
-  min-height: 218px;
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
+  min-height: 224px;
   align-items: flex-end;
   padding: clamp(26px, 4vw, 46px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--d-admin-radius-lg);
-  color: #f8faef;
-  background:
-    radial-gradient(
-      circle at 91% 4%,
-      rgba(214, 239, 103, 0.19),
-      transparent 31%
-    ),
-    radial-gradient(
-      circle at 65% 120%,
-      rgba(214, 239, 103, 0.07),
-      transparent 38%
-    ),
-    linear-gradient(
-      135deg,
-      #11150f 0%,
-      #1b2318 52%,
-      #283323 100%
-    );
-  box-shadow:
-    0 28px 72px rgba(17, 21, 15, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-}
-
-.dAdminPageIntro--comments::before {
-  position: absolute;
-  z-index: -1;
-  top: -140px;
-  right: -95px;
-  width: 370px;
-  height: 370px;
-  border: 1px solid rgba(214, 239, 103, 0.14);
-  border-radius: 50%;
-  content: "";
-}
-
-.dAdminPageIntro--comments::after {
-  position: absolute;
-  z-index: -1;
-  right: 150px;
-  bottom: -280px;
-  width: 450px;
-  height: 450px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 50%;
-  content: "";
-}
-
-.dAdminPageIntro--comments > div {
-  position: relative;
-  z-index: 1;
 }
 
 .dAdminPageIntro--comments .dAdminBackLink {
   margin-bottom: 5px;
-  color: rgba(248, 250, 239, 0.68);
+  color: rgba(255, 253, 244, 0.68);
   border-color: rgba(255, 255, 255, 0.12);
   background: rgba(255, 255, 255, 0.07);
   backdrop-filter: blur(16px);
 }
-
-.dAdminPageIntro--comments .dAdminBackLink:hover {
-  color: #ffffff;
-  border-color: rgba(214, 239, 103, 0.3);
-  background: rgba(214, 239, 103, 0.1);
-}
-
-.dAdminPageIntro--comments .dAdminEyebrow {
-  color: rgba(248, 250, 239, 0.5);
-}
-
-.dAdminPageIntro--comments .dAdminEyebrow::before {
-  background: var(--d-admin-accent);
-  box-shadow: 0 0 0 5px rgba(214, 239, 103, 0.1);
-}
-
-.dAdminPageIntro--comments h2 {
-  max-width: 760px;
-  color: #ffffff;
-  font-size: clamp(42px, 5.5vw, 74px);
-  line-height: 0.93;
-  letter-spacing: -0.05em;
-}
-
-.dAdminPageIntro--comments p {
-  max-width: 680px;
-  color: rgba(248, 250, 239, 0.6);
-  font-size: 14px;
-  line-height: 1.7;
-}
-
-
-/* =========================================================
-   HERO STATUS
-   ========================================================= */
 
 .dAdminPageIntro--comments .dAdminPageIntro__status > span {
   min-height: 54px;
@@ -132,8 +36,8 @@
   gap: 9px;
   padding: 0 17px;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 15px;
-  color: rgba(248, 250, 239, 0.78);
+  border-radius: 17px;
+  color: rgba(255, 253, 244, 0.78);
   background: rgba(255, 255, 255, 0.075);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.07),
@@ -143,40 +47,17 @@
   backdrop-filter: blur(18px);
 }
 
-.dAdminPageIntro--comments
-  .dAdminPageIntro__status
-  > span.is-warning {
+.dAdminPageIntro--comments .dAdminPageIntro__status > span.is-warning {
   color: #ffedc7;
   border-color: rgba(234, 188, 101, 0.26);
   background: rgba(150, 106, 33, 0.18);
 }
 
-.dAdminPageIntro--comments
-  .dAdminPageIntro__status
-  > span.is-warning
-  svg {
-  color: #f2c977;
-}
-
-.dAdminPageIntro--comments
-  .dAdminPageIntro__status
-  > span.is-clear {
+.dAdminPageIntro--comments .dAdminPageIntro__status > span.is-clear {
   color: #dff7e5;
   border-color: rgba(104, 170, 120, 0.24);
   background: rgba(57, 118, 74, 0.18);
 }
-
-.dAdminPageIntro--comments
-  .dAdminPageIntro__status
-  > span.is-clear
-  svg {
-  color: #8bce9b;
-}
-
-
-/* =========================================================
-   MODERATION METRICS
-   ========================================================= */
 
 .dAdminModerationMetrics {
   display: grid;
@@ -184,7 +65,8 @@
   gap: 11px;
 }
 
-.dAdminModerationMetric {
+.dAdminModerationMetric,
+.dAdminCommentCard {
   min-width: 0;
   min-height: 112px;
   position: relative;
@@ -195,13 +77,18 @@
   align-items: center;
   gap: 13px;
   padding: 16px;
-  border: 1px solid var(--d-admin-line);
+  border: 1px solid rgba(255, 255, 255, 0.58);
   border-radius: var(--d-admin-radius-md);
-  background: rgba(255, 255, 255, 0.8);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.86), transparent 34%),
+    radial-gradient(circle at 94% 0%, rgba(216, 238, 132, 0.1), transparent 32%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.9), rgba(238, 244, 224, 0.74));
   box-shadow: var(--d-admin-shadow-sm);
 }
 
-.dAdminModerationMetric::after {
+.dAdminModerationMetric::after,
+.dAdminCommentCard::after {
+  content: "";
   position: absolute;
   z-index: -1;
   top: -70px;
@@ -209,8 +96,7 @@
   width: 155px;
   height: 155px;
   border-radius: 50%;
-  background: rgba(214, 239, 103, 0.065);
-  content: "";
+  background: rgba(216, 238, 132, 0.075);
 }
 
 .dAdminModerationMetric__icon {
@@ -218,9 +104,14 @@
   height: 44px;
   display: grid;
   place-items: center;
-  border-radius: 13px;
-  color: var(--d-admin-ink);
-  background: var(--d-admin-surface-soft);
+  border-radius: 15px;
+  color: #07110c;
+  background:
+    radial-gradient(circle at 30% 16%, rgba(255, 255, 255, 0.78), transparent 30%),
+    linear-gradient(145deg, #e9ff8f, #b7d95a);
+  box-shadow:
+    0 14px 30px rgba(183, 217, 90, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.64);
 }
 
 .dAdminModerationMetric__copy {
@@ -233,10 +124,10 @@
 
 .dAdminModerationMetric__copy small {
   grid-column: 1;
-  color: var(--d-admin-text-soft);
+  color: rgba(7, 17, 12, 0.46);
   font-size: 9px;
-  font-weight: 900;
-  letter-spacing: 0.06em;
+  font-weight: 950;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -244,9 +135,9 @@
   grid-column: 2;
   grid-row: 1 / span 2;
   align-self: center;
-  color: var(--d-admin-ink);
-  font-family: var(--serif, Georgia, serif);
-  font-size: 39px;
+  color: #07110c;
+  font-family: var(--font-display, var(--serif, Georgia)), Georgia, serif;
+  font-size: 42px;
   font-weight: 400;
   line-height: 0.9;
   letter-spacing: -0.045em;
@@ -254,1017 +145,78 @@
 
 .dAdminModerationMetric__copy > span {
   grid-column: 1;
-  color: var(--d-admin-text-faint);
-  font-size: 9px;
-  line-height: 1.35;
-}
-
-.dAdminModerationMetric--warning {
-  border-color: rgba(150, 106, 33, 0.14);
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.9),
-      rgba(247, 237, 213, 0.8)
-    );
-}
-
-.dAdminModerationMetric--warning .dAdminModerationMetric__icon {
-  color: var(--d-admin-warning);
-  background: var(--d-admin-warning-soft);
-}
-
-.dAdminModerationMetric--success {
-  border-color: rgba(57, 118, 74, 0.13);
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.9),
-      rgba(228, 242, 231, 0.75)
-    );
-}
-
-.dAdminModerationMetric--success .dAdminModerationMetric__icon {
-  color: var(--d-admin-success);
-  background: var(--d-admin-success-soft);
-}
-
-
-/* =========================================================
-   MODERATION PANEL
-   ========================================================= */
-
-.dAdminCommentsPanel {
-  overflow: visible;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-  backdrop-filter: none;
-}
-
-.dAdminCommentsPanel > .dAdminToolbar {
-  position: sticky;
-  top: calc(var(--d-admin-header-height) + 14px);
-  z-index: 10;
-  padding: 10px;
-  border: 1px solid var(--d-admin-line);
-  border-radius: 17px;
-  background: rgba(247, 247, 241, 0.9);
-  box-shadow:
-    0 14px 38px rgba(17, 21, 15, 0.075),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(20px);
-}
-
-
-/* =========================================================
-   COMMENTS QUEUE
-   ========================================================= */
-
-.dAdminCommentsQueue {
-  display: grid;
-  gap: 9px;
-  padding-top: 14px;
-}
-
-.dAdminCommentsQueue > .dAdminEmptyState {
-  border: 1px solid var(--d-admin-line);
-  border-radius: var(--d-admin-radius-md);
-  background: rgba(255, 255, 255, 0.78);
-  box-shadow: var(--d-admin-shadow-sm);
-}
-
-
-/* =========================================================
-   COMMENT CARD
-   ========================================================= */
-
-.dAdminCommentCard {
-  min-width: 0;
-  position: relative;
-  isolation: isolate;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 12px;
-  padding: 9px;
-  border: 1px solid var(--d-admin-line);
-  border-radius: var(--d-admin-radius-md);
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.95),
-      rgba(248, 250, 244, 0.88)
-    );
-  box-shadow:
-    0 10px 28px rgba(17, 21, 15, 0.045),
-    inset 0 1px 0 rgba(255, 255, 255, 0.88);
-  transition:
-    transform var(--d-admin-transition),
-    border-color var(--d-admin-transition),
-    background var(--d-admin-transition),
-    box-shadow var(--d-admin-transition);
-}
-
-.dAdminCommentCard::before {
-  position: absolute;
-  z-index: -1;
-  top: -110px;
-  right: -90px;
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  background: rgba(214, 239, 103, 0);
-  content: "";
-  transition: background 220ms ease;
-}
-
-.dAdminCommentCard:hover {
-  z-index: 2;
-  transform: translateY(-3px);
-  border-color: rgba(137, 156, 54, 0.25);
-  background:
-    linear-gradient(
-      145deg,
-      #ffffff,
-      rgba(245, 249, 233, 0.97)
-    );
-  box-shadow:
-    0 21px 52px rgba(17, 21, 15, 0.095),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
-}
-
-.dAdminCommentCard:hover::before {
-  background: rgba(214, 239, 103, 0.11);
-}
-
-
-/* Pending comment */
-
-.dAdminCommentCard--pending {
-  border-color: rgba(150, 106, 33, 0.2);
-  background:
-    radial-gradient(
-      circle at 100% 0%,
-      rgba(247, 237, 213, 0.35),
-      transparent 34%
-    ),
-    linear-gradient(
-      145deg,
-      #ffffff,
-      rgba(255, 250, 237, 0.94)
-    );
-}
-
-.dAdminCommentCard--pending::after {
-  position: absolute;
-  top: 9px;
-  bottom: 9px;
-  left: 0;
-  width: 4px;
-  border-radius: 0 4px 4px 0;
-  background: var(--d-admin-warning);
-  content: "";
-}
-
-
-/* Hidden comment */
-
-.dAdminCommentCard--hidden {
-  opacity: 0.88;
-}
-
-
-/* Deleted comment */
-
-.dAdminCommentCard--deleted {
-  opacity: 0.68;
-  border-color: rgba(159, 64, 54, 0.13);
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.92),
-      rgba(248, 229, 225, 0.5)
-    );
-}
-
-
-/* =========================================================
-   COMMENT CARD MAIN BUTTON
-   ========================================================= */
-
-.dAdminCommentCard__main {
-  min-width: 0;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
-  padding: 6px;
-  border: 0;
-  color: var(--d-admin-text);
-  background: transparent;
-  text-align: left;
-}
-
-.dAdminCommentCard__avatar {
-  width: 46px;
-  height: 46px;
-  display: grid;
-  place-items: center;
-  flex: 0 0 auto;
-  border: 1px solid var(--d-admin-line);
-  border-radius: 14px;
-  color: #f8faef;
-  background:
-    linear-gradient(
-      145deg,
-      var(--d-admin-ink-soft),
-      var(--d-admin-ink)
-    );
-  box-shadow:
-    0 8px 18px rgba(17, 21, 15, 0.13),
-    inset 0 1px 0 rgba(255, 255, 255, 0.07);
-  font-size: 14px;
-  font-weight: 900;
-}
-
-.dAdminCommentCard--pending .dAdminCommentCard__avatar {
-  color: var(--d-admin-ink);
-  border-color: rgba(150, 106, 33, 0.16);
-  background:
-    linear-gradient(
-      145deg,
-      #f1cf8a,
-      #d9a948
-    );
-}
-
-.dAdminCommentCard__content {
-  min-width: 0;
-  display: grid;
-  gap: 7px;
-}
-
-.dAdminCommentCard__topline {
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-}
-
-.dAdminCommentCard__topline strong {
-  overflow: hidden;
-  color: var(--d-admin-ink);
-  font-size: 13px;
-  font-weight: 900;
-  letter-spacing: -0.012em;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.dAdminCommentCard__topline small {
-  flex: 0 0 auto;
-  color: var(--d-admin-text-faint);
-  font-size: 9px;
-  white-space: nowrap;
-}
-
-.dAdminCommentCard__meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-}
-
-.dAdminCommentCard__meta .dAdminStatus {
-  min-height: 23px;
-  padding-inline: 7px;
-  font-size: 8px;
-}
-
-.dAdminCommentCard__meta > span:not(.dAdminStatus) {
-  min-width: 0;
-  min-height: 23px;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  max-width: 430px;
-  padding: 0 8px;
-  border: 1px solid var(--d-admin-line);
-  border-radius: 999px;
-  color: var(--d-admin-text-soft);
-  background: rgba(255, 255, 255, 0.62);
-  font-size: 8px;
-  font-weight: 800;
-  white-space: nowrap;
-}
-
-.dAdminCommentCard__meta > span:not(.dAdminStatus) svg {
-  flex: 0 0 auto;
-}
-
-.dAdminCommentCard__body {
-  display: -webkit-box;
-  overflow: hidden;
-  max-width: 960px;
-  color: var(--d-admin-text-soft);
-  font-size: 11px;
-  line-height: 1.55;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
-
-.dAdminCommentCard__arrow {
-  color: var(--d-admin-text-faint);
-  transition:
-    color var(--d-admin-transition),
-    transform var(--d-admin-transition);
-}
-
-.dAdminCommentCard:hover .dAdminCommentCard__arrow {
-  color: var(--d-admin-ink);
-  transform: translateX(4px);
-}
-
-
-/* =========================================================
-   COMMENT ACTIONS
-   ========================================================= */
-
-.dAdminCommentActions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 7px;
-}
-
-.dAdminCommentActions--compact {
-  flex-wrap: nowrap;
-  padding-right: 3px;
-}
-
-.dAdminCommentActions--compact .dAdminActionButton {
-  width: 36px;
-  min-width: 36px;
-  height: 36px;
-  min-height: 36px;
-  padding: 0;
-}
-
-.dAdminCommentActions--compact .dAdminActionButton span {
-  display: none;
-}
-
-
-/* =========================================================
-   DETAIL HEADER
-   ========================================================= */
-
-.dAdminCommentDetail > .dAdminDetailHeader {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  min-height: 166px;
-  align-items: flex-end;
-  padding: 24px 26px;
-  color: #f8faef;
-  border-color: rgba(255, 255, 255, 0.07);
-  background:
-    radial-gradient(
-      circle at 92% 0%,
-      rgba(214, 239, 103, 0.2),
-      transparent 31%
-    ),
-    linear-gradient(
-      135deg,
-      #10140e,
-      #222d1e
-    );
-  box-shadow:
-    0 23px 60px rgba(17, 21, 15, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-}
-
-.dAdminCommentDetail > .dAdminDetailHeader::after {
-  position: absolute;
-  z-index: -1;
-  top: -145px;
-  right: -90px;
-  width: 350px;
-  height: 350px;
-  border: 1px solid rgba(214, 239, 103, 0.14);
-  border-radius: 50%;
-  content: "";
-}
-
-.dAdminCommentDetail .dAdminDetailHeader .dAdminBackLink {
-  color: rgba(248, 250, 239, 0.68);
-  border-color: rgba(255, 255, 255, 0.11);
-  background: rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(15px);
-}
-
-.dAdminCommentDetail .dAdminDetailHeader .dAdminBackLink:hover {
-  color: #ffffff;
-  border-color: rgba(214, 239, 103, 0.28);
-  background: rgba(214, 239, 103, 0.1);
-}
-
-.dAdminCommentDetail .dAdminDetailHeader .dAdminEyebrow {
-  color: rgba(248, 250, 239, 0.48);
-}
-
-.dAdminCommentDetail .dAdminDetailHeader .dAdminEyebrow::before {
-  background: var(--d-admin-accent);
-}
-
-.dAdminCommentDetail .dAdminDetailHeader h2 {
-  max-width: 900px;
-  color: #ffffff;
-  font-size: clamp(34px, 4.4vw, 55px);
-}
-
-.dAdminCommentDetail .dAdminDetailHeader p {
-  color: rgba(248, 250, 239, 0.55);
-}
-
-
-/* =========================================================
-   DETAIL LAYOUT
-   ========================================================= */
-
-.dAdminCommentDetail__layout {
-  min-width: 0;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
-  align-items: start;
-  gap: 15px;
-}
-
-.dAdminCommentDetail__main,
-.dAdminCommentDetail__aside {
-  min-width: 0;
-  display: grid;
-  gap: 14px;
-}
-
-.dAdminCommentDetail__aside {
-  position: sticky;
-  top: calc(var(--d-admin-header-height) + 14px);
-}
-
-.dAdminCommentDetail__main > .dAdminPanel,
-.dAdminCommentDetail__aside > .dAdminPanel {
-  border-radius: 19px;
-}
-
-
-/* =========================================================
-   COMMENT PREVIEW
-   ========================================================= */
-
-.dAdminCommentPreview {
-  overflow: hidden;
-}
-
-.dAdminCommentPreview__body {
-  min-height: 280px;
-  position: relative;
-  isolation: isolate;
-  display: grid;
-  align-content: center;
-  padding: clamp(30px, 5vw, 62px);
-  background:
-    radial-gradient(
-      circle at 88% 10%,
-      rgba(214, 239, 103, 0.13),
-      transparent 31%
-    ),
-    linear-gradient(
-      145deg,
-      rgba(248, 250, 244, 0.96),
-      rgba(238, 243, 228, 0.9)
-    );
-}
-
-.dAdminCommentPreview__body::after {
-  position: absolute;
-  z-index: -1;
-  right: -100px;
-  bottom: -125px;
-  width: 270px;
-  height: 270px;
-  border: 1px solid rgba(17, 21, 15, 0.055);
-  border-radius: 50%;
-  content: "";
-}
-
-.dAdminCommentPreview__quote {
-  position: absolute;
-  top: 13px;
-  left: 25px;
-  color: rgba(151, 174, 48, 0.28);
-  font-family: Georgia, serif;
-  font-size: 120px;
-  font-weight: 700;
-  line-height: 1;
-  pointer-events: none;
-}
-
-.dAdminCommentPreview__body p {
-  position: relative;
-  z-index: 1;
-  max-width: 900px;
-  color: var(--d-admin-ink);
-  font-family: var(--serif, Georgia, serif);
-  font-size: clamp(23px, 3vw, 38px);
-  font-weight: 400;
-  line-height: 1.32;
-  letter-spacing: -0.025em;
-  overflow-wrap: anywhere;
-  white-space: pre-wrap;
-}
-
-.dAdminCommentPreview__footer {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 14px 18px;
-  border-top: 1px solid var(--d-admin-line);
-  background: rgba(255, 255, 255, 0.88);
-}
-
-.dAdminCommentPreview__footer .dAdminCommentCard__avatar {
-  width: 39px;
-  height: 39px;
-  border-radius: 12px;
+  color: rgba(7, 17, 12, 0.62);
   font-size: 12px;
 }
 
-.dAdminCommentPreview__footer > span:last-child {
-  min-width: 0;
+.dAdminCommentsQueue,
+.dAdminCommentsList {
   display: grid;
-  gap: 3px;
-}
-
-.dAdminCommentPreview__footer strong {
-  overflow: hidden;
-  color: var(--d-admin-text);
-  font-size: 11px;
-  font-weight: 850;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.dAdminCommentPreview__footer small {
-  color: var(--d-admin-text-faint);
-  font-size: 8px;
-}
-
-
-/* =========================================================
-   MODERATION DECISION
-   ========================================================= */
-
-.dAdminModerationDecision {
-  padding-bottom: 16px;
-}
-
-.dAdminModerationDecision > p {
-  max-width: 760px;
-  padding: 17px 18px 14px;
-  color: var(--d-admin-text-soft);
-  font-size: 11px;
-  line-height: 1.65;
-}
-
-.dAdminModerationDecision > .dAdminCommentActions {
-  justify-content: flex-start;
-  padding: 0 18px;
-}
-
-.dAdminModerationDecision .dAdminActionButton {
-  min-height: 43px;
-  padding-inline: 15px;
-}
-
-
-/* =========================================================
-   INFO PANELS
-   ========================================================= */
-
-.dAdminInfoPanel .dAdminPanel__head > div {
-  display: flex;
-  align-items: center;
   gap: 10px;
 }
 
-.dAdminInfoPanel .dAdminPanel__head small,
-.dAdminCommentDetail__main .dAdminPanel__head small {
-  display: block;
-  margin: 0 0 3px;
-  color: var(--d-admin-text-faint);
-  font-size: 8px;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.dAdminInfoPanel .dAdminPanel__head h3,
-.dAdminCommentDetail__main .dAdminPanel__head h3 {
-  font-size: 14px;
-}
-
-.dAdminInfoList {
+.dAdminCommentRow {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: grid;
-  margin: 0;
-  padding: 8px 15px 15px;
-}
-
-.dAdminInfoList > div {
-  min-width: 0;
-  display: grid;
-  gap: 5px;
-  padding: 12px 1px;
-  border-bottom: 1px solid var(--d-admin-line);
-}
-
-.dAdminInfoList > div:last-child {
-  border-bottom: 0;
-}
-
-.dAdminInfoList dt {
-  color: var(--d-admin-text-faint);
-  font-size: 8px;
-  font-weight: 900;
-  letter-spacing: 0.075em;
-  text-transform: uppercase;
-}
-
-.dAdminInfoList dd {
-  min-width: 0;
-  margin: 0;
-  overflow-wrap: anywhere;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  width: 100%;
+  min-height: 118px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 26px;
   color: var(--d-admin-text);
-  font-size: 11px;
-  font-weight: 800;
-  line-height: 1.5;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.86), transparent 34%),
+    radial-gradient(circle at 94% 0%, rgba(216, 238, 132, 0.1), transparent 32%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.92), rgba(238, 244, 224, 0.76));
+  box-shadow: var(--d-admin-shadow-sm);
+  text-align: left;
+  transition:
+    transform var(--d-admin-transition),
+    border-color var(--d-admin-transition),
+    box-shadow var(--d-admin-transition);
 }
 
-
-/* =========================================================
-   LARGE SCREENS
-   ========================================================= */
-
-@media (min-width: 1500px) {
-  .dAdminCommentsQueue {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .dAdminCommentCard {
-    min-height: 148px;
-    align-items: stretch;
-  }
-
-  .dAdminCommentCard__main {
-    align-items: start;
-  }
-
-  .dAdminCommentActions--compact {
-    align-content: center;
-  }
+.dAdminCommentRow:hover {
+  transform: translateY(-2px);
+  border-color: rgba(183, 217, 90, 0.24);
+  box-shadow: var(--d-admin-shadow-md);
 }
 
+.dAdminCommentRow strong,
+.dAdminCommentCard strong {
+  color: #07110c;
+  font-family: var(--font-display, var(--serif, Georgia)), Georgia, serif;
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 1.05;
+}
 
-/* =========================================================
-   LAPTOP
-   ========================================================= */
+.dAdminCommentRow p,
+.dAdminCommentCard p {
+  color: rgba(7, 17, 12, 0.62);
+  font-size: 12px;
+  line-height: 1.6;
+}
 
-@media (max-width: 1120px) {
+@media (max-width: 980px) {
   .dAdminModerationMetrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-
-  .dAdminCommentDetail__layout {
-    grid-template-columns: minmax(0, 1fr) 290px;
-  }
 }
 
-
-/* =========================================================
-   TABLET
-   ========================================================= */
-
-@media (max-width: 900px) {
-  .dAdminPageIntro--comments {
-    min-height: 0;
-    display: grid;
-    align-items: start;
-  }
-
-  .dAdminPageIntro--comments .dAdminPageIntro__status {
-    justify-content: flex-start;
-  }
-
-  .dAdminCommentDetail__layout {
+@media (max-width: 620px) {
+  .dAdminModerationMetrics,
+  .dAdminCommentRow {
     grid-template-columns: 1fr;
-  }
-
-  .dAdminCommentDetail__aside {
-    position: static;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media (max-width: 700px) {
-  .dAdminCommentsView,
-  .dAdminCommentDetail {
-    gap: 13px;
   }
 
   .dAdminPageIntro--comments {
-    padding: 22px 17px;
-    border-radius: 19px;
-  }
-
-  .dAdminPageIntro--comments h2 {
-    font-size: clamp(40px, 13vw, 53px);
-  }
-
-  .dAdminPageIntro--comments p {
-    font-size: 12px;
-  }
-
-  .dAdminPageIntro--comments .dAdminPageIntro__status {
-    width: 100%;
-  }
-
-  .dAdminPageIntro--comments .dAdminPageIntro__status > span {
-    width: 100%;
-    min-height: 49px;
-  }
-
-  .dAdminModerationMetrics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-  }
-
-  .dAdminModerationMetric {
-    min-height: 95px;
-    gap: 9px;
-    padding: 12px;
-    border-radius: 15px;
-  }
-
-  .dAdminModerationMetric__icon {
-    width: 37px;
-    height: 37px;
-    border-radius: 11px;
-  }
-
-  .dAdminModerationMetric__copy {
-    display: grid;
-    grid-template-columns: 1fr;
-  }
-
-  .dAdminModerationMetric__copy small,
-  .dAdminModerationMetric__copy strong,
-  .dAdminModerationMetric__copy > span {
-    grid-column: 1;
-    grid-row: auto;
-  }
-
-  .dAdminModerationMetric__copy strong {
-    font-size: 28px;
-  }
-
-  .dAdminModerationMetric__copy > span {
-    display: none;
-  }
-
-  .dAdminCommentsPanel > .dAdminToolbar {
-    position: static;
-    display: grid;
-    grid-template-columns: 1fr;
-    padding: 8px;
-  }
-
-  .dAdminCommentsQueue {
-    gap: 8px;
-    padding-top: 10px;
-  }
-
-  .dAdminCommentCard {
-    grid-template-columns: 1fr;
-    gap: 8px;
-    padding: 10px;
-    border-radius: 17px;
-  }
-
-  .dAdminCommentCard__main {
-    grid-template-columns: 42px minmax(0, 1fr);
-    align-items: start;
-    gap: 11px;
-    padding: 3px;
-  }
-
-  .dAdminCommentCard__avatar {
-    width: 42px;
-    height: 42px;
-    border-radius: 13px;
-    font-size: 13px;
-  }
-
-  .dAdminCommentCard__arrow {
-    display: none;
-  }
-
-  .dAdminCommentCard__topline {
-    align-items: flex-start;
-  }
-
-  .dAdminCommentCard__topline strong {
-    font-size: 12px;
-  }
-
-  .dAdminCommentCard__topline small {
-    font-size: 8px;
-  }
-
-  .dAdminCommentCard__meta
-    > span:not(.dAdminStatus) {
-    max-width: 100%;
-  }
-
-  .dAdminCommentCard__body {
-    font-size: 10px;
-  }
-
-  .dAdminCommentActions--compact {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    padding: 8px 0 0 53px;
-    border-top: 1px solid var(--d-admin-line);
-  }
-
-  .dAdminCommentActions--compact .dAdminActionButton {
-    width: 100%;
-    min-width: 0;
-    height: 39px;
-  }
-
-  .dAdminCommentActions--compact .dAdminActionButton span {
-    display: inline;
-    font-size: 9px;
-  }
-
-  .dAdminCommentDetail > .dAdminDetailHeader {
     min-height: 0;
-    padding: 19px 16px;
-    border-radius: 18px;
-  }
-
-  .dAdminCommentDetail .dAdminDetailHeader h2 {
-    font-size: 34px;
-  }
-
-  .dAdminCommentDetail .dAdminDetailHeader__status {
-    justify-content: flex-start;
-  }
-
-  .dAdminCommentDetail__main,
-  .dAdminCommentDetail__aside {
-    gap: 11px;
-  }
-
-  .dAdminCommentDetail__aside {
-    grid-template-columns: 1fr;
-  }
-
-  .dAdminCommentPreview__body {
-    min-height: 230px;
-    padding: 38px 22px 28px;
-  }
-
-  .dAdminCommentPreview__quote {
-    top: 9px;
-    left: 16px;
-    font-size: 86px;
-  }
-
-  .dAdminCommentPreview__body p {
-    font-size: clamp(22px, 7vw, 30px);
-  }
-
-  .dAdminModerationDecision > .dAdminCommentActions {
-    display: grid;
-    grid-template-columns: 1fr;
-  }
-
-  .dAdminModerationDecision .dAdminActionButton {
-    width: 100%;
-    min-height: 46px;
-  }
-}
-
-
-/* =========================================================
-   VERY SMALL MOBILE
-   ========================================================= */
-
-@media (max-width: 440px) {
-  .dAdminPageIntro--comments {
-    padding: 20px 15px;
-  }
-
-  .dAdminPageIntro--comments h2 {
-    font-size: 40px;
-  }
-
-  .dAdminModerationMetrics {
-    gap: 6px;
-  }
-
-  .dAdminModerationMetric {
-    min-height: 86px;
-    padding: 10px;
-  }
-
-  .dAdminModerationMetric__icon {
-    width: 33px;
-    height: 33px;
-  }
-
-  .dAdminModerationMetric__copy small {
-    font-size: 7px;
-  }
-
-  .dAdminModerationMetric__copy strong {
-    font-size: 25px;
-  }
-
-  .dAdminCommentCard {
-    padding: 9px;
-  }
-
-  .dAdminCommentCard__main {
-    grid-template-columns: 38px minmax(0, 1fr);
-    gap: 9px;
-  }
-
-  .dAdminCommentCard__avatar {
-    width: 38px;
-    height: 38px;
-    font-size: 12px;
-  }
-
-  .dAdminCommentCard__meta
-    > span:not(.dAdminStatus) {
-    display: none;
-  }
-
-  .dAdminCommentActions--compact {
-    padding-left: 47px;
-  }
-
-  .dAdminCommentActions--compact .dAdminActionButton {
-    padding-inline: 6px;
-  }
-
-  .dAdminCommentActions--compact .dAdminActionButton span {
-    font-size: 8px;
-  }
-
-  .dAdminCommentDetail .dAdminDetailHeader h2 {
-    font-size: 30px;
-  }
-
-  .dAdminCommentPreview__body {
-    min-height: 210px;
-    padding-inline: 18px;
-  }
-
-  .dAdminCommentPreview__body p {
-    font-size: 22px;
-  }
-}
-
-
-/* =========================================================
-   TOUCH DEVICES
-   ========================================================= */
-
-@media (hover: none) {
-  .dAdminCommentCard:hover,
-  .dAdminActionButton:hover {
-    transform: none;
+    padding: 22px 18px;
   }
 }

@@ -1,49 +1,103 @@
-/*
- * Global foundation for the Dankov administration area.
- * Component-specific styles live beside their JSX components.
- */
+/* =========================================================
+   Dankov Admin — Full CSS replacement
+   Design only. No new features. No API changes.
+   Visual reference: public website / AboutPage / Chat / Booking.
+   Fonts: uses existing site variables var(--font-display), var(--serif),
+   var(--font-sans), var(--sans).
+   ========================================================= */
+
 
 :root {
-  --d-admin-ink: #11150f;
-  --d-admin-ink-soft: #252b22;
-  --d-admin-paper: #f7f7f1;
-  --d-admin-surface: #ffffff;
-  --d-admin-surface-soft: #f0f2ea;
-  --d-admin-surface-muted: #e8ece3;
-  --d-admin-line: rgba(17, 21, 15, 0.1);
-  --d-admin-line-strong: rgba(17, 21, 15, 0.18);
-  --d-admin-text: #171b15;
-  --d-admin-text-soft: #667062;
-  --d-admin-text-faint: #8a9286;
-  --d-admin-accent: #d6ef67;
-  --d-admin-accent-strong: #bfd64e;
-  --d-admin-accent-soft: rgba(214, 239, 103, 0.22);
+  --d-admin-ink: #07110c;
+  --d-admin-ink-soft: #162018;
+  --d-admin-ink-deep: #05072a;
+
+  --d-admin-navy-950: #05072a;
+  --d-admin-navy-900: #070b36;
+  --d-admin-navy-850: #0b103f;
+  --d-admin-navy-800: #10164d;
+
+  --d-admin-paper: #f7faef;
+  --d-admin-paper-soft: #eef4df;
+  --d-admin-paper-warm: #f1e8d3;
+  --d-admin-ivory: #fffdf4;
+
+  --d-admin-surface: rgba(255, 255, 252, 0.92);
+  --d-admin-surface-strong: rgba(255, 255, 252, 0.98);
+  --d-admin-surface-soft: rgba(238, 244, 224, 0.82);
+  --d-admin-surface-muted: rgba(222, 232, 205, 0.78);
+
+  --d-admin-line: rgba(7, 17, 12, 0.1);
+  --d-admin-line-strong: rgba(7, 17, 12, 0.18);
+  --d-admin-glass-line: rgba(255, 255, 255, 0.58);
+
+  --d-admin-text: rgba(7, 17, 12, 0.86);
+  --d-admin-text-soft: rgba(7, 17, 12, 0.62);
+  --d-admin-text-faint: rgba(7, 17, 12, 0.42);
+
+  --d-admin-accent: #d8ee84;
+  --d-admin-accent-strong: #b7d95a;
+  --d-admin-accent-hot: #e9ff8f;
+  --d-admin-accent-soft: rgba(216, 238, 132, 0.2);
+
+  --d-admin-gold: #eadb9e;
+  --d-admin-mint: #ddf7ca;
+
   --d-admin-success: #39764a;
-  --d-admin-success-soft: #e4f2e7;
+  --d-admin-success-soft: rgba(221, 247, 202, 0.72);
+
   --d-admin-warning: #966a21;
-  --d-admin-warning-soft: #f7edd5;
+  --d-admin-warning-soft: rgba(234, 219, 158, 0.42);
+
   --d-admin-danger: #9f4036;
-  --d-admin-danger-soft: #f8e5e1;
+  --d-admin-danger-soft: rgba(248, 229, 225, 0.78);
+
   --d-admin-info: #42677d;
-  --d-admin-info-soft: #e5edf2;
+  --d-admin-info-soft: rgba(229, 237, 242, 0.78);
+
   --d-admin-sidebar-width: 286px;
   --d-admin-header-height: 82px;
-  --d-admin-radius-xs: 8px;
-  --d-admin-radius-sm: 12px;
-  --d-admin-radius-md: 18px;
-  --d-admin-radius-lg: 24px;
-  --d-admin-shadow-sm: 0 10px 28px rgba(17, 21, 15, 0.06);
-  --d-admin-shadow-md: 0 20px 56px rgba(17, 21, 15, 0.1);
-  --d-admin-transition: 180ms ease;
+
+  --d-admin-radius-xs: 10px;
+  --d-admin-radius-sm: 16px;
+  --d-admin-radius-md: 24px;
+  --d-admin-radius-lg: 34px;
+  --d-admin-radius-xl: 44px;
+
+  --d-admin-shadow-xs:
+    0 8px 22px rgba(7, 17, 12, 0.045),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+
+  --d-admin-shadow-sm:
+    0 16px 42px rgba(7, 17, 12, 0.07),
+    0 0 0 1px rgba(255, 255, 255, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82);
+
+  --d-admin-shadow-md:
+    0 28px 76px rgba(7, 17, 12, 0.12),
+    0 10px 28px rgba(7, 17, 12, 0.07),
+    0 0 0 1px rgba(255, 255, 255, 0.52),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+  --d-admin-shadow-dark:
+    0 34px 92px rgba(5, 7, 42, 0.28),
+    0 14px 38px rgba(5, 11, 8, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+  --d-admin-transition: 190ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dAdminShell,
 .dAdminLoginShell {
   min-height: 100vh;
   color: var(--d-admin-text);
-  background: var(--d-admin-paper);
+  background:
+    radial-gradient(circle at 16% 0%, rgba(255, 255, 255, 0.96), transparent 32%),
+    radial-gradient(circle at 78% 8%, rgba(216, 238, 132, 0.18), transparent 34%),
+    radial-gradient(circle at 98% 84%, rgba(5, 7, 42, 0.08), transparent 35%),
+    linear-gradient(180deg, #f7faef 0%, #eef4df 46%, #f8faf1 100%);
   font-family:
-    Inter,
+    var(--font-sans, var(--sans, "DM Sans")),
     ui-sans-serif,
     system-ui,
     -apple-system,
@@ -52,6 +106,54 @@
     sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+.dAdminShell {
+  position: relative;
+  isolation: isolate;
+}
+
+.dAdminShell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  pointer-events: none;
+  opacity: 0.32;
+  background-image:
+    linear-gradient(rgba(7, 17, 12, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(7, 17, 12, 0.024) 1px, transparent 1px);
+  background-size: 46px 46px;
+  mask-image: radial-gradient(circle at 52% 12%, black, transparent 68%);
+}
+
+.dAdminShell::after {
+  content: "";
+  position: fixed;
+  z-index: -2;
+  top: -280px;
+  right: -240px;
+  width: min(820px, 60vw);
+  height: min(820px, 60vw);
+  border-radius: 50%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 42% 42%, rgba(216, 238, 132, 0.23), transparent 50%),
+    radial-gradient(circle, rgba(5, 7, 42, 0.1), transparent 68%);
+  filter: blur(7px);
+  animation: dAdminAmbientDrift 16s ease-in-out infinite alternate;
+}
+
+@keyframes dAdminAmbientDrift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.72;
+  }
+
+  to {
+    transform: translate3d(-34px, 28px, 0) scale(1.08);
+    opacity: 1;
+  }
 }
 
 .dAdminShell *,
@@ -77,6 +179,7 @@
 .dAdminShell button,
 .dAdminLoginShell button {
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .dAdminShell button:disabled,
@@ -104,6 +207,15 @@
   margin: 0;
 }
 
+.dAdminShell h1,
+.dAdminShell h2,
+.dAdminShell h3,
+.dAdminLoginShell h1,
+.dAdminLoginShell h2,
+.dAdminLoginShell h3 {
+  text-wrap: balance;
+}
+
 .dAdminShell img,
 .dAdminLoginShell img {
   display: block;
@@ -128,14 +240,21 @@
 
 .dAdminShell :focus-visible,
 .dAdminLoginShell :focus-visible {
-  outline: 3px solid rgba(191, 214, 78, 0.42);
-  outline-offset: 2px;
+  outline: 0;
+  box-shadow:
+    0 0 0 4px rgba(216, 238, 132, 0.22),
+    0 0 0 1px rgba(127, 156, 42, 0.36);
 }
 
 .dAdminShell ::selection,
 .dAdminLoginShell ::selection {
   color: var(--d-admin-ink);
   background: var(--d-admin-accent);
+}
+
+.dAdminShell ::placeholder,
+.dAdminLoginShell ::placeholder {
+  color: rgba(7, 17, 12, 0.34);
 }
 
 .dAdminShell ::-webkit-scrollbar,
@@ -153,13 +272,13 @@
 .dAdminLoginShell ::-webkit-scrollbar-thumb {
   border: 3px solid transparent;
   border-radius: 999px;
-  background: rgba(17, 21, 15, 0.24);
+  background: rgba(7, 17, 12, 0.24);
   background-clip: padding-box;
 }
 
 .dAdminShell ::-webkit-scrollbar-thumb:hover,
 .dAdminLoginShell ::-webkit-scrollbar-thumb:hover {
-  background: rgba(17, 21, 15, 0.36);
+  background: rgba(7, 17, 12, 0.38);
   background-clip: padding-box;
 }
 
@@ -180,9 +299,7 @@
 }
 
 @keyframes dAdminSpin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {
