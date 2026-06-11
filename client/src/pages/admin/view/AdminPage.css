@@ -1,18 +1,90 @@
 /* =========================================================
-   Dankov Admin — Full CSS replacement
-   Design only. No new features. No API changes.
-   Visual reference: public website / AboutPage / Chat / Booking.
-   Fonts: uses existing site variables var(--font-display), var(--serif),
-   var(--font-sans), var(--sans).
+   DANKOV ADMIN — GLOBAL FOUNDATION
+   Full replacement file.
+
+   IMPORTANT:
+   - Design only.
+   - No JSX changes.
+   - No API/backend changes.
+   - No public website layout changes.
+
+   Font target from the public website:
+   DM Sans + Prata
+
+   Use in HTML once if not already present:
+   <link
+     href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Prata&display=swap"
+     rel="stylesheet"
+   />
    ========================================================= */
 
 
+/* =========================================================
+   FONT IMPORT SAFETY
+   Remove this @import only if the same Google Fonts link is
+   already loaded globally in index.html.
+   ========================================================= */
+
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Prata&display=swap");
+
+
+/* =========================================================
+   ROOT TOKENS
+   ========================================================= */
+
 :root {
+  /* =========================
+     PUBLIC SITE FONT SYSTEM
+     This is the important fix.
+     The admin no longer depends on undefined --sans / --serif.
+     ========================= */
+
+  --d-admin-font-sans:
+    "DM Sans",
+    var(--sans, var(--font-sans, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif));
+
+  --d-admin-font-display:
+    "Prata",
+    var(--serif, var(--font-display, Georgia, "Times New Roman", serif));
+
+  --d-admin-font-ui:
+    "DM Sans",
+    var(--sans, var(--font-sans, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif));
+
+
+  /* =========================
+     OPTIONAL PUBLIC VARIABLES BRIDGE
+     If some admin component still reads --sans / --serif directly,
+     it will now receive the same public-site fonts.
+     ========================= */
+
+  --sans:
+    "DM Sans",
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  --serif:
+    "Prata",
+    Georgia,
+    "Times New Roman",
+    serif;
+
+
+  /* =========================
+     CORE COLORS
+     ========================= */
+
   --d-admin-ink: #07110c;
   --d-admin-ink-soft: #162018;
-  --d-admin-ink-deep: #05072a;
+  --d-admin-ink-muted: #243027;
 
+  --d-admin-navy-980: #03041d;
   --d-admin-navy-950: #05072a;
+  --d-admin-navy-925: #06082f;
   --d-admin-navy-900: #070b36;
   --d-admin-navy-850: #0b103f;
   --d-admin-navy-800: #10164d;
@@ -21,6 +93,7 @@
   --d-admin-paper-soft: #eef4df;
   --d-admin-paper-warm: #f1e8d3;
   --d-admin-ivory: #fffdf4;
+  --d-admin-white: #ffffff;
 
   --d-admin-surface: rgba(255, 255, 252, 0.92);
   --d-admin-surface-strong: rgba(255, 255, 252, 0.98);
@@ -28,20 +101,26 @@
   --d-admin-surface-muted: rgba(222, 232, 205, 0.78);
 
   --d-admin-line: rgba(7, 17, 12, 0.1);
+  --d-admin-line-soft: rgba(7, 17, 12, 0.065);
   --d-admin-line-strong: rgba(7, 17, 12, 0.18);
   --d-admin-glass-line: rgba(255, 255, 255, 0.58);
 
   --d-admin-text: rgba(7, 17, 12, 0.86);
+  --d-admin-text-strong: rgba(7, 17, 12, 0.94);
   --d-admin-text-soft: rgba(7, 17, 12, 0.62);
   --d-admin-text-faint: rgba(7, 17, 12, 0.42);
+  --d-admin-text-ghost: rgba(7, 17, 12, 0.3);
 
   --d-admin-accent: #d8ee84;
   --d-admin-accent-strong: #b7d95a;
   --d-admin-accent-hot: #e9ff8f;
   --d-admin-accent-soft: rgba(216, 238, 132, 0.2);
+  --d-admin-accent-softer: rgba(216, 238, 132, 0.11);
 
   --d-admin-gold: #eadb9e;
+  --d-admin-gold-soft: rgba(234, 219, 158, 0.24);
   --d-admin-mint: #ddf7ca;
+  --d-admin-mint-soft: rgba(221, 247, 202, 0.28);
 
   --d-admin-success: #39764a;
   --d-admin-success-soft: rgba(221, 247, 202, 0.72);
@@ -55,6 +134,11 @@
   --d-admin-info: #42677d;
   --d-admin-info-soft: rgba(229, 237, 242, 0.78);
 
+
+  /* =========================
+     LAYOUT
+     ========================= */
+
   --d-admin-sidebar-width: 286px;
   --d-admin-header-height: 82px;
 
@@ -63,6 +147,12 @@
   --d-admin-radius-md: 24px;
   --d-admin-radius-lg: 34px;
   --d-admin-radius-xl: 44px;
+  --d-admin-radius-pill: 999px;
+
+
+  /* =========================
+     SHADOWS
+     ========================= */
 
   --d-admin-shadow-xs:
     0 8px 22px rgba(7, 17, 12, 0.045),
@@ -79,31 +169,68 @@
     0 0 0 1px rgba(255, 255, 255, 0.52),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
 
+  --d-admin-shadow-lg:
+    0 40px 110px rgba(5, 7, 42, 0.2),
+    0 18px 48px rgba(7, 17, 12, 0.12),
+    0 0 80px rgba(216, 238, 132, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82);
+
   --d-admin-shadow-dark:
-    0 34px 92px rgba(5, 7, 42, 0.28),
-    0 14px 38px rgba(5, 11, 8, 0.14),
+    0 38px 104px rgba(5, 7, 42, 0.32),
+    0 14px 38px rgba(5, 11, 8, 0.16),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 
+
+  /* =========================
+     MOTION
+     ========================= */
+
+  --d-admin-transition-fast: 150ms ease;
   --d-admin-transition: 190ms cubic-bezier(0.16, 1, 0.3, 1);
+  --d-admin-transition-slow: 360ms cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+
+/* =========================================================
+   SHELL FOUNDATION
+   ========================================================= */
 
 .dAdminShell,
 .dAdminLoginShell {
   min-height: 100vh;
   color: var(--d-admin-text);
   background:
-    radial-gradient(circle at 16% 0%, rgba(255, 255, 255, 0.96), transparent 32%),
-    radial-gradient(circle at 78% 8%, rgba(216, 238, 132, 0.18), transparent 34%),
-    radial-gradient(circle at 98% 84%, rgba(5, 7, 42, 0.08), transparent 35%),
-    linear-gradient(180deg, #f7faef 0%, #eef4df 46%, #f8faf1 100%);
-  font-family:
-    var(--font-sans, var(--sans, "DM Sans")),
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
+    radial-gradient(
+      circle at 13% 0%,
+      rgba(255, 255, 255, 0.96),
+      transparent 31%
+    ),
+    radial-gradient(
+      circle at 78% 8%,
+      rgba(216, 238, 132, 0.18),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 96% 84%,
+      rgba(5, 7, 42, 0.09),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 0% 100%,
+      rgba(221, 247, 202, 0.2),
+      transparent 32%
+    ),
+    linear-gradient(
+      180deg,
+      var(--d-admin-paper) 0%,
+      var(--d-admin-paper-soft) 47%,
+      #f8faf1 100%
+    );
+  font-family: var(--d-admin-font-sans);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -0.012em;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -114,47 +241,167 @@
 }
 
 .dAdminShell::before {
-  content: "";
   position: fixed;
   inset: 0;
-  z-index: -3;
+  z-index: -4;
   pointer-events: none;
   opacity: 0.32;
   background-image:
-    linear-gradient(rgba(7, 17, 12, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(7, 17, 12, 0.024) 1px, transparent 1px);
+    linear-gradient(
+      rgba(7, 17, 12, 0.034) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(7, 17, 12, 0.024) 1px,
+      transparent 1px
+    );
   background-size: 46px 46px;
-  mask-image: radial-gradient(circle at 52% 12%, black, transparent 68%);
+  mask-image:
+    radial-gradient(
+      circle at 50% 12%,
+      black,
+      transparent 70%
+    );
+  content: "";
 }
 
 .dAdminShell::after {
-  content: "";
   position: fixed;
-  z-index: -2;
-  top: -280px;
-  right: -240px;
-  width: min(820px, 60vw);
-  height: min(820px, 60vw);
+  z-index: -3;
+  top: -300px;
+  right: -260px;
+  width: min(840px, 62vw);
+  height: min(840px, 62vw);
   border-radius: 50%;
   pointer-events: none;
   background:
-    radial-gradient(circle at 42% 42%, rgba(216, 238, 132, 0.23), transparent 50%),
-    radial-gradient(circle, rgba(5, 7, 42, 0.1), transparent 68%);
-  filter: blur(7px);
-  animation: dAdminAmbientDrift 16s ease-in-out infinite alternate;
+    radial-gradient(
+      circle at 42% 42%,
+      rgba(216, 238, 132, 0.23),
+      transparent 50%
+    ),
+    radial-gradient(
+      circle,
+      rgba(5, 7, 42, 0.12),
+      transparent 68%
+    );
+  filter: blur(8px);
+  animation: dAdminAmbientDrift 18s ease-in-out infinite alternate;
+  content: "";
 }
 
-@keyframes dAdminAmbientDrift {
-  from {
-    transform: translate3d(0, 0, 0) scale(1);
-    opacity: 0.72;
-  }
-
-  to {
-    transform: translate3d(-34px, 28px, 0) scale(1.08);
-    opacity: 1;
-  }
+.dAdminLoginShell {
+  position: relative;
+  isolation: isolate;
 }
+
+
+/* =========================================================
+   TYPOGRAPHY FOUNDATION
+   ========================================================= */
+
+.dAdminShell h1,
+.dAdminShell h2,
+.dAdminShell h3,
+.dAdminLoginShell h1,
+.dAdminLoginShell h2,
+.dAdminLoginShell h3 {
+  color: var(--d-admin-text-strong);
+  text-wrap: balance;
+}
+
+.dAdminShell h1,
+.dAdminShell h2,
+.dAdminLoginShell h1,
+.dAdminLoginShell h2 {
+  font-family: var(--d-admin-font-display);
+  font-weight: 400;
+  line-height: 0.96;
+  letter-spacing: -0.04em;
+}
+
+.dAdminShell h3,
+.dAdminLoginShell h3 {
+  font-family: var(--d-admin-font-display);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+
+.dAdminShell h4,
+.dAdminLoginShell h4 {
+  color: var(--d-admin-text-strong);
+  font-family: var(--d-admin-font-sans);
+  font-weight: 700;
+  letter-spacing: -0.018em;
+}
+
+.dAdminShell p,
+.dAdminLoginShell p {
+  color: inherit;
+}
+
+.dAdminShell small,
+.dAdminLoginShell small {
+  font-family: var(--d-admin-font-sans);
+}
+
+.dAdminShell strong,
+.dAdminLoginShell strong {
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   IMPORTANT FONT CORRECTIONS
+   Some view CSS files may still force old generic font vars.
+   These rules make admin typography visually match the site.
+   ========================================================= */
+
+.dAdminHeader__title h1,
+.dAdminPanel__head h3,
+.dAdminNavCard__copy strong,
+.dAdminButton,
+.dAdminPrimaryAction,
+.dAdminSecondaryAction,
+.dAdminActionButton,
+.dAdminDangerAction,
+.dAdminInlineSave,
+.dAdminTextButton,
+.dAdminField,
+.dAdminField input,
+.dAdminField textarea,
+.dAdminField select,
+.dAdminSearchBox input,
+.dAdminFilterTabs button,
+.dAdminStatus,
+.dAdminBadge,
+.dAdminEyebrow {
+  font-family: var(--d-admin-font-sans);
+}
+
+.dAdminPageIntro h1,
+.dAdminPageIntro h2,
+.dAdminDetailHeader h2,
+.dAdminEmptyState h3,
+.dAdminPostRow__topline strong,
+.dAdminPostPreviewCard__body h4,
+.dAdminOverviewHero__copy h2,
+.dAdminQuickAction__copy strong,
+.dAdminAuthCard__copy h1,
+.dAdminAuthPanel h2,
+.dAdminAuthForm h1,
+.dAdminAuthForm h2,
+.dAdminLoader strong {
+  font-family: var(--d-admin-font-display);
+  font-weight: 400;
+}
+
+
+/* =========================================================
+   GLOBAL RESET
+   ========================================================= */
 
 .dAdminShell *,
 .dAdminShell *::before,
@@ -203,17 +450,11 @@
 .dAdminLoginShell h1,
 .dAdminLoginShell h2,
 .dAdminLoginShell h3,
-.dAdminLoginShell p {
+.dAdminLoginShell h4,
+.dAdminLoginShell p,
+.dAdminLoginShell ul,
+.dAdminLoginShell ol {
   margin: 0;
-}
-
-.dAdminShell h1,
-.dAdminShell h2,
-.dAdminShell h3,
-.dAdminLoginShell h1,
-.dAdminLoginShell h2,
-.dAdminLoginShell h3 {
-  text-wrap: balance;
 }
 
 .dAdminShell img,
@@ -221,6 +462,16 @@
   display: block;
   max-width: 100%;
 }
+
+.dAdminShell svg,
+.dAdminLoginShell svg {
+  flex: 0 0 auto;
+}
+
+
+/* =========================================================
+   FORM BASE
+   ========================================================= */
 
 .dAdminShell input,
 .dAdminShell textarea,
@@ -231,12 +482,23 @@
   min-width: 0;
   color: var(--d-admin-text);
   caret-color: var(--d-admin-ink);
+  accent-color: var(--d-admin-accent-strong);
 }
 
 .dAdminShell textarea,
 .dAdminLoginShell textarea {
   resize: vertical;
 }
+
+.dAdminShell ::placeholder,
+.dAdminLoginShell ::placeholder {
+  color: rgba(7, 17, 12, 0.34);
+}
+
+
+/* =========================================================
+   FOCUS / SELECTION
+   ========================================================= */
 
 .dAdminShell :focus-visible,
 .dAdminLoginShell :focus-visible {
@@ -252,10 +514,10 @@
   background: var(--d-admin-accent);
 }
 
-.dAdminShell ::placeholder,
-.dAdminLoginShell ::placeholder {
-  color: rgba(7, 17, 12, 0.34);
-}
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
 
 .dAdminShell ::-webkit-scrollbar,
 .dAdminLoginShell ::-webkit-scrollbar {
@@ -282,6 +544,11 @@
   background-clip: padding-box;
 }
 
+
+/* =========================================================
+   ACCESSIBILITY / UTILITIES
+   ========================================================= */
+
 .dAdminVisuallyHidden {
   position: absolute !important;
   width: 1px !important;
@@ -298,9 +565,33 @@
   animation: dAdminSpin 720ms linear infinite;
 }
 
+
+/* =========================================================
+   GLOBAL MOTION
+   ========================================================= */
+
 @keyframes dAdminSpin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
+
+@keyframes dAdminAmbientDrift {
+  from {
+    opacity: 0.7;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(-36px, 30px, 0) scale(1.08);
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
   .dAdminShell *,
@@ -313,5 +604,43 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .dAdminShell::after {
+    animation: none;
+  }
+}
+
+
+/* =========================================================
+   SMALL SCREENS
+   ========================================================= */
+
+@media (max-width: 720px) {
+  :root {
+    --d-admin-header-height: 72px;
+    --d-admin-radius-lg: 26px;
+    --d-admin-radius-xl: 30px;
+  }
+
+  .dAdminShell,
+  .dAdminLoginShell {
+    font-size: 14px;
+    letter-spacing: -0.006em;
+  }
+
+  .dAdminShell::before {
+    background-size: 34px 34px;
+  }
+
+  .dAdminShell::after {
+    display: none;
+  }
+
+  .dAdminShell h1,
+  .dAdminShell h2,
+  .dAdminLoginShell h1,
+  .dAdminLoginShell h2 {
+    letter-spacing: -0.032em;
   }
 }
