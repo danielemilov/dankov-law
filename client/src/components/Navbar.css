@@ -1,25 +1,47 @@
 .navPrime,
 .navPrime * {
   box-sizing: border-box;
-
 }
 
 .navPrime {
   position: fixed;
   inset: 0 0 auto;
-
-  z-index: 1300;
-  padding: 18px max(18px, 4vw) 0;
+  z-index: 1600;
+  padding: max(18px, env(safe-area-inset-top)) max(18px, 4vw) 0;
   pointer-events: none;
   isolation: isolate;
-  background: transparent;
 
-  --nav-ink: #0b120d;
-  --nav-muted: rgba(11, 18, 13, 0.58);
-  --nav-panel: rgba(250, 252, 244, 0.94);
-  --nav-panel-solid: #fbfcf4;
-  --nav-line: rgba(11, 18, 13, 0.12);
-  --nav-accent: #b7d95a;
+  --nav-ink: #071008;
+  --nav-soft-ink: rgba(7, 16, 8, 0.72);
+  --nav-muted: rgba(7, 16, 8, 0.5);
+  --nav-surface: rgba(255, 255, 252, 0.66);
+  --nav-surface-strong: rgba(255, 255, 252, 0.82);
+  --nav-line: rgba(7, 16, 8, 0.1);
+  --nav-line-strong: rgba(7, 16, 8, 0.16);
+  --nav-shadow: rgba(7, 16, 8, 0.12);
+  --nav-accent: #c8e85d;
+  --nav-blue: #21127c;
+}
+
+.navPrime::before {
+  content: '';
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: -1;
+  height: clamp(112px, 12vw, 170px);
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% -16%, rgba(27, 21, 110, 0.78), transparent 58%),
+    radial-gradient(ellipse at 83% 0%, rgba(200, 232, 93, 0.12), transparent 45%),
+    linear-gradient(180deg, rgba(4, 3, 30, 0.72) 0%, rgba(7, 16, 8, 0.25) 42%, transparent 100%);
+  opacity: 0.94;
+  transition: opacity 0.24s ease, height 0.24s ease;
+}
+
+.navPrime--scrolled::before,
+.navPrime--open::before {
+  height: clamp(132px, 13vw, 190px);
+  opacity: 1;
 }
 
 .navPrime__stage {
@@ -29,98 +51,86 @@
 }
 
 .navPrime__bar {
-  position: relative;
-  min-height: 74px;
   display: grid;
-  grid-template-columns: minmax(260px, 0.9fr) auto minmax(190px, 0.9fr);
+  grid-template-columns: minmax(226px, 1fr) auto minmax(174px, 1fr);
   align-items: center;
-  gap: clamp(18px, 3vw, 54px);
-  padding: 9px 12px;
-  overflow: hidden;
-  isolation: isolate;
-  pointer-events: auto;
-  border-radius: 999px;
-  border: 1px solid var(--nav-line);
-  background:
-    linear-gradient(135deg, rgba(255, 255, 252, 0.98), rgba(246, 249, 237, 0.94)),
-    radial-gradient(circle at 16% 0%, rgba(255, 255, 255, 0.95), transparent 42%),
-    radial-gradient(circle at 88% 18%, rgba(183, 217, 90, 0.18), transparent 34%);
-  -webkit-backdrop-filter: blur(22px) saturate(1.08);
-  backdrop-filter: blur(22px) saturate(1.08);
-  box-shadow:
-    0 18px 58px rgba(11, 18, 13, 0.13),
-    0 0 0 1px rgba(255, 255, 255, 0.58),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -1px 0 rgba(11, 18, 13, 0.05);
+  gap: clamp(12px, 2.2vw, 34px);
+  pointer-events: none;
 }
 
-.navPrime__bar::before {
+.navPrime__island {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--nav-line);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(248, 250, 242, 0.54)),
+    radial-gradient(circle at 30% 0%, rgba(255, 255, 255, 0.9), transparent 44%);
+  -webkit-backdrop-filter: blur(24px) saturate(1.14);
+  backdrop-filter: blur(24px) saturate(1.14);
+  box-shadow:
+    0 18px 48px rgba(7, 16, 8, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.62) inset,
+    0 -1px 0 rgba(7, 16, 8, 0.045) inset;
+  transform: translateZ(0);
+}
+
+.navPrime__island::before {
   content: '';
   position: absolute;
   inset: 1px;
-  z-index: -1;
   border-radius: inherit;
   pointer-events: none;
   background:
-    linear-gradient(112deg, transparent 0%, rgba(255, 255, 255, 0.5) 30%, transparent 58%),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.28), transparent 34%, transparent 72%, rgba(255, 255, 255, 0.2));
-}
-
-.navPrime__cursorGlow,
-.navPrime__halo,
-.navPrime__shine,
-.navPrime__edge,
-.navPrime__dockSweep,
-.navPrime__dockGlow,
-.navPrime__ctaShine,
-.navPrime__photoGlow {
-  display: none;
+    linear-gradient(110deg, rgba(255, 255, 255, 0.4), transparent 32%, transparent 72%, rgba(255, 255, 255, 0.14)),
+    radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.42), transparent 55%);
+  opacity: 0.72;
 }
 
 .navPrime__brand,
 .navPrime__dock,
 .navPrime__actions {
-  position: relative;
-  z-index: 2;
+  pointer-events: auto;
 }
 
 .navPrime__brand {
-  background-color: rgb(225, 233, 173)!important;
   justify-self: start;
-  min-width: 250px;
-  height: 56px;
+  min-width: 0;
+  height: 54px;
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  padding: 6px 18px 6px 7px;
-  overflow: hidden;
+  gap: 10px;
+  max-width: 286px;
+  padding: 6px 16px 6px 7px;
   border-radius: 999px;
   color: var(--nav-ink);
   text-decoration: none;
-  border: 1px solid rgba(11, 18, 13, 0.08);
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(248, 250, 241, 0.72)),
-    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.98), transparent 44%);
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.navPrime__brand:hover {
+  transform: translateY(-1px);
+  border-color: rgba(7, 16, 8, 0.15);
   box-shadow:
-    0 10px 30px rgba(11, 18, 13, 0.07),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -1px 0 rgba(11, 18, 13, 0.04);
+    0 22px 58px rgba(7, 16, 8, 0.15),
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 -1px 0 rgba(7, 16, 8, 0.055) inset;
 }
 
 .navPrime__photo {
-  width: 44px;
-  height: 44px;
-  flex: 0 0 44px;
+  position: relative;
+  z-index: 1;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
   display: grid;
   place-items: center;
   overflow: hidden;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 252, 0.96);
-  background: #f7faee;
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 252, 0.7);
   box-shadow:
-    0 9px 22px rgba(11, 18, 13, 0.13),
-    0 0 0 1px rgba(120, 150, 45, 0.17),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    0 8px 22px rgba(7, 16, 8, 0.12),
+    0 0 0 1px rgba(7, 16, 8, 0.055);
 }
 
 .navPrime__photo img {
@@ -133,541 +143,308 @@
 }
 
 .navPrime__brandText {
+  position: relative;
+  z-index: 1;
   min-width: 0;
   display: grid;
   gap: 3px;
 }
 
 .navPrime__name {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.navPrime__name strong {
+  display: block;
+  overflow: hidden;
   color: var(--nav-ink);
-  font-size: 23px;
-  font-weight: 950;
+  font-size: 17px;
+  font-weight: 780;
   line-height: 1;
-  letter-spacing: 0;
+  letter-spacing: -0.035em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .navPrime__role {
   color: var(--nav-muted);
-  font-size: 9px;
-  font-weight: 900;
+  font-size: 10px;
+  font-weight: 720;
   line-height: 1;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .navPrime__dock {
   justify-self: center;
-  min-width: 480px;
   min-height: 52px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 2px;
   padding: 5px;
   border-radius: 999px;
-  border: 1px solid rgba(11, 18, 13, 0.1);
-  background: rgba(255, 255, 252, 0.64);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.82),
-    inset 0 -1px 0 rgba(11, 18, 13, 0.04);
 }
 
 .navPrime__link {
   position: relative;
+  z-index: 1;
   min-height: 40px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0 18px;
-  overflow: hidden;
+  padding: 0 17px;
   border-radius: 999px;
-  color: rgba(11, 18, 13, 0.68);
+  color: var(--nav-soft-ink);
   text-decoration: none;
-  font-size: 13px;
-  font-weight: 850;
-  letter-spacing: 0;
+  font-size: 12.5px;
+  font-weight: 720;
+  line-height: 1;
+  letter-spacing: -0.01em;
   white-space: nowrap;
-  transition:
-    color 0.2s ease,
-    background 0.2s ease;
+  transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.navPrime__link:hover {
+.navPrime__link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.86), rgba(255, 255, 252, 0.42)),
+    radial-gradient(circle at 50% 0%, rgba(200, 232, 93, 0.16), transparent 55%);
+  box-shadow:
+    0 9px 24px rgba(7, 16, 8, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86);
+  opacity: 0;
+  transform: scale(0.94);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.navPrime__link:hover,
+.navPrime__link:focus-visible,
+.navPrime__link.is-active {
   color: var(--nav-ink);
-  background: rgba(183, 217, 90, 0.14);
 }
 
-.navPrime__linkFill {
-  display: none;
+.navPrime__link:hover::before,
+.navPrime__link:focus-visible::before,
+.navPrime__link.is-active::before {
+  opacity: 1;
+  transform: scale(1);
 }
 
-.navPrime__linkText {
+.navPrime__link:focus-visible,
+.navPrime__cta:focus-visible,
+.navPrime__brand:focus-visible,
+.navPrime__burger:focus-visible,
+.navPrimeMobile__links a:focus-visible,
+.navPrimeMobile__primary:focus-visible {
+  outline: 3px solid rgba(200, 232, 93, 0.34);
+  outline-offset: 3px;
+}
+
+.navPrime__actions {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.navPrime__cta {
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 21px;
+  border-radius: 999px;
+  color: #fffdf4;
+  text-decoration: none;
+  border-color: rgba(255, 255, 255, 0.12);
+  background:
+    radial-gradient(circle at 30% 0%, rgba(255, 255, 255, 0.18), transparent 38%),
+    linear-gradient(180deg, #101812, #071008 62%, #050905);
+  box-shadow:
+    0 20px 48px rgba(7, 16, 8, 0.26),
+    0 1px 0 rgba(255, 255, 255, 0.18) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.38) inset;
+  font-size: 11px;
+  font-weight: 820;
+  line-height: 1;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+}
+
+.navPrime__cta::before {
+  opacity: 0.36;
+}
+
+.navPrime__cta span,
+.navPrime__cta svg {
   position: relative;
   z-index: 1;
   color: currentColor;
 }
 
-.navPrime__actions {
-  justify-self: end;
-  min-width: 180px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.navPrime__cta {
-  min-width: 168px;
-  min-height: 48px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 24px;
-  overflow: hidden;
-  border-radius: 999px;
-  color: #fffdf4;
-  text-decoration: none;
-  border: 1px solid rgba(11, 18, 13, 0.22);
-  background: linear-gradient(180deg, #0b120d, #172014);
+.navPrime__cta:hover {
+  transform: translateY(-1px);
+  background:
+    radial-gradient(circle at 30% 0%, rgba(255, 255, 255, 0.22), transparent 38%),
+    linear-gradient(180deg, #152116, #071008 62%, #050905);
   box-shadow:
-    0 14px 36px rgba(11, 18, 13, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14);
-}
-
-.navPrime__ctaText {
-  color: #fffdf4;
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+    0 24px 58px rgba(7, 16, 8, 0.3),
+    0 0 0 6px rgba(255, 255, 255, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.2) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.4) inset;
 }
 
 .navPrime__burger {
-  width: 54px;
-  height: 54px;
+  width: 52px;
+  height: 52px;
   display: none;
   place-items: center;
-  border: 1px solid rgba(11, 18, 13, 0.11);
+  padding: 0;
   border-radius: 50%;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(245, 248, 236, 0.76));
-  box-shadow:
-    0 10px 28px rgba(11, 18, 13, 0.09),
-    inset 0 1px 0 rgba(255, 255, 255, 0.92);
   color: var(--nav-ink);
-  transition:
-    transform 0.2s ease,
-    background 0.2s ease,
-    box-shadow 0.2s ease;
+  cursor: pointer;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
 }
 
-.navPrime__burger:hover {
+.navPrime__burgerIcon {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+}
+
+.navPrime__burger:hover,
+.navPrime__burger.is-open {
   transform: translateY(-1px);
-  background:
-    radial-gradient(circle at 28% 18%, rgba(255, 255, 255, 0.92), transparent 36%),
-    linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(238, 244, 224, 0.9));
-  box-shadow:
-    0 14px 34px rgba(11, 18, 13, 0.13),
-    0 0 0 5px rgba(183, 217, 90, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.94);
+  border-color: rgba(7, 16, 8, 0.15);
 }
 
 .navPrime__burger.is-open {
   color: #fffdf4;
-  border-color: rgba(11, 18, 13, 0.26);
   background:
-    radial-gradient(circle at 28% 18%, rgba(255, 255, 255, 0.18), transparent 32%),
-    linear-gradient(180deg, #0b120d, #172014);
-  box-shadow:
-    0 16px 40px rgba(11, 18, 13, 0.28),
-    0 0 0 6px rgba(11, 18, 13, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14);
-}
-
-
-/* =========================================================
-   MOBILE MENU — STABLE DONUT GLASS V7
-   No scale/blur exit. No body scroll lock. No hero squash.
-========================================================= */
-
-.navPrime__burger.is-open {
-  color: #070936;
-  border-color: rgba(8, 10, 48, 0.12);
-  background:
-    radial-gradient(circle at 34% 18%, rgba(255, 255, 255, 0.92), transparent 34%),
-    radial-gradient(circle at 78% 78%, rgba(203, 238, 82, 0.28), transparent 38%),
-    linear-gradient(145deg, rgba(255, 255, 252, 0.96), rgba(242, 247, 226, 0.78));
-  box-shadow:
-    0 18px 46px rgba(8, 10, 48, 0.18),
-    0 0 0 8px rgba(255, 255, 255, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.92),
-    inset 0 -1px 0 rgba(8, 10, 48, 0.08);
+    radial-gradient(circle at 28% 0%, rgba(255, 255, 255, 0.2), transparent 38%),
+    linear-gradient(180deg, #111913, #071008);
 }
 
 .navPrimeMobile {
   position: fixed;
   inset: 0;
-  z-index: 1700;
+  z-index: 1500;
   display: grid;
   align-items: start;
-  padding: clamp(222px, 30svh, 278px) 14px max(18px, env(safe-area-inset-bottom));
+  padding: 92px max(14px, 4vw) max(18px, env(safe-area-inset-bottom));
   pointer-events: auto;
-  overscroll-behavior: contain;
-  isolation: isolate;
-  contain: paint;
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(8, 10, 48, 0.88) 0%, rgba(8, 10, 48, 0.68) 22%, rgba(8, 10, 48, 0.24) 43%, transparent 62%),
-    radial-gradient(circle at 88% 25%, rgba(201, 221, 114, 0.14), transparent 32%),
-    radial-gradient(circle at 8% 30%, rgba(255, 255, 255, 0.36), transparent 34%),
-    linear-gradient(180deg, rgba(245, 248, 236, 0.18) 0%, rgba(237, 242, 224, 0.44) 52%, rgba(219, 229, 204, 0.72) 100%);
-  -webkit-backdrop-filter: blur(18px) saturate(1.08);
-  backdrop-filter: blur(18px) saturate(1.08);
+    linear-gradient(180deg, rgba(4, 3, 30, 0.22), rgba(247, 250, 239, 0.18) 34%, rgba(247, 250, 239, 0.3));
+  -webkit-backdrop-filter: blur(12px) saturate(1.08);
+  backdrop-filter: blur(12px) saturate(1.08);
 }
 
-.navPrimeMobile::before,
-.navPrimeMobile::after {
-  content: '';
-  position: absolute;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.navPrimeMobile::before {
-  left: 50%;
-  top: 132px;
-  width: min(112vw, 720px);
-  height: 260px;
-  border-radius: 999px;
-  transform: translateX(-50%);
-  background:
-    radial-gradient(ellipse at center, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.1) 32%, rgba(8, 10, 48, 0.24) 58%, transparent 76%);
-  filter: blur(34px);
-  opacity: 0.72;
-}
-
-.navPrimeMobile::after {
-  left: 50%;
-  bottom: 12%;
-  width: min(94vw, 620px);
-  height: 260px;
-  border-radius: 999px;
-  transform: translateX(-50%);
-  background:
-    radial-gradient(ellipse at center, rgba(201, 221, 114, 0.11), rgba(255, 255, 255, 0.12) 30%, rgba(8, 10, 48, 0.14) 58%, transparent 76%);
-  filter: blur(42px);
-  opacity: 0.66;
-}
-
-.navPrimeMobile__panel {
+.navPrimeMobile__sheet {
   position: relative;
-  width: min(100%, 520px);
-  margin: 0 auto;
-  padding: 28px 18px 20px;
-  overflow: hidden;
-  isolation: isolate;
-  border-radius: 44px;
-  border: 1px solid rgba(255, 255, 255, 0.62);
-  background:
-    radial-gradient(circle at 13% 12%, rgba(255, 255, 255, 0.78), transparent 34%),
-    radial-gradient(circle at 88% 18%, rgba(201, 221, 114, 0.16), transparent 38%),
-    linear-gradient(145deg, rgba(255, 255, 252, 0.46), rgba(247, 250, 239, 0.25) 52%, rgba(255, 255, 252, 0.34));
-  -webkit-backdrop-filter: blur(34px) saturate(1.18);
-  backdrop-filter: blur(34px) saturate(1.18);
-  box-shadow:
-    0 42px 120px rgba(8, 10, 48, 0.34),
-    0 24px 78px rgba(7, 16, 8, 0.14),
-    0 0 0 1px rgba(255, 255, 255, 0.42),
-    inset 0 1px 0 rgba(255, 255, 255, 0.88),
-    inset 0 -1px 0 rgba(8, 10, 48, 0.12);
-}
-
-.navPrimeMobile__panel::before,
-.navPrimeMobile__panel::after {
-  content: '';
-  position: absolute;
-  pointer-events: none;
-  border-radius: inherit;
-}
-
-.navPrimeMobile__panel::before {
-  inset: 7px;
-  z-index: -1;
-  border: 1px solid rgba(255, 255, 255, 0.36);
-  background:
-    radial-gradient(ellipse at 50% -18%, rgba(255, 255, 255, 0.58), transparent 54%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.34), transparent 40%, rgba(8, 10, 48, 0.055));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.72),
-    inset 0 -1px 0 rgba(8, 10, 48, 0.08);
-}
-
-.navPrimeMobile__panel::after {
-  z-index: -2;
-  inset: -20% -22% -28%;
-  background:
-    linear-gradient(112deg, transparent 0%, rgba(255, 255, 255, 0.28) 28%, transparent 50%),
-    radial-gradient(circle at 86% 52%, rgba(201, 221, 114, 0.18), transparent 34%),
-    radial-gradient(circle at 12% 92%, rgba(8, 10, 48, 0.12), transparent 36%);
-  filter: blur(12px);
-  opacity: 0.72;
-  animation: navMobileGlassBreath 7.5s ease-in-out infinite;
-}
-
-.navPrimeMobile__shine {
-  position: absolute;
-  top: -70%;
-  bottom: -70%;
-  left: -42%;
-  z-index: 0;
-  width: 28%;
-  pointer-events: none;
-  background:
-    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), rgba(201, 221, 114, 0.06), transparent);
-  filter: blur(18px);
-  transform: skewX(-16deg);
-  opacity: 0;
-  animation: navMobileSweep 8.2s ease-in-out infinite;
-}
-
-.navPrimeMobile__orb {
-  position: absolute;
-  z-index: 0;
-  border-radius: 999px;
-  pointer-events: none;
-  filter: blur(38px);
-  opacity: 0.56;
-}
-
-.navPrimeMobile__orb--one {
-  width: 190px;
-  height: 190px;
-  top: -86px;
-  right: -64px;
-  background: rgba(201, 221, 114, 0.12);
-}
-
-.navPrimeMobile__orb--two {
-  width: 210px;
-  height: 210px;
-  left: -92px;
-  bottom: -92px;
-  background: rgba(8, 10, 48, 0.12);
-}
-
-.navPrimeMobile__intro,
-.navPrimeMobile__mark,
-.navPrimeMobile__intro p,
-.navPrimeMobile__intro strong,
-.navPrimeMobile__icon,
-.navPrimeMobile__copy small,
-.navPrimeMobile__copy em,
-.navPrimeMobile__arrow {
-  display: none;
-}
-
-.navPrimeMobile__links {
-  position: relative;
-  z-index: 2;
+  width: min(100%, 430px);
+  justify-self: end;
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 13px;
-  padding: 0;
-}
-
-.navPrimeMobile__links a {
-  position: relative;
-  min-height: 74px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  gap: 10px;
+  padding: 10px;
   overflow: hidden;
-  padding: 0 20px;
-  border-radius: 999px;
-  color: #071008;
-  text-decoration: none;
-  border: 1px solid rgba(8, 10, 48, 0.1);
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
   background:
-    radial-gradient(circle at 14% 0%, rgba(255, 255, 255, 0.72), transparent 40%),
-    radial-gradient(circle at 90% 100%, rgba(201, 221, 114, 0.08), transparent 42%),
-    linear-gradient(145deg, rgba(255, 255, 252, 0.56), rgba(247, 250, 239, 0.28));
-  -webkit-backdrop-filter: blur(26px) saturate(1.12);
-  backdrop-filter: blur(26px) saturate(1.12);
+    radial-gradient(ellipse at 50% -10%, rgba(255, 255, 255, 0.86), transparent 54%),
+    linear-gradient(145deg, rgba(255, 255, 252, 0.76), rgba(246, 249, 238, 0.5));
+  -webkit-backdrop-filter: blur(30px) saturate(1.18);
+  backdrop-filter: blur(30px) saturate(1.18);
   box-shadow:
-    0 18px 48px rgba(8, 10, 48, 0.09),
-    0 8px 26px rgba(7, 16, 8, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -1px 0 rgba(8, 10, 48, 0.06);
-  transform: translateZ(0);
-  transition:
-    border-color 0.24s ease,
-    box-shadow 0.24s ease,
-    background 0.24s ease;
+    0 28px 90px rgba(7, 16, 8, 0.22),
+    0 14px 48px rgba(4, 3, 30, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    inset 0 -1px 0 rgba(7, 16, 8, 0.06);
 }
 
-.navPrimeMobile__links a::before {
+.navPrimeMobile__sheet::before {
   content: '';
   position: absolute;
   inset: 1px;
   border-radius: inherit;
   pointer-events: none;
   background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.34), transparent 38%, rgba(201, 221, 114, 0.055) 100%);
-  opacity: 0.82;
+    linear-gradient(120deg, rgba(255, 255, 255, 0.4), transparent 34%, transparent 76%, rgba(255, 255, 255, 0.14)),
+    radial-gradient(circle at 92% 12%, rgba(200, 232, 93, 0.12), transparent 38%);
 }
 
-.navPrimeMobile__links a::after {
-  content: '';
-  position: absolute;
-  left: 18%;
-  right: 18%;
-  top: 10px;
-  height: 1px;
-  border-radius: 999px;
-  pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.84), transparent);
-  opacity: 0.86;
-}
-
-.navPrimeMobile__links a:hover,
-.navPrimeMobile__links a:focus-visible {
-  border-color: rgba(8, 10, 48, 0.16);
-  background:
-    radial-gradient(circle at 14% 0%, rgba(255, 255, 255, 0.86), transparent 40%),
-    radial-gradient(circle at 90% 100%, rgba(201, 221, 114, 0.13), transparent 42%),
-    linear-gradient(145deg, rgba(255, 255, 252, 0.68), rgba(247, 250, 239, 0.36));
-  box-shadow:
-    0 22px 56px rgba(8, 10, 48, 0.12),
-    0 0 0 5px rgba(255, 255, 255, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.92),
-    inset 0 -1px 0 rgba(8, 10, 48, 0.07);
-}
-
-.navPrimeMobile__links a:active,
-.navPrimeMobile__cta:active {
+.navPrimeMobile__primary,
+.navPrimeMobile__links a {
+  position: relative;
+  z-index: 1;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 16px;
+  border-radius: 22px;
+  text-decoration: none;
   transform: translateZ(0);
 }
 
-.navPrimeMobile__copy {
-  position: relative;
-  z-index: 2;
-  min-width: 0;
-  display: block;
-  text-align: center;
-}
-
-.navPrimeMobile__links a strong {
-  position: relative;
-  z-index: 2;
-  display: block;
-  color: #071008;
-  font-size: clamp(20px, 5.2vw, 26px);
-  font-weight: 830;
-  line-height: 1;
-  letter-spacing: -0.035em;
-  text-align: center;
-}
-
-.navPrimeMobile__cta {
-  position: relative;
-  z-index: 2;
-  min-height: 72px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  width: 100%;
-  margin: 16px 0 0;
-  overflow: hidden;
-  border-radius: 999px;
-  color: #070936;
-  text-decoration: none;
-  border: 1px solid rgba(8, 10, 48, 0.12);
+.navPrimeMobile__primary {
+  color: #fffdf4;
   background:
-    radial-gradient(circle at 12% 50%, rgba(255, 255, 255, 0.62), transparent 34%),
-    radial-gradient(circle at 92% 46%, rgba(201, 221, 114, 0.2), transparent 36%),
-    linear-gradient(145deg, rgba(237, 255, 166, 0.5), rgba(194, 229, 78, 0.42));
-  -webkit-backdrop-filter: blur(24px) saturate(1.12);
-  backdrop-filter: blur(24px) saturate(1.12);
+    radial-gradient(circle at 20% 0%, rgba(255, 255, 255, 0.18), transparent 40%),
+    linear-gradient(180deg, #101812, #071008);
   box-shadow:
-    0 22px 62px rgba(8, 10, 48, 0.13),
-    0 0 34px rgba(201, 221, 114, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.78),
-    inset 0 -1px 0 rgba(8, 10, 48, 0.08);
-  font-size: 13px;
-  font-weight: 850;
+    0 14px 34px rgba(7, 16, 8, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  font-size: 12px;
+  font-weight: 820;
   line-height: 1;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-.navPrimeMobile__cta::before {
-  content: '';
-  position: absolute;
-  inset: 1px;
-  z-index: 0;
-  border-radius: inherit;
-  background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.34), transparent 34%, transparent 62%, rgba(255, 255, 255, 0.18)),
-    radial-gradient(circle at 50% -30%, rgba(255, 255, 255, 0.46), transparent 44%);
-  opacity: 0.72;
+.navPrimeMobile__primary span,
+.navPrimeMobile__primary svg {
+  color: currentColor;
 }
 
-.navPrimeMobile__cta::after {
-  content: '';
-  position: absolute;
-  top: 11px;
-  left: 24%;
-  right: 24%;
-  z-index: 0;
-  height: 1px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.74), transparent);
-  opacity: 0.82;
+.navPrimeMobile__links {
+  display: grid;
+  gap: 4px;
 }
 
-.navPrimeMobile__cta span,
-.navPrimeMobile__cta svg {
-  position: relative;
-  z-index: 2;
-  flex: 0 0 auto;
-  color: #070936;
+.navPrimeMobile__links a {
+  color: var(--nav-ink);
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 17px;
+  font-weight: 720;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
-@keyframes navMobileSweep {
-  0%,
-  48% {
-    opacity: 0;
-    transform: translateX(-130%) skewX(-16deg);
-  }
-
-  62% {
-    opacity: 0.46;
-  }
-
-  100% {
-    opacity: 0;
-    transform: translateX(620%) skewX(-16deg);
-  }
+.navPrimeMobile__links a svg {
+  color: rgba(7, 16, 8, 0.42);
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
-@keyframes navMobileGlassBreath {
-  0%,
-  100% {
-    opacity: 0.5;
-    transform: scaleX(0.96);
-  }
+.navPrimeMobile__links a:hover,
+.navPrimeMobile__links a:focus-visible,
+.navPrimeMobile__links a.is-active {
+  border-color: rgba(7, 16, 8, 0.08);
+  background: rgba(255, 255, 255, 0.42);
+}
 
-  50% {
-    opacity: 0.82;
-    transform: scaleX(1.03);
-  }
+.navPrimeMobile__links a:hover svg,
+.navPrimeMobile__links a:focus-visible svg,
+.navPrimeMobile__links a.is-active svg {
+  color: rgba(7, 16, 8, 0.72);
+  transform: translate(1px, -1px);
 }
 
 body.nav-menu-open .chat,
@@ -677,44 +454,17 @@ body.nav-menu-open .cookie-manage {
   transform: translateY(8px);
 }
 
-body.nav-menu-open .navPrime {
-  z-index: 1800;
-}
-
-body.nav-menu-open .navPrimeMobile {
-  z-index: 1700;
-}
-
-@media (max-width: 1280px) {
+@media (max-width: 1180px) {
   .navPrime__bar {
-    grid-template-columns: minmax(235px, 0.85fr) auto minmax(165px, 0.85fr);
-    gap: 18px;
-  }
-
-  .navPrime__brand {
-    min-width: 235px;
-  }
-
-  .navPrime__dock {
-    min-width: 430px;
+    grid-template-columns: minmax(210px, 1fr) auto minmax(152px, 1fr);
+    gap: 12px;
   }
 
   .navPrime__link {
     padding: 0 13px;
   }
-}
-
-@media (max-width: 1100px) {
-  .navPrime__bar {
-    grid-template-columns: auto 1fr auto;
-  }
-
-  .navPrime__dock {
-    min-width: 0;
-  }
 
   .navPrime__cta {
-    min-width: 148px;
     padding: 0 18px;
   }
 }
@@ -724,39 +474,25 @@ body.nav-menu-open .navPrimeMobile {
     padding: max(12px, env(safe-area-inset-top)) 12px 0;
   }
 
+  .navPrime::before {
+    height: 130px;
+    background:
+      radial-gradient(ellipse at 50% -18%, rgba(27, 21, 110, 0.8), transparent 60%),
+      linear-gradient(180deg, rgba(4, 3, 30, 0.78) 0%, rgba(7, 16, 8, 0.18) 52%, transparent 100%);
+  }
+
   .navPrime__bar {
-    min-height: 68px;
-    grid-template-columns: minmax(0, 1fr) 54px;
-    gap: 8px;
-    padding: 7px;
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   .navPrime__brand {
-    width: 100%;
-    min-width: 0;
-    height: 54px;
-    gap: 10px;
-    padding: 6px 13px 6px 7px;
+    height: 52px;
+    max-width: min(100%, 330px);
+    padding-right: 14px;
   }
 
-  .navPrime__photo {
-    width: 42px;
-    height: 42px;
-    flex-basis: 42px;
-  }
-
-  .navPrime__photo img {
-    width: 34px;
-    height: 34px;
-  }
-
-  .navPrime__name strong {
-    font-size: clamp(21px, 6vw, 25px);
-  }
-
-  .navPrime__role {
-    font-size: 9px;
-    letter-spacing: 0.16em;
+  .navPrime__name {
+    font-size: clamp(16px, 4.8vw, 19px);
   }
 
   .navPrime__dock,
@@ -764,12 +500,18 @@ body.nav-menu-open .navPrimeMobile {
     display: none;
   }
 
-  .navPrime__actions {
-    min-width: 0;
-  }
-
   .navPrime__burger {
     display: grid;
+  }
+
+  .navPrimeMobile {
+    padding-top: 82px;
+  }
+
+  .navPrimeMobile__sheet {
+    justify-self: stretch;
+    width: min(100%, 520px);
+    margin: 0 auto;
   }
 }
 
@@ -779,15 +521,10 @@ body.nav-menu-open .navPrimeMobile {
     padding-right: 10px;
   }
 
-  .navPrime__bar {
-    grid-template-columns: minmax(0, 1fr) 50px;
-    min-height: 64px;
-  }
-
   .navPrime__brand {
     height: 50px;
-    gap: 8px;
-    padding-right: 10px;
+    gap: 9px;
+    padding: 6px 12px 6px 6px;
   }
 
   .navPrime__photo {
@@ -797,12 +534,8 @@ body.nav-menu-open .navPrimeMobile {
   }
 
   .navPrime__photo img {
-    width: 30px;
-    height: 30px;
-  }
-
-  .navPrime__name strong {
-    font-size: clamp(19px, 5.6vw, 22px);
+    width: 32px;
+    height: 32px;
   }
 
   .navPrime__role {
@@ -815,926 +548,46 @@ body.nav-menu-open .navPrimeMobile {
   }
 
   .navPrimeMobile {
-    padding-top: 88px;
+    padding: 76px 10px max(16px, env(safe-area-inset-bottom));
   }
 
-  .navPrimeMobile__panel {
+  .navPrimeMobile__sheet {
     border-radius: 26px;
+    padding: 8px;
   }
 
-  .navPrimeMobile__links {
-    gap: 8px;
-    padding-left: 10px;
-    padding-right: 10px;
+  .navPrimeMobile__primary,
+  .navPrimeMobile__links a {
+    min-height: 54px;
+    border-radius: 19px;
+    padding-left: 14px;
+    padding-right: 14px;
   }
 
   .navPrimeMobile__links a {
-    min-height: 108px;
-    padding: 12px;
-    border-radius: 19px;
-  }
-
-  .navPrimeMobile__icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 13px;
-  }
-
-  .navPrimeMobile__arrow {
-    width: 34px;
-    height: 34px;
-    border-radius: 12px;
-  }
-
-  .navPrimeMobile__links a strong {
     font-size: 16px;
   }
-
-  .navPrimeMobile__copy em {
-    font-size: 11px;
-  }
-}
-
-/* =========================================================
-   NAVBAR TOP GRADIENT SHADOW
-   Dark → light transparent cinematic fade
-========================================================= */
-
-.navPrime::before {
-  content: '';
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  z-index: 0;
-  height: clamp(118px, 13vw, 190px);
-  pointer-events: none;
-
-  background:
-    radial-gradient(
-      ellipse at 50% 0%,
-      rgba(183, 217, 90, 0.1) 0%,
-      rgba(183, 217, 90, 0.04) 34%,
-      transparent 66%
-    ),
-    linear-gradient(
-      180deg,
-      rgba(3, 0, 51, 0.86) 0%,
-      rgba(7, 16, 8, 0.42) 34%,
-      rgba(247, 250, 239, 0.1) 72%,
-      transparent 100%
-    );
-
-  filter: blur(0.2px);
-  opacity: 0.96;
-}
-
-/* soft shiny transition under the navbar */
-.navPrime::after {
-  content: '';
-  position: fixed;
-  left: max(18px, 4vw);
-  right: max(18px, 4vw);
-  top: 96px;
-  z-index: 1;
-  height: 34px;
-  pointer-events: none;
-
-  background:
-    linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.08) 16%,
-      rgba(255, 253, 244, 0.16) 44%,
-      rgba(183, 217, 90, 0.08) 62%,
-      transparent 100%
-    );
-
-  filter: blur(18px);
-  opacity: 0.72;
-}
-
-/* keep the actual navbar above the gradient */
-.navPrime__stage {
-  position: relative;
-  z-index: 2;
-}
-
-/* stronger when page is scrolled */
-.navPrime--scrolled::before {
-  background:
-    radial-gradient(
-      ellipse at 50% 0%,
-      rgba(183, 217, 90, 0.12) 0%,
-      rgba(183, 217, 90, 0.05) 34%,
-      transparent 66%
-    ),
-    linear-gradient(
-      180deg,
-      rgba(3, 0, 51, 0.94) 0%,
-      rgba(7, 16, 8, 0.56) 36%,
-      rgba(247, 250, 239, 0.16) 74%,
-      transparent 100%
-    );
-}
-
-@media (max-width: 980px) {
-  .navPrime::before {
-    height: 142px;
-  }
-
-  .navPrime::after {
-    left: 14px;
-    right: 14px;
-    top: 84px;
-    height: 28px;
-  }
-}
-
-/* =========================================================
-   FINAL MOBILE OVERRIDES — keep after every older breakpoint
-========================================================= */
-@media (max-width: 980px) {
-  .navPrime::before {
-    height: 168px;
-    background:
-      radial-gradient(ellipse at 50% 0%, rgba(201, 221, 114, 0.08) 0%, rgba(201, 221, 114, 0.025) 36%, transparent 66%),
-      linear-gradient(180deg, rgba(8, 10, 48, 0.96) 0%, rgba(8, 10, 48, 0.72) 34%, rgba(247, 250, 239, 0.14) 76%, transparent 100%);
-  }
-
-  .navPrime::after {
-    left: 14px;
-    right: 14px;
-    top: 84px;
-    height: 34px;
-    background:
-      linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.14) 20%, rgba(255, 253, 244, 0.26) 48%, rgba(201, 221, 114, 0.06) 68%, transparent 100%);
-    filter: blur(20px);
-    opacity: 0.7;
-  }
-
-  .navPrimeMobile {
-    padding-top: clamp(222px, 30svh, 278px);
-  }
-
-  .navPrimeMobile__panel {
-    border-radius: 44px;
-    padding: 28px 18px 20px;
-  }
-
-  .navPrimeMobile__links {
-    gap: 13px;
-  }
-
-  .navPrimeMobile__links a {
-    min-height: 74px;
-    padding: 0 20px;
-  }
-
-  .navPrimeMobile__links a strong {
-    font-size: clamp(20px, 5.2vw, 26px);
-    font-weight: 830;
-  }
-
-  .navPrimeMobile__cta {
-    min-height: 72px;
-    margin-top: 16px;
-    color: #070936;
-  }
-}
-
-@media (max-width: 420px) {
-  .navPrimeMobile {
-    padding: clamp(230px, 31svh, 286px) 14px max(18px, env(safe-area-inset-bottom));
-  }
-
-  .navPrimeMobile__panel {
-    width: 100%;
-    border-radius: 40px;
-    padding: 24px 14px 16px;
-  }
-
-  .navPrimeMobile__links {
-    gap: 11px;
-  }
-
-  .navPrimeMobile__links a {
-    min-height: 68px;
-    border-radius: 999px;
-    padding: 0 16px;
-  }
-
-  .navPrimeMobile__links a strong {
-    font-size: clamp(19px, 5.15vw, 22px);
-    font-weight: 820;
-    letter-spacing: -0.04em;
-  }
-
-  .navPrimeMobile__cta {
-    min-height: 66px;
-    margin-top: 14px;
-    font-size: 12px;
-    letter-spacing: 0.145em;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .navPrimeMobile__shine,
-  .navPrimeMobile__panel::after {
-    animation: none;
-  }
-}
-
-/* =========================================================
-   MOBILE MENU — V8 LIQUID DONUT GLASS REFINEMENT
-   Put after all previous rules.
-   More centered than V7, less border, more glass/animation.
-========================================================= */
-
-@media (max-width: 980px) {
-  .navPrimeMobile {
-    padding: clamp(176px, 23.2svh, 216px) 14px max(18px, env(safe-area-inset-bottom)) !important;
-    background:
-      radial-gradient(ellipse at 50% -4%, rgba(8, 10, 48, 0.95) 0%, rgba(8, 10, 48, 0.76) 20%, rgba(8, 10, 48, 0.32) 42%, transparent 65%),
-      radial-gradient(ellipse at 50% 28%, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.08) 38%, transparent 68%),
-      radial-gradient(circle at 88% 31%, rgba(201, 221, 114, 0.075), transparent 31%),
-      radial-gradient(circle at 7% 36%, rgba(255, 255, 255, 0.34), transparent 36%),
-      linear-gradient(180deg, rgba(245, 248, 236, 0.16) 0%, rgba(235, 241, 221, 0.42) 54%, rgba(219, 228, 205, 0.72) 100%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(1.1) !important;
-    backdrop-filter: blur(20px) saturate(1.1) !important;
-  }
-
-  .navPrimeMobile::before {
-    top: 116px !important;
-    width: min(116vw, 720px) !important;
-    height: 230px !important;
-    background:
-      radial-gradient(ellipse at center, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.1) 34%, rgba(8, 10, 48, 0.22) 60%, transparent 78%) !important;
-    filter: blur(42px) !important;
-    opacity: 0.7 !important;
-    animation: navMobileAmbientPulseV8 8s ease-in-out infinite !important;
-  }
-
-  .navPrimeMobile::after {
-    bottom: 10% !important;
-    height: 255px !important;
-    background:
-      radial-gradient(ellipse at center, rgba(201, 221, 114, 0.07), rgba(255, 255, 255, 0.14) 30%, rgba(8, 10, 48, 0.12) 58%, transparent 78%) !important;
-    filter: blur(48px) !important;
-    opacity: 0.58 !important;
-    animation: navMobileLowMistV8 9s ease-in-out infinite !important;
-  }
-
-  .navPrimeMobile__panel {
-    width: min(100%, 520px) !important;
-    margin: 0 auto !important;
-    padding: 23px 15px 17px !important;
-    overflow: hidden !important;
-    border: 0 !important;
-    border-radius: 42px !important;
-    background:
-      radial-gradient(ellipse at 50% -12%, rgba(255, 255, 255, 0.84), rgba(255, 255, 255, 0.24) 34%, transparent 62%),
-      radial-gradient(circle at 82% 28%, rgba(201, 221, 114, 0.095), transparent 38%),
-      radial-gradient(circle at 8% 78%, rgba(8, 10, 48, 0.075), transparent 42%),
-      linear-gradient(145deg, rgba(255, 255, 252, 0.38), rgba(247, 250, 239, 0.18) 50%, rgba(255, 255, 252, 0.32)) !important;
-    -webkit-backdrop-filter: blur(42px) saturate(1.22) brightness(1.03) !important;
-    backdrop-filter: blur(42px) saturate(1.22) brightness(1.03) !important;
-    box-shadow:
-      0 44px 128px rgba(8, 10, 48, 0.3),
-      0 22px 76px rgba(7, 16, 8, 0.12),
-      inset 0 1.4px 0 rgba(255, 255, 255, 0.88),
-      inset 0 -1.5px 0 rgba(8, 10, 48, 0.09),
-      inset 18px 0 34px rgba(255, 255, 255, 0.16),
-      inset -18px 0 34px rgba(201, 221, 114, 0.055) !important;
-  }
-
-  .navPrimeMobile__panel::before {
-    inset: 0 !important;
-    z-index: -1 !important;
-    border: 0 !important;
-    border-radius: inherit !important;
-    background:
-      linear-gradient(120deg, rgba(255, 255, 255, 0.34) 0%, transparent 28%, transparent 68%, rgba(255, 255, 255, 0.14) 100%),
-      radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.54), transparent 42%),
-      radial-gradient(ellipse at 50% 100%, rgba(8, 10, 48, 0.075), transparent 52%) !important;
-    box-shadow: none !important;
-    opacity: 0.9 !important;
-  }
-
-  .navPrimeMobile__panel::after {
-    inset: 0 !important;
-    z-index: -1 !important;
-    border-radius: inherit !important;
-    background:
-      linear-gradient(112deg, transparent 0%, rgba(255, 255, 255, 0.22) 26%, transparent 47%),
-      radial-gradient(circle at 88% 54%, rgba(201, 221, 114, 0.105), transparent 32%),
-      radial-gradient(circle at 8% 80%, rgba(8, 10, 48, 0.095), transparent 38%) !important;
-    background-size: 210% 100%, 100% 100%, 100% 100% !important;
-    background-position: -100% 0, center, center !important;
-    filter: blur(9px) !important;
-    opacity: 0.72 !important;
-    animation: navMobilePanelFlowV8 8.8s ease-in-out infinite !important;
-  }
-
-  .navPrimeMobile__shine {
-    top: -56% !important;
-    bottom: -56% !important;
-    left: -46% !important;
-    width: 22% !important;
-    background:
-      linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.12), transparent) !important;
-    filter: blur(20px) !important;
-    animation: navMobileSweepV8 9.2s ease-in-out infinite !important;
-  }
-
-  .navPrimeMobile__orb--one {
-    width: 170px !important;
-    height: 170px !important;
-    top: -82px !important;
-    right: -58px !important;
-    background: rgba(201, 221, 114, 0.075) !important;
-    filter: blur(42px) !important;
-  }
-
-  .navPrimeMobile__orb--two {
-    width: 196px !important;
-    height: 196px !important;
-    left: -86px !important;
-    bottom: -88px !important;
-    background: rgba(8, 10, 48, 0.11) !important;
-    filter: blur(44px) !important;
-  }
-
-  .navPrimeMobile__links {
-    gap: 10px !important;
-  }
-
-  .navPrimeMobile__links a {
-    min-height: 64px !important;
-    padding: 0 17px !important;
-    border: 0 !important;
-    border-radius: 999px !important;
-    background:
-      radial-gradient(ellipse at 50% -42%, rgba(255, 255, 255, 0.88), transparent 52%),
-      radial-gradient(circle at 87% 74%, rgba(201, 221, 114, 0.052), transparent 38%),
-      linear-gradient(145deg, rgba(255, 255, 252, 0.42), rgba(247, 250, 239, 0.2)) !important;
-    -webkit-backdrop-filter: blur(32px) saturate(1.16) !important;
-    backdrop-filter: blur(32px) saturate(1.16) !important;
-    box-shadow:
-      0 15px 42px rgba(8, 10, 48, 0.075),
-      0 6px 20px rgba(7, 16, 8, 0.045),
-      inset 0 1.2px 0 rgba(255, 255, 255, 0.92),
-      inset 0 -1.2px 0 rgba(8, 10, 48, 0.055),
-      inset 12px 0 22px rgba(255, 255, 255, 0.16),
-      inset -12px 0 22px rgba(201, 221, 114, 0.035) !important;
-    transition:
-      box-shadow 0.28s ease,
-      background 0.28s ease,
-      transform 0.28s ease !important;
-  }
-
-  .navPrimeMobile__links a::before {
-    inset: 0 !important;
-    background:
-      linear-gradient(90deg, rgba(255, 255, 255, 0.26), transparent 38%, rgba(255, 255, 255, 0.1) 100%) !important;
-    opacity: 0.72 !important;
-  }
-
-  .navPrimeMobile__links a::after {
-    left: 24% !important;
-    right: 24% !important;
-    top: 7px !important;
-    height: 9px !important;
-    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.68), transparent 70%) !important;
-    filter: blur(5px) !important;
-    opacity: 0.48 !important;
-  }
-
-  .navPrimeMobile__links a:hover,
-  .navPrimeMobile__links a:focus-visible {
-    background:
-      radial-gradient(ellipse at 50% -42%, rgba(255, 255, 255, 0.98), transparent 52%),
-      radial-gradient(circle at 87% 74%, rgba(201, 221, 114, 0.075), transparent 38%),
-      linear-gradient(145deg, rgba(255, 255, 252, 0.52), rgba(247, 250, 239, 0.25)) !important;
-    box-shadow:
-      0 18px 48px rgba(8, 10, 48, 0.09),
-      0 8px 24px rgba(7, 16, 8, 0.055),
-      inset 0 1.2px 0 rgba(255, 255, 255, 0.94),
-      inset 0 -1.2px 0 rgba(8, 10, 48, 0.06),
-      inset 14px 0 24px rgba(255, 255, 255, 0.18),
-      inset -14px 0 24px rgba(201, 221, 114, 0.045) !important;
-    transform: translateY(-1px) translateZ(0) !important;
-  }
-
-  .navPrimeMobile__links a strong {
-    font-size: clamp(19px, 4.9vw, 24px) !important;
-    font-weight: 770 !important;
-    letter-spacing: -0.045em !important;
-  }
-
-  .navPrimeMobile__cta {
-    min-height: 64px !important;
-    margin-top: 12px !important;
-    border: 0 !important;
-    color: #070936 !important;
-    background:
-      radial-gradient(circle at 12% 50%, rgba(255, 255, 255, 0.68), transparent 34%),
-      radial-gradient(circle at 92% 50%, rgba(201, 221, 114, 0.2), transparent 34%),
-      linear-gradient(90deg, rgba(229, 255, 144, 0.46) 0%, rgba(255, 255, 252, 0.32) 44%, rgba(206, 239, 89, 0.4) 100%) !important;
-    -webkit-backdrop-filter: blur(30px) saturate(1.18) !important;
-    backdrop-filter: blur(30px) saturate(1.18) !important;
-    box-shadow:
-      0 18px 54px rgba(8, 10, 48, 0.12),
-      0 0 30px rgba(201, 221, 114, 0.09),
-      inset 0 1.3px 0 rgba(255, 255, 255, 0.9),
-      inset 0 -1.3px 0 rgba(8, 10, 48, 0.07),
-      inset 18px 0 30px rgba(255, 255, 255, 0.19),
-      inset -18px 0 30px rgba(201, 221, 114, 0.08) !important;
-    font-size: 12px !important;
-    font-weight: 800 !important;
-    letter-spacing: 0.14em !important;
-  }
-
-  .navPrimeMobile__cta::before {
-    inset: 0 !important;
-    border-radius: inherit !important;
-    background:
-      radial-gradient(ellipse at 50% -26%, rgba(255, 255, 255, 0.58), transparent 52%),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.22), transparent 30%, transparent 70%, rgba(255, 255, 255, 0.16)) !important;
-    opacity: 0.68 !important;
-  }
-
-  .navPrimeMobile__cta::after {
-    top: 7px !important;
-    left: 30% !important;
-    right: 30% !important;
-    height: 10px !important;
-    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.72), transparent 72%) !important;
-    filter: blur(5px) !important;
-    opacity: 0.52 !important;
-  }
-
-  .navPrimeMobile__cta span,
-  .navPrimeMobile__cta svg {
-    position: relative !important;
-    z-index: 3 !important;
-    color: #070936 !important;
-  }
-}
-
-@media (max-width: 420px) {
-  .navPrimeMobile {
-    padding: clamp(182px, 24svh, 220px) 14px max(18px, env(safe-area-inset-bottom)) !important;
-  }
-
-  .navPrimeMobile__panel {
-    width: 100% !important;
-    padding: 21px 13px 15px !important;
-    border-radius: 38px !important;
-  }
-
-  .navPrimeMobile__links {
-    gap: 9px !important;
-  }
-
-  .navPrimeMobile__links a {
-    min-height: 61px !important;
-    padding: 0 14px !important;
-  }
-
-  .navPrimeMobile__links a strong {
-    font-size: clamp(18px, 4.85vw, 21px) !important;
-    font-weight: 760 !important;
-  }
-
-  .navPrimeMobile__cta {
-    min-height: 61px !important;
-    margin-top: 11px !important;
-    font-size: 11.5px !important;
-    letter-spacing: 0.132em !important;
-  }
-}
-
-@media (max-width: 360px) {
-  .navPrimeMobile {
-    padding-top: clamp(172px, 23svh, 202px) !important;
-  }
-
-  .navPrimeMobile__links a strong {
-    font-size: 18px !important;
-  }
-
-  .navPrimeMobile__cta {
-    font-size: 11px !important;
-    letter-spacing: 0.11em !important;
-  }
-}
-
-@keyframes navMobileSweepV8 {
-  0%,
-  46% {
-    opacity: 0;
-    transform: translateX(-130%) skewX(-16deg);
-  }
-
-  58% {
-    opacity: 0.42;
-  }
-
-  100% {
-    opacity: 0;
-    transform: translateX(680%) skewX(-16deg);
-  }
-}
-
-@keyframes navMobilePanelFlowV8 {
-  0%,
-  100% {
-    background-position: -120% 0, center, center;
-    opacity: 0.58;
-  }
-
-  48% {
-    background-position: 120% 0, center, center;
-    opacity: 0.82;
-  }
-}
-
-@keyframes navMobileAmbientPulseV8 {
-  0%,
-  100% {
-    opacity: 0.58;
-  }
-
-  50% {
-    opacity: 0.78;
-  }
-}
-
-@keyframes navMobileLowMistV8 {
-  0%,
-  100% {
-    opacity: 0.48;
-  }
-
-  50% {
-    opacity: 0.64;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .navPrimeMobile::before,
-  .navPrimeMobile::after,
-  .navPrimeMobile__panel::after,
-  .navPrimeMobile__shine {
-    animation: none !important;
-  }
-}
-
-/* =========================================================
-   MOBILE MENU — V8 DEVICE POLISH
-   Extra phone tuning without changing desktop.
-========================================================= */
-
-@media (max-width: 980px) and (hover: none) {
-  .navPrimeMobile__links a:hover,
-  .navPrimeMobile__links a:focus-visible {
-    transform: translateZ(0) !important;
-  }
-
-  .navPrimeMobile__links a:active {
-    background:
-      radial-gradient(ellipse at 50% -42%, rgba(255, 255, 255, 0.94), transparent 52%),
-      radial-gradient(circle at 87% 74%, rgba(201, 221, 114, 0.07), transparent 38%),
-      linear-gradient(145deg, rgba(255, 255, 252, 0.48), rgba(247, 250, 239, 0.24)) !important;
-    box-shadow:
-      0 12px 34px rgba(8, 10, 48, 0.08),
-      inset 0 1.1px 0 rgba(255, 255, 255, 0.9),
-      inset 0 -1.1px 0 rgba(8, 10, 48, 0.055) !important;
-  }
-
-  .navPrimeMobile__cta:active {
-    background:
-      radial-gradient(circle at 12% 50%, rgba(255, 255, 255, 0.72), transparent 34%),
-      radial-gradient(circle at 92% 50%, rgba(201, 221, 114, 0.22), transparent 34%),
-      linear-gradient(90deg, rgba(229, 255, 144, 0.5) 0%, rgba(255, 255, 252, 0.35) 44%, rgba(206, 239, 89, 0.43) 100%) !important;
-  }
-}
-
-@media (max-width: 980px) and (max-height: 760px) {
-  .navPrimeMobile {
-    padding-top: clamp(158px, 22svh, 186px) !important;
-  }
-
-  .navPrimeMobile__panel {
-    padding-top: 18px !important;
-    padding-bottom: 13px !important;
-  }
-
-  .navPrimeMobile__links {
-    gap: 8px !important;
-  }
-
-  .navPrimeMobile__links a {
-    min-height: 56px !important;
-  }
-
-  .navPrimeMobile__cta {
-    min-height: 58px !important;
-    margin-top: 10px !important;
-  }
-}
-
-@media (max-width: 420px) and (min-height: 820px) {
-  .navPrimeMobile {
-    padding-top: clamp(188px, 23.2svh, 210px) !important;
-  }
-}
-
-@media (max-width: 390px) and (min-height: 820px) {
-  .navPrimeMobile {
-    padding-top: clamp(178px, 22.6svh, 202px) !important;
-  }
-}
-
-@media (max-width: 980px) and (orientation: landscape) {
-  .navPrimeMobile {
-    align-items: center !important;
-    padding: max(92px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom)) !important;
-  }
-
-  .navPrimeMobile__panel {
-    max-width: 680px !important;
-    padding: 16px !important;
-    border-radius: 32px !important;
-  }
-
-  .navPrimeMobile__links {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 10px !important;
-  }
-
-  .navPrimeMobile__links a {
-    min-height: 54px !important;
-  }
-
-  .navPrimeMobile__links a strong {
-    font-size: 17px !important;
-  }
-
-  .navPrimeMobile__cta {
-    min-height: 54px !important;
-    margin-top: 10px !important;
+  .navPrime,
+  .navPrime *,
+  .navPrimeMobile,
+  .navPrimeMobile * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
   }
 }
 
 @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-  @media (max-width: 980px) {
-    .navPrimeMobile {
-      background:
-        radial-gradient(ellipse at 50% -4%, rgba(8, 10, 48, 0.96) 0%, rgba(8, 10, 48, 0.74) 24%, rgba(8, 10, 48, 0.28) 48%, transparent 68%),
-        linear-gradient(180deg, rgba(245, 248, 236, 0.72), rgba(224, 232, 209, 0.9)) !important;
-    }
-
-    .navPrimeMobile__panel,
-    .navPrimeMobile__links a,
-    .navPrimeMobile__cta {
-      background-color: rgba(255, 255, 252, 0.72) !important;
-    }
-  }
-}
-
-@media (max-width: 980px) and (prefers-contrast: more) {
-  .navPrimeMobile__links a strong,
-  .navPrimeMobile__cta span,
-  .navPrimeMobile__cta svg,
-  .navPrime__burger.is-open svg {
-    color: #05072a !important;
+  .navPrime__island,
+  .navPrimeMobile__sheet {
+    background: rgba(255, 255, 252, 0.94);
   }
 
-  .navPrimeMobile__links a,
-  .navPrimeMobile__cta {
-    box-shadow:
-      0 12px 34px rgba(8, 10, 48, 0.12),
-      inset 0 1.2px 0 rgba(255, 255, 255, 0.94),
-      inset 0 -1.2px 0 rgba(8, 10, 48, 0.08) !important;
-  }
-}
-
-@media (max-width: 980px) {
-  .navPrimeMobile,
-  .navPrimeMobile__panel,
-  .navPrimeMobile__links a,
-  .navPrimeMobile__cta {
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .navPrimeMobile__links a,
-  .navPrimeMobile__cta,
-  .navPrime__burger {
-    will-change: background, box-shadow;
-  }
-
-  .navPrimeMobile__panel,
-  .navPrimeMobile__panel::before,
-  .navPrimeMobile__panel::after {
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-  }
-}
-
-/* =========================================================
-   MOBILE MENU — V9 CINEMATIC CLOSE ANIMATION
-   Built on V8 visual style. Adds slower glass dissolve,
-   sweep, lens clear and panel clip exit without body reflow.
-========================================================= */
-
-@media (max-width: 980px) {
   .navPrimeMobile {
-    will-change: opacity, backdrop-filter;
-    transform: translateZ(0);
-  }
-
-  .navPrimeMobile__panel {
-    transform-origin: 50% 24%;
-    will-change: opacity, transform, filter, clip-path;
-    -webkit-clip-path: inset(0% 0% 0% 0% round 42px);
-    clip-path: inset(0% 0% 0% 0% round 42px);
-  }
-
-  .navPrimeMobile__glassClear,
-  .navPrimeMobile__cinematicSweep,
-  .navPrimeMobile__lensRing,
-  .navPrimeMobile__innerGlass {
-    position: absolute;
-    pointer-events: none;
-    user-select: none;
-  }
-
-  .navPrimeMobile__glassClear {
-    left: 50%;
-    top: clamp(236px, 31svh, 310px);
-    z-index: 5;
-    width: min(112vw, 690px);
-    height: 292px;
-    margin-left: min(-56vw, -345px);
-    border-radius: 999px;
-    background:
-      radial-gradient(
-        ellipse at center,
-        rgba(255, 255, 255, 0.72) 0%,
-        rgba(247, 250, 239, 0.25) 34%,
-        rgba(201, 221, 114, 0.05) 52%,
-        transparent 74%
-      );
-    mix-blend-mode: screen;
-  }
-
-  .navPrimeMobile__cinematicSweep {
-    top: -24%;
-    bottom: -24%;
-    z-index: 8;
-    width: min(48vw, 250px);
-    transform: skewX(-14deg);
-    border-radius: 999px;
-    background:
-      linear-gradient(
-        100deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.05) 22%,
-        rgba(255, 255, 255, 0.32) 43%,
-        rgba(201, 221, 114, 0.11) 52%,
-        rgba(255, 255, 255, 0.2) 62%,
-        transparent 100%
-      );
-    filter: blur(14px);
-    mix-blend-mode: screen;
-  }
-
-  .navPrimeMobile__lensRing {
-    left: 50%;
-    top: clamp(246px, 32.4svh, 324px);
-    z-index: 7;
-    width: min(94vw, 548px);
-    height: clamp(156px, 22svh, 202px);
-    margin-left: min(-47vw, -274px);
-    border-radius: 999px;
-    background:
-      radial-gradient(ellipse at center, transparent 52%, rgba(255, 255, 255, 0.24) 62%, transparent 76%),
-      radial-gradient(ellipse at center, rgba(255, 255, 255, 0.1), transparent 70%);
-    box-shadow:
-      0 0 70px rgba(255, 255, 255, 0.16),
-      0 0 90px rgba(8, 10, 48, 0.09),
-      inset 0 0 42px rgba(255, 255, 255, 0.12);
-    mix-blend-mode: screen;
-  }
-
-  .navPrimeMobile__innerGlass {
-    top: -45%;
-    bottom: -45%;
-    z-index: 1;
-    width: 42%;
-    border-radius: 999px;
-    transform: skewX(-14deg);
-    background:
-      linear-gradient(
-        100deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.08) 28%,
-        rgba(255, 255, 255, 0.48) 50%,
-        rgba(201, 221, 114, 0.06) 58%,
-        transparent 100%
-      );
-    filter: blur(10px);
-    mix-blend-mode: screen;
-  }
-
-  .navPrimeMobile__links a,
-  .navPrimeMobile__cta {
-    will-change: opacity, transform, filter;
-  }
-
-  .navPrimeMobile__links a strong,
-  .navPrimeMobile__cta span,
-  .navPrimeMobile__cta svg {
-    transform: translateZ(0);
-  }
-}
-
-@media (max-width: 420px) {
-  .navPrimeMobile__glassClear {
-    top: clamp(228px, 30.4svh, 292px);
-    width: 118vw;
-    height: 270px;
-    margin-left: -59vw;
-  }
-
-  .navPrimeMobile__lensRing {
-    top: clamp(238px, 31.6svh, 304px);
-    width: 96vw;
-    height: 174px;
-    margin-left: -48vw;
-  }
-
-  .navPrimeMobile__cinematicSweep {
-    width: 54vw;
-  }
-}
-
-@media (max-width: 980px) and (max-height: 760px) {
-  .navPrimeMobile__glassClear {
-    top: clamp(196px, 29svh, 246px);
-    height: 228px;
-  }
-
-  .navPrimeMobile__lensRing {
-    top: clamp(202px, 30svh, 254px);
-    height: 148px;
-  }
-}
-
-@media (max-width: 980px) and (orientation: landscape) {
-  .navPrimeMobile__glassClear {
-    top: 50%;
-    height: 180px;
-    margin-top: -90px;
-  }
-
-  .navPrimeMobile__lensRing {
-    top: 50%;
-    height: 120px;
-    margin-top: -60px;
-  }
-}
-
-@supports not (clip-path: inset(0% 0% 0% 0% round 42px)) {
-  @media (max-width: 980px) {
-    .navPrimeMobile__panel {
-      overflow: hidden;
-    }
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .navPrimeMobile__glassClear,
-  .navPrimeMobile__cinematicSweep,
-  .navPrimeMobile__lensRing,
-  .navPrimeMobile__innerGlass {
-    display: none !important;
-  }
-}
-
-@media (max-width: 720px) {
-  body.mobile-section-page-open .navPrime,
-  body.case-reader-open .navPrime {
-    opacity: 0 !important;
-    transform: translateY(-18px) !important;
-    pointer-events: none !important;
-  }
-
-  body.mobile-section-page-open .chat,
-  body.case-reader-open .chat {
-    opacity: 0;
-    pointer-events: none;
+    background: rgba(247, 250, 239, 0.82);
   }
 }
